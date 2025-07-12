@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Learning App - Ciclo APA</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <h1><i class="fas fa-graduation-cap"></i> English Learning</h1>
+            <div class="user-progress">
+                <span class="level">Nivel: <span id="currentLevel">1</span></span>
+                <span class="xp">XP: <span id="currentXP">0</span></span>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-tab="learn">
+                <i class="fas fa-book"></i> Aprender
+            </button>
+            <button class="nav-tab" data-tab="practice">
+                <i class="fas fa-dumbbell"></i> Practicar
+            </button>
+            <button class="nav-tab" data-tab="apply">
+                <i class="fas fa-comments"></i> Aplicar
+            </button>
+            <button class="nav-tab" data-tab="progress">
+                <i class="fas fa-chart-line"></i> Progreso
+            </button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Learn Section -->
+            <section id="learn" class="content-section active">
+                <div class="lesson-container">
+                    <h2>Lección del Día</h2>
+                    <div class="lesson-card">
+                        <div class="lesson-header">
+                            <h3 id="lessonTitle">Saludos Básicos</h3>
+                            <span class="difficulty-badge" id="lessonDifficulty">Principiante</span>
+                        </div>
+                        <div class="lesson-content">
+                            <div class="vocabulary-section">
+                                <h4><i class="fas fa-language"></i> Vocabulario</h4>
+                                <div class="vocabulary-grid" id="vocabularyGrid">
+                                    <!-- Vocabulary items will be loaded here -->
+                                </div>
+                            </div>
+                            <div class="grammar-section">
+                                <h4><i class="fas fa-pen-fancy"></i> Gramática</h4>
+                                <div class="grammar-content" id="grammarContent">
+                                    <!-- Grammar content will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lesson-actions">
+                            <button class="btn btn-primary" id="nextLessonBtn">
+                                <i class="fas fa-arrow-right"></i> Siguiente Lección
+                            </button>
+                            <button class="btn btn-secondary" id="reviewLessonBtn">
+                                <i class="fas fa-redo"></i> Repasar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Practice Section -->
+            <section id="practice" class="content-section">
+                <div class="practice-container">
+                    <h2>Ejercicios de Práctica</h2>
+                    <div class="practice-modes">
+                        <div class="mode-card" data-mode="vocabulary">
+                            <i class="fas fa-spell-check"></i>
+                            <h3>Vocabulario</h3>
+                            <p>Practica palabras y frases</p>
+                        </div>
+                        <div class="mode-card" data-mode="grammar">
+                            <i class="fas fa-pen-fancy"></i>
+                            <h3>Gramática</h3>
+                            <p>Ejercicios de estructura</p>
+                        </div>
+                        <div class="mode-card" data-mode="listening">
+                            <i class="fas fa-headphones"></i>
+                            <h3>Comprensión</h3>
+                            <p>Escucha y responde</p>
+                        </div>
+                    </div>
+                    <div class="practice-area" id="practiceArea" style="display: none;">
+                        <!-- Practice content will be loaded here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Apply Section -->
+            <section id="apply" class="content-section">
+                <div class="apply-container">
+                    <h2>Conversación Simulada</h2>
+                    <div class="conversation-scenario">
+                        <div class="scenario-card">
+                            <h3 id="scenarioTitle">En el Restaurante</h3>
+                            <p id="scenarioDescription">Practica ordenar comida en inglés</p>
+                            <div class="conversation-area">
+                                <div class="chat-messages" id="chatMessages">
+                                    <!-- Chat messages will appear here -->
+                                </div>
+                                <div class="chat-input">
+                                    <input type="text" id="chatInput" placeholder="Escribe tu respuesta...">
+                                    <button id="sendMessageBtn">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progress Section -->
+            <section id="progress" class="content-section">
+                <div class="progress-container">
+                    <h2>Tu Progreso</h2>
+                    <div class="progress-stats">
+                        <div class="stat-card">
+                            <i class="fas fa-calendar-check"></i>
+                            <h3>Días Consecutivos</h3>
+                            <span id="streakDays">0</span>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-star"></i>
+                            <h3>Lecciones Completadas</h3>
+                            <span id="lessonsCompleted">0</span>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-trophy"></i>
+                            <h3>Logros</h3>
+                            <span id="achievementsEarned">0</span>
+                        </div>
+                    </div>
+                    <div class="progress-chart">
+                        <h3>Progreso Semanal</h3>
+                        <div class="chart-container" id="weeklyChart">
+                            <!-- Chart will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Achievement Notifications -->
+        <div id="achievementNotification" class="achievement-notification" style="display: none;">
+            <i class="fas fa-trophy"></i>
+            <span id="achievementText"></span>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
