@@ -191,6 +191,230 @@ const LESSONS_DATABASE = {
                     correct: 2
                 }
             ]
+        },
+        {
+            id: 6,
+            title: "Tecnología y Negocios",
+            difficulty: "Intermedio",
+            vocabulary: [
+                { english: "Computer", spanish: "Computadora", pronunciation: "kəmˈpjutər" },
+                { english: "Internet", spanish: "Internet", pronunciation: "ˈɪntərnɛt" },
+                { english: "Website", spanish: "Sitio web", pronunciation: "ˈwɛbsaɪt" },
+                { english: "Email", spanish: "Correo electrónico", pronunciation: "ˈimeɪl" },
+                { english: "Meeting", spanish: "Reunión", pronunciation: "ˈmitɪŋ" },
+                { english: "Project", spanish: "Proyecto", pronunciation: "ˈprɑdʒɛkt" },
+                { english: "Client", spanish: "Cliente", pronunciation: "ˈklaɪənt" },
+                { english: "Business", spanish: "Negocio", pronunciation: "ˈbɪznəs" }
+            ],
+            grammar: {
+                title: "Presente Continuo",
+                explanation: "Se usa para acciones que están ocurriendo ahora. Estructura: Subject + am/is/are + verb-ing",
+                examples: [
+                    "I am working on a project. (Estoy trabajando en un proyecto)",
+                    "She is sending an email. (Ella está enviando un correo)",
+                    "They are having a meeting. (Ellos están teniendo una reunión)"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "vocabulary",
+                    question: "¿Cómo se dice 'reunión' en inglés?",
+                    options: ["Meeting", "Project", "Client", "Business"],
+                    correct: 0
+                }
+            ]
+        },
+        {
+            id: 7,
+            title: "Deportes y Actividades",
+            difficulty: "Básico",
+            vocabulary: [
+                { english: "Football", spanish: "Fútbol", pronunciation: "ˈfʊtbɔl" },
+                { english: "Basketball", spanish: "Baloncesto", pronunciation: "ˈbæskɪtbɔl" },
+                { english: "Tennis", spanish: "Tenis", pronunciation: "ˈtɛnəs" },
+                { english: "Swimming", spanish: "Natación", pronunciation: "ˈswɪmɪŋ" },
+                { english: "Running", spanish: "Correr", pronunciation: "ˈrʌnɪŋ" },
+                { english: "Gym", spanish: "Gimnasio", pronunciation: "dʒɪm" },
+                { english: "Exercise", spanish: "Ejercicio", pronunciation: "ˈɛksərsaɪz" },
+                { english: "Team", spanish: "Equipo", pronunciation: "tim" }
+            ],
+            grammar: {
+                title: "Verbos de Deporte",
+                explanation: "Los verbos de deporte pueden usarse con 'play', 'go' o 'do' según el deporte.",
+                examples: [
+                    "I play football. (Juego fútbol)",
+                    "I go swimming. (Voy a nadar)",
+                    "I do exercise. (Hago ejercicio)"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "vocabulary",
+                    question: "¿Cómo se dice 'gimnasio' en inglés?",
+                    options: ["Gym", "Exercise", "Team", "Swimming"],
+                    correct: 0
+                }
+            ]
+        },
+        {
+            id: 8,
+            title: "Viajes y Transporte",
+            difficulty: "Intermedio",
+            vocabulary: [
+                { english: "Airplane", spanish: "Avión", pronunciation: "ˈɛrpleɪn" },
+                { english: "Train", spanish: "Tren", pronunciation: "treɪn" },
+                { english: "Bus", spanish: "Autobús", pronunciation: "bʌs" },
+                { english: "Taxi", spanish: "Taxi", pronunciation: "ˈtæksi" },
+                { english: "Passport", spanish: "Pasaporte", pronunciation: "ˈpæspɔrt" },
+                { english: "Ticket", spanish: "Boleto", pronunciation: "ˈtɪkət" },
+                { english: "Luggage", spanish: "Equipaje", pronunciation: "ˈlʌɡɪdʒ" },
+                { english: "Destination", spanish: "Destino", pronunciation: "ˌdɛstəˈneɪʃən" }
+            ],
+            grammar: {
+                title: "Going to (Futuro Planificado)",
+                explanation: "Se usa para planes futuros. Estructura: Subject + am/is/are + going to + verb",
+                examples: [
+                    "I am going to travel to New York. (Voy a viajar a Nueva York)",
+                    "She is going to buy a ticket. (Ella va a comprar un boleto)",
+                    "They are going to arrive tomorrow. (Ellos van a llegar mañana)"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "vocabulary",
+                    question: "¿Cómo se dice 'pasaporte' en inglés?",
+                    options: ["Ticket", "Passport", "Luggage", "Destination"],
+                    correct: 1
+                }
+            ]
+        },
+        {
+            id: 9,
+            title: "Emociones y Sentimientos",
+            difficulty: "Básico",
+            vocabulary: [
+                { english: "Happy", spanish: "Feliz", pronunciation: "ˈhæpi" },
+                { english: "Sad", spanish: "Triste", pronunciation: "sæd" },
+                { english: "Angry", spanish: "Enojado", pronunciation: "ˈæŋɡri" },
+                { english: "Excited", spanish: "Emocionado", pronunciation: "ɪkˈsaɪtəd" },
+                { english: "Nervous", spanish: "Nervioso", pronunciation: "ˈnɜrvəs" },
+                { english: "Surprised", spanish: "Sorprendido", pronunciation: "sərˈpraɪzd" },
+                { english: "Tired", spanish: "Cansado", pronunciation: "ˈtaɪrd" },
+                { english: "Worried", spanish: "Preocupado", pronunciation: "ˈwɜrid" }
+            ],
+            grammar: {
+                title: "Adjetivos de Emoción",
+                explanation: "Los adjetivos de emoción describen cómo nos sentimos. Se usan con 'be'.",
+                examples: [
+                    "I am happy today. (Estoy feliz hoy)",
+                    "She is excited about the trip. (Ella está emocionada por el viaje)",
+                    "They are worried about the exam. (Ellos están preocupados por el examen)"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "vocabulary",
+                    question: "¿Cómo se dice 'emocionado' en inglés?",
+                    options: ["Happy", "Excited", "Nervous", "Surprised"],
+                    correct: 1
+                }
+            ]
+        },
+        {
+            id: 10,
+            title: "Casa y Hogar",
+            difficulty: "Básico",
+            vocabulary: [
+                { english: "Kitchen", spanish: "Cocina", pronunciation: "ˈkɪtʃən" },
+                { english: "Bedroom", spanish: "Dormitorio", pronunciation: "ˈbɛdrum" },
+                { english: "Bathroom", spanish: "Baño", pronunciation: "ˈbæθrum" },
+                { english: "Living room", spanish: "Sala", pronunciation: "ˈlɪvɪŋ rum" },
+                { english: "Dining room", spanish: "Comedor", pronunciation: "ˈdaɪnɪŋ rum" },
+                { english: "Garden", spanish: "Jardín", pronunciation: "ˈɡɑrdən" },
+                { english: "Garage", spanish: "Garaje", pronunciation: "ɡəˈrɑʒ" },
+                { english: "Furniture", spanish: "Muebles", pronunciation: "ˈfɜrnɪtʃər" }
+            ],
+            grammar: {
+                title: "There is / There are (Habitaciones)",
+                explanation: "Se usa para describir lo que hay en una habitación o lugar.",
+                examples: [
+                    "There is a table in the kitchen. (Hay una mesa en la cocina)",
+                    "There are two beds in the bedroom. (Hay dos camas en el dormitorio)",
+                    "There is a sofa in the living room. (Hay un sofá en la sala)"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "vocabulary",
+                    question: "¿Cómo se dice 'cocina' en inglés?",
+                    options: ["Kitchen", "Bedroom", "Bathroom", "Living room"],
+                    correct: 0
+                }
+            ]
+        },
+        {
+            id: 11,
+            title: "Profesiones Avanzadas",
+            difficulty: "Intermedio",
+            vocabulary: [
+                { english: "Entrepreneur", spanish: "Emprendedor", pronunciation: "ˌɑntrəprəˈnɜr" },
+                { english: "Manager", spanish: "Gerente", pronunciation: "ˈmænɪdʒər" },
+                { english: "Designer", spanish: "Diseñador", pronunciation: "dɪˈzaɪnər" },
+                { english: "Developer", spanish: "Desarrollador", pronunciation: "dɪˈvɛləpər" },
+                { english: "Consultant", spanish: "Consultor", pronunciation: "kənˈsʌltənt" },
+                { english: "Analyst", spanish: "Analista", pronunciation: "ˈænəlɪst" },
+                { english: "Director", spanish: "Director", pronunciation: "dəˈrɛktər" },
+                { english: "Specialist", spanish: "Especialista", pronunciation: "ˈspɛʃəlɪst" }
+            ],
+            grammar: {
+                title: "Presente Perfecto",
+                explanation: "Se usa para acciones que comenzaron en el pasado y continúan en el presente.",
+                examples: [
+                    "I have worked here for 5 years. (He trabajado aquí por 5 años)",
+                    "She has been a manager since 2020. (Ella ha sido gerente desde 2020)",
+                    "They have studied English for 2 years. (Ellos han estudiado inglés por 2 años)"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "vocabulary",
+                    question: "¿Cómo se dice 'emprendedor' en inglés?",
+                    options: ["Entrepreneur", "Manager", "Designer", "Developer"],
+                    correct: 0
+                }
+            ]
+        },
+        {
+            id: 12,
+            title: "Comida Internacional",
+            difficulty: "Intermedio",
+            vocabulary: [
+                { english: "Pizza", spanish: "Pizza", pronunciation: "ˈpitsə" },
+                { english: "Sushi", spanish: "Sushi", pronunciation: "ˈsuʃi" },
+                { english: "Pasta", spanish: "Pasta", pronunciation: "ˈpɑstə" },
+                { english: "Burger", spanish: "Hamburguesa", pronunciation: "ˈbɜrɡər" },
+                { english: "Salad", spanish: "Ensalada", pronunciation: "ˈsæləd" },
+                { english: "Dessert", spanish: "Postre", pronunciation: "dɪˈzɜrt" },
+                { english: "Appetizer", spanish: "Aperitivo", pronunciation: "ˈæpətaɪzər" },
+                { english: "Beverage", spanish: "Bebida", pronunciation: "ˈbɛvərɪdʒ" }
+            ],
+            grammar: {
+                title: "Would like (Preferencias)",
+                explanation: "Se usa para expresar preferencias y hacer pedidos de manera educada.",
+                examples: [
+                    "I would like a pizza, please. (Me gustaría una pizza, por favor)",
+                    "She would like to try the sushi. (A ella le gustaría probar el sushi)",
+                    "They would like some dessert. (A ellos les gustaría algo de postre)"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "vocabulary",
+                    question: "¿Cómo se dice 'postre' en inglés?",
+                    options: ["Salad", "Dessert", "Appetizer", "Beverage"],
+                    correct: 1
+                }
+            ]
         }
     ]
 };
@@ -260,6 +484,71 @@ const CONVERSATION_SCENARIOS = [
             { type: "bot", text: "I'll examine you. It looks like you have a cold. Take this medicine." }
         ],
         vocabulary: ["headache", "fever", "sick", "medicine", "doctor", "symptoms"]
+    },
+    {
+        id: 6,
+        title: "En la Oficina",
+        description: "Practica conversaciones de trabajo",
+        messages: [
+            { type: "bot", text: "Good morning! How is the project going?" },
+            { type: "user", text: "It's going well. I'm working on the website design." },
+            { type: "bot", text: "Great! When will you finish it?" },
+            { type: "user", text: "I think I'll finish it by Friday." },
+            { type: "bot", text: "Perfect! Let's have a meeting to discuss the details." }
+        ],
+        vocabulary: ["project", "website", "meeting", "finish", "discuss", "details"]
+    },
+    {
+        id: 7,
+        title: "En el Gimnasio",
+        description: "Practica conversaciones sobre deportes",
+        messages: [
+            { type: "bot", text: "Hi! Are you new here?" },
+            { type: "user", text: "Yes, I'm looking for a good exercise routine." },
+            { type: "bot", text: "What sports do you like?" },
+            { type: "user", text: "I enjoy swimming and running." },
+            { type: "bot", text: "Great! I can help you create a fitness plan." }
+        ],
+        vocabulary: ["exercise", "routine", "sports", "swimming", "running", "fitness"]
+    },
+    {
+        id: 8,
+        title: "En el Aeropuerto",
+        description: "Practica viajando en avión",
+        messages: [
+            { type: "bot", text: "Good morning! Do you have your passport ready?" },
+            { type: "user", text: "Yes, here it is." },
+            { type: "bot", text: "Where are you traveling to today?" },
+            { type: "user", text: "I'm going to New York." },
+            { type: "bot", text: "Great! Your flight leaves at 3 PM. Have a good trip!" }
+        ],
+        vocabulary: ["passport", "travel", "flight", "trip", "destination"]
+    },
+    {
+        id: 9,
+        title: "En el Restaurante Internacional",
+        description: "Practica ordenando comida internacional",
+        messages: [
+            { type: "bot", text: "Welcome! What would you like to try today?" },
+            { type: "user", text: "I'd like to try the sushi, please." },
+            { type: "bot", text: "Excellent choice! Would you like some dessert too?" },
+            { type: "user", text: "Yes, I'd like the chocolate cake." },
+            { type: "bot", text: "Perfect! Your order will be ready in 15 minutes." }
+        ],
+        vocabulary: ["sushi", "dessert", "chocolate", "cake", "order", "ready"]
+    },
+    {
+        id: 10,
+        title: "En la Reunión de Negocios",
+        description: "Practica presentaciones de trabajo",
+        messages: [
+            { type: "bot", text: "Good morning everyone! Let's start the meeting." },
+            { type: "user", text: "I have a presentation about our new project." },
+            { type: "bot", text: "Great! What's the main goal of this project?" },
+            { type: "user", text: "We want to improve our website and attract more clients." },
+            { type: "bot", text: "Excellent! I'm excited about this project." }
+        ],
+        vocabulary: ["presentation", "project", "goal", "website", "clients", "excited"]
     }
 ];
 
@@ -325,6 +614,79 @@ function getTotalVocabularyLearned() {
         }
     });
     return total;
+}
+
+// Categorías de vocabulario
+const VOCABULARY_CATEGORIES = {
+    basic: {
+        name: "Básico",
+        description: "Palabras fundamentales para principiantes",
+        lessons: [1, 2, 4, 9, 10]
+    },
+    business: {
+        name: "Negocios",
+        description: "Vocabulario para el mundo empresarial",
+        lessons: [6, 11]
+    },
+    technology: {
+        name: "Tecnología",
+        description: "Términos tecnológicos y digitales",
+        lessons: [6]
+    },
+    sports: {
+        name: "Deportes",
+        description: "Actividades físicas y deportes",
+        lessons: [7]
+    },
+    travel: {
+        name: "Viajes",
+        description: "Transporte y turismo",
+        lessons: [8]
+    },
+    food: {
+        name: "Comida",
+        description: "Alimentos y gastronomía",
+        lessons: [4, 12]
+    },
+    emotions: {
+        name: "Emociones",
+        description: "Sentimientos y estados de ánimo",
+        lessons: [9]
+    },
+    home: {
+        name: "Hogar",
+        description: "Partes de la casa y muebles",
+        lessons: [10]
+    }
+};
+
+// Función para obtener vocabulario por categoría
+function getVocabularyByCategory(category) {
+    const categoryData = VOCABULARY_CATEGORIES[category];
+    if (!categoryData) return [];
+    
+    let vocabulary = [];
+    categoryData.lessons.forEach(lessonId => {
+        const lesson = LESSONS_DATABASE.level1.find(l => l.id === lessonId);
+        if (lesson) {
+            vocabulary = vocabulary.concat(lesson.vocabulary);
+        }
+    });
+    
+    return vocabulary;
+}
+
+// Función para obtener estadísticas de vocabulario
+function getVocabularyStats() {
+    const stats = {};
+    Object.keys(VOCABULARY_CATEGORIES).forEach(category => {
+        const vocabulary = getVocabularyByCategory(category);
+        stats[category] = {
+            total: vocabulary.length,
+            learned: 0 // Esto se calcularía basado en el progreso del usuario
+        };
+    });
+    return stats;
 }
 
 // Sistema de pronunciación
@@ -450,6 +812,9 @@ function loadSectionContent(section) {
             break;
         case 'progress':
             loadProgressChart();
+            break;
+        case 'vocabulary':
+            loadVocabularyCategories();
             break;
     }
 }
@@ -905,6 +1270,76 @@ function checkDailyStreak() {
         appState.lastLoginDate = new Date().toISOString();
         saveProgress();
     }
+}
+
+// Funciones para la sección de vocabulario
+function loadVocabularyCategories() {
+    const categoriesGrid = document.getElementById('categoriesGrid');
+    const vocabularyDetail = document.getElementById('vocabularyDetail');
+    
+    // Ocultar detalle y mostrar categorías
+    vocabularyDetail.style.display = 'none';
+    categoriesGrid.style.display = 'grid';
+    
+    categoriesGrid.innerHTML = '';
+    
+    Object.entries(VOCABULARY_CATEGORIES).forEach(([key, category]) => {
+        const vocabulary = getVocabularyByCategory(key);
+        const learnedCount = Math.floor(vocabulary.length * 0.3); // Simular progreso
+        
+        const categoryCard = document.createElement('div');
+        categoryCard.className = 'category-card';
+        categoryCard.onclick = () => loadVocabularyDetail(key);
+        
+        categoryCard.innerHTML = `
+            <h3>${category.name}</h3>
+            <p>${category.description}</p>
+            <div class="category-stats">
+                <span>${learnedCount}/${vocabulary.length} palabras</span>
+                <span>${Math.round((learnedCount / vocabulary.length) * 100)}%</span>
+            </div>
+            <div class="category-progress">
+                <div class="category-progress-fill" style="width: ${(learnedCount / vocabulary.length) * 100}%"></div>
+            </div>
+        `;
+        
+        categoriesGrid.appendChild(categoryCard);
+    });
+}
+
+function loadVocabularyDetail(categoryKey) {
+    const categoriesGrid = document.getElementById('categoriesGrid');
+    const vocabularyDetail = document.getElementById('vocabularyDetail');
+    const category = VOCABULARY_CATEGORIES[categoryKey];
+    const vocabulary = getVocabularyByCategory(categoryKey);
+    
+    // Ocultar categorías y mostrar detalle
+    categoriesGrid.style.display = 'none';
+    vocabularyDetail.style.display = 'block';
+    
+    vocabularyDetail.innerHTML = `
+        <button class="back-button" onclick="loadVocabularyCategories()">
+            <i class="fas fa-arrow-left"></i> Volver a Categorías
+        </button>
+        <h3>
+            <i class="fas fa-book"></i>
+            ${category.name} - ${vocabulary.length} palabras
+        </h3>
+        <div class="vocabulary-list">
+            ${vocabulary.map(item => `
+                <div class="vocabulary-item-detail">
+                    <div class="vocab-header">
+                        <div class="english">${item.english}</div>
+                        <button class="speak-btn" onclick="speakText('${item.english}', 'en-US')" title="Escuchar pronunciación">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                    </div>
+                    <div class="spanish">${item.spanish}</div>
+                    <div class="pronunciation">[${item.pronunciation}]</div>
+                </div>
+            `).join('')}
+        </div>
+    `;
 }
 
 // Inicializar verificación de racha
