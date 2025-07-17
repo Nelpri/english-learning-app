@@ -106,6 +106,14 @@
                 <span class="level">Nivel: <span id="currentLevel">1</span></span>
                 <span class="xp">XP: <span id="currentXP">0</span></span>
             </div>
+            <div class="level-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="levelProgressFill"></div>
+                </div>
+                <span class="progress-text" id="levelProgressText">0%</span>
+            </div>
+            <div id="userDisplay" class="user-display" style="display: none;">              <!-- El nombre del usuario se insertará aquí dinámicamente -->
+            </div>
             <button class="btn btn-secondary logout-btn" onclick="logout()" title="Cerrar sesión">
                 <i class="fas fa-sign-out-alt"></i> Cerrar sesión
             </button>

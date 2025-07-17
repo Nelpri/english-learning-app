@@ -994,6 +994,22 @@ function updateUI() {
     document.getElementById('streakDays').textContent = appState.streakDays;
     document.getElementById('lessonsCompleted').textContent = appState.lessonsCompleted;
     document.getElementById('achievementsEarned').textContent = appState.achievements.length;
+    
+    // Actualizar barra de progreso del nivel
+    const xpForNextLevel = getXPForNextLevel(appState.currentLevel);
+    const xpInCurrentLevel = appState.currentXP % LEVEL_SYSTEM.xpPerLevel;
+    const progressPercentage = (xpInCurrentLevel / LEVEL_SYSTEM.xpPerLevel) * 100;
+    
+    // Actualizar elementos visuales de la barra de progreso
+    const progressFill = document.getElementById('levelProgressFill');
+    const progressText = document.getElementById('levelProgressText');
+    
+    if (progressFill && progressText) {
+        progressFill.style.width = `${progressPercentage}%`;
+        progressText.textContent = `${Math.round(progressPercentage)}%`;
+    }
+    
+    console.log(`Progreso del nivel: ${progressPercentage.toFixed(1)}%`);
 }
 
 // Navegación entre secciones
@@ -1050,6 +1066,23 @@ function loadCurrentLesson() {
 
     document.getElementById('lessonTitle').textContent = currentLesson.title;
     document.getElementById('lessonDifficulty').textContent = currentLesson.difficulty;
+
+    // Verificar si la lección ya fue completada
+    const isCompleted = isLessonCompleted(appState.currentLesson);
+    const lessonHeader = document.querySelector('.lesson-header');
+    
+    // Agregar o actualizar indicador de completado
+    let completedBadge = lessonHeader.querySelector('.completed-badge');
+    if (isCompleted) {
+        if (!completedBadge) {
+            completedBadge = document.createElement('span');
+            completedBadge.className = 'completed-badge';
+            lessonHeader.appendChild(completedBadge);
+        }
+        completedBadge.innerHTML = `<i class="fas fa-check-circle"></i> Completada`;
+    }else if (completedBadge) {
+        completedBadge.remove();
+    }
 
     // Cargar vocabulario
     const vocabularyGrid = document.getElementById('vocabularyGrid');
@@ -1445,29 +1478,39 @@ function sendChatMessage() {
 }
 
 function completeLesson() {
+    const currentLessonId = appState.currentLesson;
+    
+    // Verificar si la lección ya fue completada
+    if (isLessonCompleted(currentLessonId)) {
+        showNotification('Esta lección ya fue completada anteriormente.', 'info');
+        // Solo avanzar a la siguiente lección sin sumar XP
+        appState.currentLesson++;
+        if (appState.currentLesson >= LESSONS_DATABASE.level1.length) {
+            appState.currentLesson = 0; // Volver al inicio si se completaron todas
+        }
+        loadCurrentLesson();
+        return;
+    }
+    
+    // Marcar lección como completada y sumar XP
+    markLessonCompleted(currentLessonId);
     appState.lessonsCompleted++;
-    appState.currentXP += 50;
-    appState.vocabularyWordsLearned += LESSONS_DATABASE.level1[appState.currentLesson].vocabulary.length;
-    appState.currentLesson++;
+    appState.currentXP += LEVEL_SYSTEM.xpPerLesson;
+    appState.vocabularyWordsLearned += LESSONS_DATABASE.level1[currentLessonId].vocabulary.length;
     
     // Actualizar progreso semanal
     const today = new Date().getDay();
     const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
     const currentDay = dayNames[today];
-    appState.weeklyProgress[currentDay] += 50;
+    appState.weeklyProgress[currentDay] += LEVEL_SYSTEM.xpPerLesson;
     
+    // Verificar si subió de nivel
+    const leveledUp = checkLevelUp();
+    
+    // Avanzar a la siguiente lección
+    appState.currentLesson++;
     if (appState.currentLesson >= LESSONS_DATABASE.level1.length) {
-        appState.currentLevel++;
-        appState.currentLesson = 0;
-    }
-    
-    // Guardar progreso de la lección
-    if (!appState.userProgress[appState.currentLesson]) {
-        appState.userProgress[appState.currentLesson] = {
-            vocabularyCompleted: true,
-            grammarCompleted: true,
-            practiceCompleted: true
-        };
+        appState.currentLesson = 0; // Volver al inicio si se completaron todas
     }
     
     updateUI();
@@ -1477,8 +1520,11 @@ function completeLesson() {
     // Cargar siguiente lección
     loadCurrentLesson();
     
-    // Mostrar notificación de éxito
-    showNotification('¡Lección completada! +50 XP', 'success');
+    // Mostrar notificación
+    const xpMessage = leveledUp ? 
+        `¡Lección completada! +${LEVEL_SYSTEM.xpPerLesson} XP` : 
+        `¡Lección completada! +${LEVEL_SYSTEM.xpPerLesson} XP`;
+    showNotification(xpMessage, 'success');
 }
 
 function reviewLesson() {
@@ -1488,6 +1534,13 @@ function reviewLesson() {
 function showNotification(message, type) {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
+    
+    // Para mensajes largos, usar un diseño diferente
+    if (message.length > 100) {
+        notification.style.maxWidth = '400px';
+        notification.style.padding = '1.5m';
+    }
+    
     notification.innerHTML = `
         <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
         <span>${message}</span>
@@ -1495,9 +1548,11 @@ function showNotification(message, type) {
     
     document.body.appendChild(notification);
     
+    // Para mensajes largos, mostrar por más tiempo
+    const duration = message.length >10? 5000 : 3000;
     setTimeout(() => {
         notification.remove();
-    }, 3000);
+    }, duration);
 }
 
 // Verificar racha diaria
@@ -1712,19 +1767,22 @@ function handleRegister(e) {
     const email = document.getElementById('registerEmail').value.trim();
     const password = document.getElementById('registerPassword').value;
     if (!name || !email || !password) {
-        alert('Por favor completa todos los campos');
+        showNotification('Por favor completa todos los campos', 'error');
         return;
     }
     let users = JSON.parse(localStorage.getItem('englishLearningUsers') || '[]');
     if (users.find(u => u.email === email)) {
-        alert('Ya existe una cuenta con ese email');
+        showNotification('Ya existe una cuenta con ese email', 'error');
         return;
     }
     // Mostrar diagnóstico tras registro
     showDiagnosticModal(function(diagnostic) {
         users.push({ name, email, password, level: diagnostic.level, mcer: diagnostic.mcer });
         localStorage.setItem('englishLearningUsers', JSON.stringify(users));
-        alert('¡Cuenta creada! Nivel asignado: ' + diagnostic.level + ' (' + diagnostic.mcer + '). Ahora puedes iniciar sesión.');
+        
+        // Mostrar mensaje de bienvenida elaborado
+        showWelcomeMessage(name, diagnostic.level, diagnostic.mcer);
+        
         hideAuthModal(); // Ocultar el modal de autenticación después del diagnóstico
         document.querySelector('.auth-tab[data-tab="login"]').click();
     });
@@ -1738,11 +1796,57 @@ function handleLogin(e) {
     let users = JSON.parse(localStorage.getItem('englishLearningUsers') || '[]');
     const user = users.find(u => u.email === email && u.password === password);
     if (!user) {
-        alert('Email o contraseña incorrectos');
+        showNotification('Email o contraseña incorrectos', 'error');
         return;
     }
-    localStorage.setItem('englishLearningSession', JSON.stringify({ email: user.email }));
+    localStorage.setItem('englishLearningSession', JSON.stringify({ 
+        email: user.email, 
+        name: user.name 
+    }));
     hideAuthModal();
+    
+    // Mostrar mensaje de bienvenida
+    showNotification(`👋 ¡Bienvenido de vuelta, ${user.name}!`, 'success');
+    
+    // Actualizar la visualización del usuario después de un pequeño delay
+    setTimeout(() => {
+        updateUserDisplay();
+    }, 1000);
+}
+
+// Función para obtener el usuario actual
+function getCurrentUser() {
+    const session = JSON.parse(localStorage.getItem('englishLearningSession') || 'null');
+    console.log('Session:', session); // Debug
+    if (session && session.email) {
+        const users = JSON.parse(localStorage.getItem('englishLearningUsers') || '[]');
+        const user = users.find(u => u.email === session.email);
+        console.log('Found user:', user); // Debug
+        return user;
+    }
+    return null;
+}
+
+// Función para actualizar la visualización del usuario en el header
+function updateUserDisplay() {
+    const user = getCurrentUser();
+    const userDisplay = document.getElementById('userDisplay');
+    
+    console.log('updateUserDisplay called, user:', user, 'userDisplay:', userDisplay); // Debug
+    
+    if (user && userDisplay) {
+        userDisplay.innerHTML = `
+            <div class="user-info">
+                <i class="fas fa-user-graduate"></i>
+                <span class="user-name">${user.name}</span>
+            </div>
+        `;
+        userDisplay.style.display = 'flex';
+        console.log('User display updated successfully'); // Debug
+    } else if (userDisplay) {
+        userDisplay.style.display = 'none';
+        console.log('User display hidden'); // Debug
+    }
 }
 
 // Verificar sesión al cargar
@@ -1750,6 +1854,7 @@ function checkAuth() {
     const session = JSON.parse(localStorage.getItem('englishLearningSession') || 'null');
     if (session && session.email) {
         hideAuthModal();
+        updateUserDisplay(); // Actualizar la visualización del usuario
     } else {
         showAuthModal();
     }
@@ -1758,6 +1863,7 @@ function checkAuth() {
 // Cerrar sesión
 function logout() {
     localStorage.removeItem('englishLearningSession');
+    updateUserDisplay(); // Ocultar la información del usuario
     showAuthModal();
 }
 
@@ -1765,9 +1871,98 @@ function logout() {
 window.addEventListener('DOMContentLoaded', function() {
     setupAuthTabs();
     checkAuth();
+    updateUserDisplay(); // Asegurar que se muestre el usuario si hay sesión activa
     const registerForm = document.getElementById('registerForm');
     if (registerForm) registerForm.addEventListener('submit', handleRegister);
     const loginForm = document.getElementById('loginForm');
     if (loginForm) loginForm.addEventListener('submit', handleLogin);
 });
 // --- Fin autenticación modal --- 
+
+// Sistema de niveles y XP mejorado
+const LEVEL_SYSTEM = {
+    xpPerLevel: 200, // XP requerido para subir de nivel
+    xpPerLesson: 50, // XP por lección completada
+    xpPerExercise: 10 // XP por ejercicio completado
+};
+
+// Función para calcular el nivel basado en XP total
+function calculateLevel(xp) {
+    return Math.floor(xp / LEVEL_SYSTEM.xpPerLevel) + 1;
+}
+
+// Función para calcular XP necesario para el siguiente nivel
+function getXPForNextLevel(currentLevel) {
+    return currentLevel * LEVEL_SYSTEM.xpPerLevel;
+}
+
+// Función para verificar si una lección ya fue completada
+function isLessonCompleted(lessonId) {
+    return appState.userProgress[lessonId] && appState.userProgress[lessonId].completed;
+}
+
+// Función para marcar una lección como completada
+function markLessonCompleted(lessonId) {
+    if (!appState.userProgress[lessonId]) appState.userProgress[lessonId] = {};
+    appState.userProgress[lessonId].completed = true;
+    appState.userProgress[lessonId].completedAt = new Date().toISOString();
+}
+
+// Función para verificar si el usuario subió de nivel
+function checkLevelUp() {
+    const newLevel = calculateLevel(appState.currentXP);
+    if (newLevel > appState.currentLevel) {
+        appState.currentLevel = newLevel;
+        showNotification(`¡Nivel ${newLevel} alcanzado! 🎉`, 'success');
+        return true;
+    }
+    return false;
+}
+
+// Función para mostrar mensaje de bienvenida elaborado
+function showWelcomeMessage(name, level, mcer) {
+    const welcomeDiv = document.createElement('div');  welcomeDiv.className = 'welcome-message';
+    welcomeDiv.innerHTML = `
+        <div class="welcome-content">
+            <div class=welcome-header>
+                <div class="welcome-icon">🎓</div>
+                <div class="welcome-sparkles">
+                    <span>✨</span><span>⭐</span><span>✨</span>
+                </div>
+            </div>
+            <h3>¡Bienvenido a English Learning!</h3>
+            <p class="welcome-name>Hola, <strong>${name}</strong></p>
+            <div class="welcome-level-container>
+                <p class=welcome-level">Tu nivel asignado es:</p>
+                <span class="level-badge>${level} (${mcer})</span>
+            </div>
+            <p class="welcome-text">¡Estás listo para comenzar tu viaje de aprendizaje del inglés!</p>
+            <div class="welcome-features>
+                <div class="feature-item">
+                    <i class="fas fa-book"></i>
+                    <span>Aprender</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>Practicar</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-comments"></i>
+                    <span>Aplicar</span>
+                </div>
+            </div>
+            <button class="btn btn-violet welcome-btn" onclick="this.parentElement.parentElement.remove()>
+                <i class=fas fa-rocket></i> ¡Comenzar Aprendizaje!
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(welcomeDiv);
+    
+    // Remover automáticamente después de 10 segundos
+    setTimeout(() => {
+        if (welcomeDiv.parentElement) {
+            welcomeDiv.remove();
+        }
+    }, 10000);
+}
