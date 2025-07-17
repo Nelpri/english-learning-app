@@ -204,7 +204,9 @@ const LESSONS_DATABASE = {
                 { english: "Meeting", spanish: "Reunión", pronunciation: "ˈmitɪŋ" },
                 { english: "Project", spanish: "Proyecto", pronunciation: "ˈprɑdʒɛkt" },
                 { english: "Client", spanish: "Cliente", pronunciation: "ˈklaɪənt" },
-                { english: "Business", spanish: "Negocio", pronunciation: "ˈbɪznəs" }
+                { english: "Business", spanish: "Negocio", pronunciation: "ˈbɪznəs" },
+                { english: "Software", spanish: "Software", pronunciation: "ˈsɔftwɛr" },
+                { english: "Database", spanish: "Base de datos", pronunciation: "ˈdeɪtəbeɪs" }
             ],
             grammar: {
                 title: "Presente Continuo",
@@ -236,7 +238,9 @@ const LESSONS_DATABASE = {
                 { english: "Running", spanish: "Correr", pronunciation: "ˈrʌnɪŋ" },
                 { english: "Gym", spanish: "Gimnasio", pronunciation: "dʒɪm" },
                 { english: "Exercise", spanish: "Ejercicio", pronunciation: "ˈɛksərsaɪz" },
-                { english: "Team", spanish: "Equipo", pronunciation: "tim" }
+                { english: "Team", spanish: "Equipo", pronunciation: "tim" },
+                { english: "Coach", spanish: "Entrenador", pronunciation: "koʊtʃ" },
+                { english: "Championship", spanish: "Campeonato", pronunciation: "ˈtʃæmpiənʃɪp" }
             ],
             grammar: {
                 title: "Verbos de Deporte",
@@ -413,6 +417,142 @@ const LESSONS_DATABASE = {
                     question: "¿Cómo se dice 'postre' en inglés?",
                     options: ["Salad", "Dessert", "Appetizer", "Beverage"],
                     correct: 1
+                }
+            ]
+        },
+        {
+            id: 13,
+            title: "Medicina y Salud",
+            difficulty: "Intermedio",
+            vocabulary: [
+                { english: "Hospital", spanish: "Hospital", pronunciation: "ˈhɑspɪtəl" },
+                { english: "Doctor", spanish: "Doctor", pronunciation: "ˈdɑktər" },
+                { english: "Nurse", spanish: "Enfermera", pronunciation: "nɜrs" },
+                { english: "Medicine", spanish: "Medicina", pronunciation: "ˈmɛdəsən" },
+                { english: "Pain", spanish: "Dolor", pronunciation: "peɪn" },
+                { english: "Fever", spanish: "Fiebre", pronunciation: "ˈfivər" },
+                { english: "Appointment", spanish: "Cita médica", pronunciation: "əˈpɔɪntmənt" },
+                { english: "Emergency", spanish: "Emergencia", pronunciation: "ɪˈmɜrdʒənsi" },
+                { english: "Symptom", spanish: "Síntoma", pronunciation: "ˈsɪmptəm" },
+                { english: "Treatment", spanish: "Tratamiento", pronunciation: "ˈtritmənt" }
+            ],
+            grammar: {
+                title: "Should (Consejos)",
+                explanation: "Se usa para dar consejos y recomendaciones. Estructura: Subject + should + verb",
+                examples: [
+                    "You should see a doctor. (Deberías ver a un doctor)",
+                    "She should take medicine. (Ella debería tomar medicina)",
+                    "They should rest more. (Ellos deberían descansar más)"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "vocabulary",
+                    question: "¿Cómo se dice 'cita médica' en inglés?",
+                    options: ["Hospital", "Appointment", "Medicine", "Emergency"],
+                    correct: 1
+                }
+            ]
+        },
+        {
+            id: 14,
+            title: "Educación y Estudios",
+            difficulty: "Intermedio",
+            vocabulary: [
+                { english: "University", spanish: "Universidad", pronunciation: "ˌjunəˈvɜrsəti" },
+                { english: "College", spanish: "Colegio", pronunciation: "ˈkɑlɪdʒ" },
+                { english: "School", spanish: "Escuela", pronunciation: "skul" },
+                { english: "Student", spanish: "Estudiante", pronunciation: "ˈstudənt" },
+                { english: "Professor", spanish: "Profesor", pronunciation: "prəˈfɛsər" },
+                { english: "Classroom", spanish: "Aula", pronunciation: "ˈklæsrum" },
+                { english: "Library", spanish: "Biblioteca", pronunciation: "ˈlaɪbrɛri" },
+                { english: "Homework", spanish: "Tarea", pronunciation: "ˈhoʊmwɜrk" },
+                { english: "Exam", spanish: "Examen", pronunciation: "ɪɡˈzæm" },
+                { english: "Graduation", spanish: "Graduación", pronunciation: "ˌɡrædʒuˈeɪʃən" }
+            ],
+            grammar: {
+                title: "Used to (Pasado Habitual)",
+                explanation: "Se usa para hablar de hábitos o situaciones del pasado que ya no existen.",
+                examples: [
+                    "I used to study at that university. (Solía estudiar en esa universidad)",
+                    "She used to live in New York. (Ella solía vivir en Nueva York)",
+                    "They used to play football. (Ellos solían jugar fútbol)"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "vocabulary",
+                    question: "¿Cómo se dice 'tarea' en inglés?",
+                    options: ["Homework", "Exam", "Library", "Classroom"],
+                    correct: 0
+                }
+            ]
+        },
+        {
+            id: 15,
+            title: "Arte y Cultura",
+            difficulty: "Avanzado",
+            vocabulary: [
+                { english: "Museum", spanish: "Museo", pronunciation: "mjuˈziəm" },
+                { english: "Gallery", spanish: "Galería", pronunciation: "ˈɡæləri" },
+                { english: "Painting", spanish: "Pintura", pronunciation: "ˈpeɪntɪŋ" },
+                { english: "Sculpture", spanish: "Escultura", pronunciation: "ˈskʌlptʃər" },
+                { english: "Artist", spanish: "Artista", pronunciation: "ˈɑrtɪst" },
+                { english: "Exhibition", spanish: "Exposición", pronunciation: "ˌɛksəˈbɪʃən" },
+                { english: "Masterpiece", spanish: "Obra maestra", pronunciation: "ˈmæstərpis" },
+                { english: "Contemporary", spanish: "Contemporáneo", pronunciation: "kənˈtɛmpərɛri" },
+                { english: "Classical", spanish: "Clásico", pronunciation: "ˈklæsɪkəl" },
+                { english: "Creative", spanish: "Creativo", pronunciation: "kriˈeɪtɪv" }
+            ],
+            grammar: {
+                title: "Passive Voice (Voz Pasiva)",
+                explanation: "Se usa cuando el foco está en la acción, no en quién la realiza.",
+                examples: [
+                    "The painting was created by Van Gogh. (La pintura fue creada por Van Gogh)",
+                    "The museum is visited by thousands. (El museo es visitado por miles)",
+                    "The exhibition will be opened tomorrow. (La exposición será abierta mañana)"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "vocabulary",
+                    question: "¿Cómo se dice 'obra maestra' en inglés?",
+                    options: ["Masterpiece", "Painting", "Sculpture", "Exhibition"],
+                    correct: 0
+                }
+            ]
+        },
+        {
+            id: 16,
+            title: "Medio Ambiente",
+            difficulty: "Avanzado",
+            vocabulary: [
+                { english: "Environment", spanish: "Medio ambiente", pronunciation: "ɪnˈvaɪrənmənt" },
+                { english: "Pollution", spanish: "Contaminación", pronunciation: "pəˈluʃən" },
+                { english: "Recycling", spanish: "Reciclaje", pronunciation: "riˈsaɪklɪŋ" },
+                { english: "Climate", spanish: "Clima", pronunciation: "ˈklaɪmət" },
+                { english: "Sustainability", spanish: "Sostenibilidad", pronunciation: "səˌsteɪnəˈbɪləti" },
+                { english: "Renewable", spanish: "Renovable", pronunciation: "rɪˈnuəbəl" },
+                { english: "Conservation", spanish: "Conservación", pronunciation: "ˌkɑnsərˈveɪʃən" },
+                { english: "Ecosystem", spanish: "Ecosistema", pronunciation: "ˈikoʊˌsɪstəm" },
+                { english: "Biodiversity", spanish: "Biodiversidad", pronunciation: "ˌbaɪoʊdaɪˈvɜrsəti" },
+                { english: "Carbon footprint", spanish: "Huella de carbono", pronunciation: "ˈkɑrbən ˈfʊtprɪnt" }
+            ],
+            grammar: {
+                title: "Conditional Sentences (Oraciones Condicionales)",
+                explanation: "Se usan para expresar condiciones y sus resultados.",
+                examples: [
+                    "If we recycle more, we will help the environment. (Si reciclamos más, ayudaremos al medio ambiente)",
+                    "If everyone used renewable energy, pollution would decrease. (Si todos usaran energía renovable, la contaminación disminuiría)",
+                    "If you care about the planet, you should reduce waste. (Si te importa el planeta, deberías reducir el desperdicio)"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "vocabulary",
+                    question: "¿Cómo se dice 'sostenibilidad' en inglés?",
+                    options: ["Sustainability", "Environment", "Recycling", "Climate"],
+                    correct: 0
                 }
             ]
         }
@@ -616,7 +756,7 @@ function getTotalVocabularyLearned() {
     return total;
 }
 
-// Categorías de vocabulario
+// Categorías de vocabulario expandidas
 const VOCABULARY_CATEGORIES = {
     basic: {
         name: "Básico",
@@ -657,6 +797,26 @@ const VOCABULARY_CATEGORIES = {
         name: "Hogar",
         description: "Partes de la casa y muebles",
         lessons: [10]
+    },
+    health: {
+        name: "Salud",
+        description: "Medicina y bienestar",
+        lessons: [13]
+    },
+    education: {
+        name: "Educación",
+        description: "Estudios y aprendizaje",
+        lessons: [14]
+    },
+    art: {
+        name: "Arte y Cultura",
+        description: "Expresiones artísticas y culturales",
+        lessons: [15]
+    },
+    environment: {
+        name: "Medio Ambiente",
+        description: "Naturaleza y sostenibilidad",
+        lessons: [16]
     }
 };
 
@@ -689,7 +849,7 @@ function getVocabularyStats() {
     return stats;
 }
 
-// Sistema de pronunciación
+// Sistema de pronunciación mejorado
 function speakText(text, language = 'en-US', rate = 0.8) {
     if ('speechSynthesis' in window) {
         // Detener cualquier pronunciación anterior
@@ -700,19 +860,83 @@ function speakText(text, language = 'en-US', rate = 0.8) {
         utterance.rate = rate;
         utterance.volume = 1;
         
-        // Obtener voces disponibles y seleccionar una voz en inglés
-        const voices = speechSynthesis.getVoices();
-        const englishVoice = voices.find(voice => 
-            voice.lang.startsWith('en') && voice.name.includes('US')
-        );
-        if (englishVoice) {
-            utterance.voice = englishVoice;
+        // Esperar a que las voces estén disponibles
+        const speakWithVoice = () => {
+            const voices = speechSynthesis.getVoices();
+            const englishVoice = voices.find(voice => 
+                voice.lang.startsWith('en') && (voice.name.includes('US') || voice.name.includes('en-US'))
+            ) || voices.find(voice => voice.lang.startsWith('en'));
+            
+            if (englishVoice) {
+                utterance.voice = englishVoice;
+            }
+            
+            speechSynthesis.speak(utterance);
+        };
+        
+        // Si las voces ya están disponibles, usar directamente
+        if (speechSynthesis.getVoices().length > 0) {
+            speakWithVoice();
+        } else {
+            // Esperar a que las voces se carguen
+            speechSynthesis.onvoiceschanged = speakWithVoice;
         }
         
-        speechSynthesis.speak(utterance);
         return true;
     }
     return false;
+}
+
+// Función para practicar pronunciación con grabación
+async function practicePronunciation(text) {
+    const btn = document.querySelector('.practice-btn[title="Grabar tu pronunciación"]');
+    if (!btn) return;
+    
+    btn.disabled = true;
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-microphone"></i> Grabando...';
+    showNotification('Grabando... Habla ahora', 'info');
+    
+    try {
+        const audioUrl = await recordAudio();
+        showNotification('¡Grabación completada!', 'success');
+        
+        // Crear reproductor de audio para la grabación
+        const audioContainer = document.createElement('div');
+        audioContainer.className = 'audio-comparison';
+        audioContainer.innerHTML = `
+            <div class="audio-section">
+                <h5>Tu pronunciación:</h5>
+                <audio controls src="${audioUrl}">
+                    Tu navegador no soporta el elemento de audio.
+                </audio>
+            </div>
+            <div class="audio-section">
+                <h5>Pronunciación correcta:</h5>
+                <button class="btn btn-primary" onclick="speakText('${text.replace(/'/g, "\\'")}', 'en-US')">
+                    <i class="fas fa-volume-up"></i> Escuchar
+                </button>
+            </div>
+            <div class="comparison-tips">
+                <p><strong>Consejo:</strong> Escucha ambas pronunciaciones y compara. Presta atención a la entonación y los sonidos.</p>
+            </div>
+        `;
+        
+        // Insertar el reproductor después del botón de grabar
+        const practiceContainer = btn.closest('.pronunciation-practice');
+        if (practiceContainer) {
+            // Remover reproductor anterior si existe
+            const existingPlayer = practiceContainer.querySelector('.audio-comparison');
+            if (existingPlayer) existingPlayer.remove();
+            practiceContainer.appendChild(audioContainer);
+        }
+        
+    } catch (error) {
+        showNotification('Error al grabar audio. Verifica los permisos del micrófono.', 'error');
+    }
+    
+    btn.innerHTML = originalHTML;
+    btn.disabled = false;
 }
 
 // Función para grabar audio del usuario
@@ -834,12 +1058,16 @@ function loadCurrentLesson() {
     currentLesson.vocabulary.forEach(item => {
         const vocabItem = document.createElement('div');
         vocabItem.className = 'vocabulary-item';
+        // Escapar comillas simples para el atributo onclick
+        const safeEnglish = item.english.replace(/'/g, "\\'");
         vocabItem.innerHTML = `
             <div class="vocab-header">
                 <div class="english">${item.english}</div>
-                <button class="speak-btn" onclick="speakText('${item.english}', 'en-US')" title="Escuchar pronunciación">
-                    <i class="fas fa-volume-up"></i>
-                </button>
+                <div class="pronunciation-buttons">
+                    <button class="speak-btn" onclick="speakText('${safeEnglish}', 'en-US')" title="Escuchar pronunciación">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                </div>
             </div>
             <div class="spanish">${item.spanish}</div>
             <div class="pronunciation">[${item.pronunciation}]</div>
@@ -866,26 +1094,34 @@ function loadPracticeModes() {
     const modeCards = document.querySelectorAll('.mode-card');
     const practiceArea = document.getElementById('practiceArea');
 
-    modeCards.forEach(card => {
-        card.addEventListener('click', () => {
+    // Agregar tarjeta de pronunciación si no existe
+    if (!document.querySelector('.mode-card[data-mode="pronunciation"]')) {
+        const pronunciationCard = document.createElement('div');
+        pronunciationCard.className = 'mode-card';
+        pronunciationCard.setAttribute('data-mode', 'pronunciation');
+        pronunciationCard.innerHTML = `
+            <i class="fas fa-microphone"></i>
+            <h3>Pronunciación</h3>
+            <p>Graba y compara tu voz</p>
+        `;
+        document.querySelector('.practice-modes').appendChild(pronunciationCard);
+    }
+
+    document.querySelectorAll('.mode-card').forEach(card => {
+        card.onclick = () => {
             const mode = card.dataset.mode;
             loadPracticeExercise(mode);
-            
-            // Ocultar modos y mostrar área de práctica
             document.querySelector('.practice-modes').style.display = 'none';
             practiceArea.style.display = 'block';
-        });
+        };
     });
 }
 
 function loadPracticeExercise(mode) {
     const practiceArea = document.getElementById('practiceArea');
     const currentLesson = LESSONS_DATABASE.level1[appState.currentLesson];
-    
     if (!currentLesson) return;
-
     let exerciseHTML = '';
-    
     switch(mode) {
         case 'vocabulary':
             exerciseHTML = createVocabularyExercise(currentLesson);
@@ -896,8 +1132,10 @@ function loadPracticeExercise(mode) {
         case 'listening':
             exerciseHTML = createListeningExercise(currentLesson);
             break;
+        case 'pronunciation':
+            exerciseHTML = createPronunciationPractice(currentLesson);
+            break;
     }
-    
     practiceArea.innerHTML = `
         <div class="practice-header">
             <button class="btn btn-secondary" onclick="backToPracticeModes()">
@@ -965,6 +1203,26 @@ function createListeningExercise(lesson) {
                     <p>Practica la pronunciación de: <strong>Hello</strong></p>
                     <button class="btn btn-primary">Grabar</button>
                 </div>
+            </div>
+        </div>
+    `;
+}
+
+function createPronunciationPractice(lesson) {
+    // Elegir una palabra aleatoria del vocabulario de la lección
+    const vocab = lesson.vocabulary[Math.floor(Math.random() * lesson.vocabulary.length)];
+    const safeEnglish = vocab.english.replace(/'/g, "\\'");
+    return `
+        <div class="exercise-container">
+            <h4>Practica la pronunciación de:</h4>
+            <div class="pronunciation-practice">
+                <div class="english">${vocab.english}</div>
+                <button class="speak-btn" onclick="speakText('${safeEnglish}', 'en-US')" title="Escuchar pronunciación">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+                <button class="practice-btn" onclick="practicePronunciation('${safeEnglish}')" title="Grabar tu pronunciación">
+                    <i class="fas fa-microphone"></i> Grabar
+                </button>
             </div>
         </div>
     `;
@@ -1229,19 +1487,10 @@ function reviewLesson() {
 
 function showNotification(message, type) {
     const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: ${type === 'success' ? 'var(--success-color)' : 'var(--primary-color)'};
-        color: white;
-        padding: 1rem 2rem;
-        border-radius: 8px;
-        box-shadow: var(--shadow-lg);
-        z-index: 1000;
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+        <span>${message}</span>
     `;
     
     document.body.appendChild(notification);
@@ -1344,3 +1593,181 @@ function loadVocabularyDetail(categoryKey) {
 
 // Inicializar verificación de racha
 checkDailyStreak(); 
+
+// --- Autenticación básica (modal) ---
+
+// Mostrar modal y overlay
+function showAuthModal() {
+    document.getElementById('authOverlay').style.display = 'block';
+    document.getElementById('authModal').style.display = 'block';
+    document.getElementById('mainApp').style.filter = 'blur(2px)';
+}
+// Ocultar modal y overlay
+function hideAuthModal() {
+    document.getElementById('authOverlay').style.display = 'none';
+    document.getElementById('authModal').style.display = 'none';
+    document.getElementById('mainApp').style.filter = 'none';
+}
+
+// Mostrar modal de diagnóstico
+function showDiagnosticModal(onFinish) {
+    document.getElementById('diagnosticModal').style.display = 'block';
+    document.getElementById('authOverlay').style.display = 'block';
+    document.getElementById('mainApp').style.filter = 'blur(2px)';
+    // Reset formulario y resultado
+    document.getElementById('diagnosticForm').reset();
+    document.getElementById('diagnosticResult').style.display = 'none';
+    document.getElementById('diagnosticForm').style.display = 'block';
+    // Guardar callback para finalizar
+    window._diagnosticOnFinish = onFinish;
+}
+// Ocultar modal de diagnóstico
+function hideDiagnosticModal() {
+    document.getElementById('diagnosticModal').style.display = 'none';
+    document.getElementById('authOverlay').style.display = 'none';
+    document.getElementById('mainApp').style.filter = 'none';
+}
+// Evaluar respuestas y sugerir nivel MCER
+function evaluateDiagnostic(formData) {
+    // Respuestas correctas: q1=a, q2=c, q3=b, q4=a
+    let score = 0;
+    if (formData.get('q1') === 'a') score++;
+    if (formData.get('q2') === 'c') score++;
+    if (formData.get('q3') === 'b') score++;
+    if (formData.get('q4') === 'a') score++;
+    // Asignar nivel según score
+    let level = '', mcer = '';
+    if (score === 0 || score === 1) { level = 'Principiante'; mcer = 'A1'; }
+    else if (score === 2) { level = 'Básico'; mcer = 'A2'; }
+    else if (score === 3) { level = 'Intermedio'; mcer = 'B1'; }
+    else if (score === 4) { level = 'Avanzado'; mcer = 'B2'; }
+    // Para Experto (C1/C2), podrías agregar más preguntas difíciles
+    return { level, mcer, score };
+}
+// Mostrar resultado y permitir ajuste
+function showDiagnosticResult(result) {
+    const resultDiv = document.getElementById('diagnosticResult');
+    let niveles = [
+        { label: 'Principiante', mcer: 'A1' },
+        { label: 'Básico', mcer: 'A2' },
+        { label: 'Intermedio', mcer: 'B1' },
+        { label: 'Avanzado', mcer: 'B2' },
+        { label: 'Experto', mcer: 'C1/C2' }
+    ];
+    let nivelOptions = niveles.map(n =>
+        `<option value="${n.label}|${n.mcer}" ${n.label === result.level ? 'selected' : ''}>${n.label} (${n.mcer})</option>`
+    ).join('');
+    resultDiv.innerHTML = `
+        <h3>Resultado del Diagnóstico</h3>
+        <p>Tu nivel sugerido es: <strong>${result.level} (${result.mcer})</strong></p>
+        <label>Ajustar nivel si lo consideras necesario:</label><br>
+        <select id="diagnosticLevelSelect">${nivelOptions}</select>
+        <br><br>
+        <button class="btn btn-violet" id="acceptDiagnosticBtn">Aceptar y Continuar</button>
+    `;
+    resultDiv.style.display = 'block';
+    document.getElementById('diagnosticForm').style.display = 'none';
+    // Evento aceptar
+    document.getElementById('acceptDiagnosticBtn').onclick = function() {
+        const val = document.getElementById('diagnosticLevelSelect').value;
+        const [level, mcer] = val.split('|');
+        if (window._diagnosticOnFinish) window._diagnosticOnFinish({ level, mcer });
+        hideDiagnosticModal();
+    };
+}
+// Interceptar envío del diagnóstico
+const diagnosticForm = document.getElementById('diagnosticForm');
+if (diagnosticForm) {
+    diagnosticForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(diagnosticForm);
+        const result = evaluateDiagnostic(formData);
+        showDiagnosticResult(result);
+    });
+}
+
+// Alternar entre formularios
+function setupAuthTabs() {
+    const tabs = document.querySelectorAll('.auth-tab');
+    const forms = document.querySelectorAll('.auth-form');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            forms.forEach(f => f.classList.remove('active'));
+            tab.classList.add('active');
+            const target = tab.getAttribute('data-tab');
+            if (target === 'login') {
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.getElementById('registerForm').classList.add('active');
+            }
+        });
+    });
+}
+
+// Registrar usuario
+function handleRegister(e) {
+    e.preventDefault();
+    const name = document.getElementById('registerName').value.trim();
+    const email = document.getElementById('registerEmail').value.trim();
+    const password = document.getElementById('registerPassword').value;
+    if (!name || !email || !password) {
+        alert('Por favor completa todos los campos');
+        return;
+    }
+    let users = JSON.parse(localStorage.getItem('englishLearningUsers') || '[]');
+    if (users.find(u => u.email === email)) {
+        alert('Ya existe una cuenta con ese email');
+        return;
+    }
+    // Mostrar diagnóstico tras registro
+    showDiagnosticModal(function(diagnostic) {
+        users.push({ name, email, password, level: diagnostic.level, mcer: diagnostic.mcer });
+        localStorage.setItem('englishLearningUsers', JSON.stringify(users));
+        alert('¡Cuenta creada! Nivel asignado: ' + diagnostic.level + ' (' + diagnostic.mcer + '). Ahora puedes iniciar sesión.');
+        hideAuthModal(); // Ocultar el modal de autenticación después del diagnóstico
+        document.querySelector('.auth-tab[data-tab="login"]').click();
+    });
+}
+
+// Iniciar sesión
+function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    let users = JSON.parse(localStorage.getItem('englishLearningUsers') || '[]');
+    const user = users.find(u => u.email === email && u.password === password);
+    if (!user) {
+        alert('Email o contraseña incorrectos');
+        return;
+    }
+    localStorage.setItem('englishLearningSession', JSON.stringify({ email: user.email }));
+    hideAuthModal();
+}
+
+// Verificar sesión al cargar
+function checkAuth() {
+    const session = JSON.parse(localStorage.getItem('englishLearningSession') || 'null');
+    if (session && session.email) {
+        hideAuthModal();
+    } else {
+        showAuthModal();
+    }
+}
+
+// Cerrar sesión
+function logout() {
+    localStorage.removeItem('englishLearningSession');
+    showAuthModal();
+}
+
+// Asignar eventos
+window.addEventListener('DOMContentLoaded', function() {
+    setupAuthTabs();
+    checkAuth();
+    const registerForm = document.getElementById('registerForm');
+    if (registerForm) registerForm.addEventListener('submit', handleRegister);
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) loginForm.addEventListener('submit', handleLogin);
+});
+// --- Fin autenticación modal --- 

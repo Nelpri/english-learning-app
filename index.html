@@ -9,7 +9,96 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="app-container">
+    <!-- Overlay para modal de autenticación -->
+    <div id="authOverlay" class="auth-overlay" style="display: none;"></div>
+    <!-- Modal de Registro/Login -->
+    <div id="authModal" class="auth-modal" style="display: none;">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1><i class="fas fa-graduation-cap"></i> English Learning</h1>
+                <p>¡Bienvenido! Inicia sesión o regístrate para comenzar.</p>
+            </div>
+            <div class="auth-tabs-row">
+                <button class="auth-tab active" data-tab="login">Iniciar Sesión</button>
+                <button class="auth-tab" data-tab="register">Registrarse</button>
+            </div>
+            <div class="auth-forms-center">
+                <!-- Formulario de Login -->
+                <form id="loginForm" class="auth-form active">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Contraseña</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-violet">Iniciar Sesión</button>
+                </form>
+                <!-- Formulario de Registro -->
+                <form id="registerForm" class="auth-form">
+                    <div class="form-group">
+                        <label for="registerName">Nombre Completo</label>
+                        <input type="text" id="registerName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Contraseña</label>
+                        <input type="password" id="registerPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-violet">Crear Cuenta</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Diagnóstico de Nivel (oculto por defecto) -->
+    <div id="diagnosticModal" class="auth-modal" style="display: none;">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1><i class="fas fa-user-graduate"></i> Diagnóstico de Nivel</h1>
+                <p>Responde estas preguntas para ubicarte en el nivel adecuado.</p>
+            </div>
+            <form id="diagnosticForm" class="auth-forms-center">
+                <div class="form-group">
+                    <p>1. ¿Cuál es la traducción de “cat”?</p>
+                    <label><input type="radio" name="q1" value="a" required> a) Gato</label><br>
+                    <label><input type="radio" name="q1" value="b"> b) Perro</label><br>
+                    <label><input type="radio" name="q1" value="c"> c) Casa</label><br>
+                    <label><input type="radio" name="q1" value="d"> d) Mesa</label>
+                </div>
+                <div class="form-group">
+                    <p>2. ¿Cómo se dice “gracias” en inglés?</p>
+                    <label><input type="radio" name="q2" value="a" required> a) Hello</label><br>
+                    <label><input type="radio" name="q2" value="b"> b) Please</label><br>
+                    <label><input type="radio" name="q2" value="c"> c) Thanks</label><br>
+                    <label><input type="radio" name="q2" value="d"> d) Sorry</label>
+                </div>
+                <div class="form-group">
+                    <p>3. ¿Cuál es la forma correcta?: “She ___ a book.”</p>
+                    <label><input type="radio" name="q3" value="a" required> a) read</label><br>
+                    <label><input type="radio" name="q3" value="b"> b) reads</label><br>
+                    <label><input type="radio" name="q3" value="c"> c) reading</label><br>
+                    <label><input type="radio" name="q3" value="d"> d) is read</label>
+                </div>
+                <div class="form-group">
+                    <p>4. ¿Cómo se pregunta la hora?: “___ the time?”</p>
+                    <label><input type="radio" name="q4" value="a" required> a) What’s</label><br>
+                    <label><input type="radio" name="q4" value="b"> b) How’s</label><br>
+                    <label><input type="radio" name="q4" value="c"> c) Where’s</label><br>
+                    <label><input type="radio" name="q4" value="d"> d) Who’s</label>
+                </div>
+                <button type="submit" class="btn btn-violet">Finalizar Diagnóstico</button>
+            </form>
+            <div id="diagnosticResult" class="diagnostic-result" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- App Principal (visible por defecto) -->
+    <div id="mainApp" class="app-container">
         <!-- Header -->
         <header class="header">
             <h1><i class="fas fa-graduation-cap"></i> English Learning</h1>
@@ -17,6 +106,9 @@
                 <span class="level">Nivel: <span id="currentLevel">1</span></span>
                 <span class="xp">XP: <span id="currentXP">0</span></span>
             </div>
+            <button class="btn btn-secondary logout-btn" onclick="logout()" title="Cerrar sesión">
+                <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+            </button>
         </header>
 
         <!-- Navigation -->
@@ -116,7 +208,7 @@
                                 </div>
                                 <div class="chat-input">
                                     <input type="text" id="chatInput" placeholder="Escribe tu respuesta...">
-                                    <button id="sendMessageBtn">
+                                    <button id="sendMessageBtn" title="Enviar mensaje">
                                         <i class="fas fa-paper-plane"></i>
                                     </button>
                                 </div>
