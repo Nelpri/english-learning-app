@@ -44,7 +44,13 @@ const LESSONS_DATABASE = {
                 { english: "Good afternoon", spanish: "Buenas tardes", pronunciation: "ɡʊd ˌæftərˈnun" },
                 { english: "Good evening", spanish: "Buenas noches", pronunciation: "ɡʊd ˈivnɪŋ" },
                 { english: "How are you?", spanish: "¿Cómo estás?", pronunciation: "haʊ ɑr ju" },
-                { english: "I'm fine, thank you", spanish: "Estoy bien, gracias", pronunciation: "aɪm faɪn θæŋk ju" }
+                { english: "I'm fine, thank you", spanish: "Estoy bien, gracias", pronunciation: "aɪm faɪn θæŋk ju" },
+                { english: "Good night", spanish: "Buenas noches (al despedirse)", pronunciation: "ɡʊd naɪt" },
+                { english: "See you later", spanish: "Hasta luego", pronunciation: "siː juː ˈleɪtər" },
+                { english: "How's it going?", spanish: "¿Cómo va todo?", pronunciation: "haʊz ɪt ˈɡoʊɪŋ" },
+                { english: "Nice to see you", spanish: "Me alegra verte", pronunciation: "naɪs tə siː juː" },
+                { english: "What's up?", spanish: "¿Qué tal?", pronunciation: "wʌts ʌp" },
+                { english: "Long time no see", spanish: "Cuánto tiempo sin verte", pronunciation: "lɔːŋ taɪm noʊ siː" }
             ],
             grammar: {
                 title: "Presente Simple - Verbos 'To Be'",
@@ -80,7 +86,14 @@ const LESSONS_DATABASE = {
                 { english: "Three", spanish: "Tres", pronunciation: "θri" },
                 { english: "Red", spanish: "Rojo", pronunciation: "rɛd" },
                 { english: "Blue", spanish: "Azul", pronunciation: "blu" },
-                { english: "Green", spanish: "Verde", pronunciation: "ɡrin" }
+                { english: "Green", spanish: "Verde", pronunciation: "ɡrin" },
+                { english: "Four", spanish: "Cuatro", pronunciation: "fɔːr" },
+                { english: "Five", spanish: "Cinco", pronunciation: "faɪv" },
+                { english: "Yellow", spanish: "Amarillo", pronunciation: "ˈjɛloʊ" },
+                { english: "Black", spanish: "Negro", pronunciation: "blæk" },
+                { english: "White", spanish: "Blanco", pronunciation: "waɪt" },
+                { english: "How many?", spanish: "¿Cuántos?", pronunciation: "haʊ ˈmɛni" },
+                { english: "What color is it?", spanish: "¿De qué color es?", pronunciation: "wʌt ˈkʌlər ɪz ɪt" }
             ],
             grammar: {
                 title: "Artículos Indefinidos",
@@ -111,7 +124,15 @@ const LESSONS_DATABASE = {
                 { english: "Brother", spanish: "Hermano", pronunciation: "ˈbrʌðər" },
                 { english: "Teacher", spanish: "Maestro", pronunciation: "ˈtiːtʃər" },
                 { english: "Doctor", spanish: "Doctor", pronunciation: "ˈdɑktər" },
-                { english: "Engineer", spanish: "Ingeniero", pronunciation: "ˌendʒɪˈnɪr" }
+                { english: "Engineer", spanish: "Ingeniero", pronunciation: "ˌendʒɪˈnɪr" },
+                { english: "Son", spanish: "Hijo", pronunciation: "sʌn" },
+                { english: "Daughter", spanish: "Hija", pronunciation: "ˈdɔːtər" },
+                { english: "Grandmother", spanish: "Abuela", pronunciation: "ˈɡrænˌmʌðər" },
+                { english: "Grandfather", spanish: "Abuelo", pronunciation: "ˈɡrænˌfɑːðər" },
+                { english: "Nurse", spanish: "Enfermero/a", pronunciation: "nɜːrs" },
+                { english: "Lawyer", spanish: "Abogado/a", pronunciation: "ˈlɔɪər" },
+                { english: "What do you do?", spanish: "¿A qué te dedicas?", pronunciation: "wʌt duː juː duː" },
+                { english: "I am a student", spanish: "Soy estudiante", pronunciation: "aɪ æm ə ˈstuːdənt" }
             ],
             grammar: {
                 title: "Pronombres Posesivos",
@@ -148,7 +169,15 @@ const LESSONS_DATABASE = {
                 { english: "Water", spanish: "Agua", pronunciation: "ˈwɔtər" },
                 { english: "Apple", spanish: "Manzana", pronunciation: "ˈæpəl" },
                 { english: "Banana", spanish: "Plátano", pronunciation: "bəˈnɑnə" },
-                { english: "Restaurant", spanish: "Restaurante", pronunciation: "ˈrɛstərɑnt" }
+                { english: "Restaurant", spanish: "Restaurante", pronunciation: "ˈrɛstərɑnt" },
+                { english: "Juice", spanish: "Jugo", pronunciation: "dʒuːs" },
+                { english: "Egg", spanish: "Huevo", pronunciation: "ɛɡ" },
+                { english: "Cheese", spanish: "Queso", pronunciation: "tʃiːz" },
+                { english: "Chicken", spanish: "Pollo", pronunciation: "ˈtʃɪkɪn" },
+                { english: "Fish", spanish: "Pescado", pronunciation: "fɪʃ" },
+                { english: "Vegetables", spanish: "Verduras", pronunciation: "ˈvɛdʒtəblz" },
+                { english: "I'm hungry", spanish: "Tengo hambre", pronunciation: "aɪm ˈhʌŋɡri" },
+                { english: "I'd like some water", spanish: "Quisiera un poco de agua", pronunciation: "aɪd laɪk sʌm ˈwɔtər" }
             ],
             grammar: {
                 title: "There is / There are",
@@ -178,7 +207,14 @@ const LESSONS_DATABASE = {
                 { english: "Week", spanish: "Semana", pronunciation: "wik" },
                 { english: "Month", spanish: "Mes", pronunciation: "mʌnθ" },
                 { english: "Year", spanish: "Año", pronunciation: "jɪr" },
-                { english: "Birthday", spanish: "Cumpleaños", pronunciation: "ˈbɜrθdeɪ" }
+                { english: "Birthday", spanish: "Cumpleaños", pronunciation: "ˈbɜrθdeɪ" },
+                { english: "Day", spanish: "Día", pronunciation: "deɪ" },
+                { english: "Hour", spanish: "Hora", pronunciation: "ˈaʊər" },
+                { english: "Minute", spanish: "Minuto", pronunciation: "ˈmɪnɪt" },
+                { english: "Second", spanish: "Segundo", pronunciation: "ˈsɛkənd" },
+                { english: "What time is it?", spanish: "¿Qué hora es?", pronunciation: "wʌt taɪm ɪz ɪt" },
+                { english: "See you tomorrow", spanish: "Nos vemos mañana", pronunciation: "siː juː təˈmɑroʊ" },
+                { english: "Next week", spanish: "La próxima semana", pronunciation: "nɛkst wiːk" }
             ],
             grammar: {
                 title: "Presente Simple - Tercera Persona",
@@ -959,8 +995,17 @@ const VOCABULARY_CATEGORIES = {
     },
     travel: {
         name: "Viajes",
-        description: "Transporte y turismo",
-        lessons: [8]
+        description: "Palabras y frases útiles para viajar",
+        vocabulary: [
+            { english: "Airport", spanish: "Aeropuerto", pronunciation: "ˈɛrˌpɔrt" },
+            { english: "Ticket", spanish: "Boleto", pronunciation: "ˈtɪkɪt" },
+            { english: "Passport", spanish: "Pasaporte", pronunciation: "ˈpæspɔrt" },
+            { english: "Luggage", spanish: "Equipaje", pronunciation: "ˈlʌɡɪdʒ" },
+            { english: "Boarding pass", spanish: "Pase de abordar", pronunciation: "ˈbɔrdɪŋ pæs" },
+            { english: "Where is the hotel?", spanish: "¿Dónde está el hotel?", pronunciation: "wɛr ɪz ðə hoʊˈtɛl" },
+            { english: "I need a taxi", spanish: "Necesito un taxi", pronunciation: "aɪ niːd ə ˈtæksi" },
+            { english: "How much does it cost?", spanish: "¿Cuánto cuesta?", pronunciation: "haʊ mʌʧ dʌz ɪt kɔst" }
+        ]
     },
     food: {
         name: "Comida",
@@ -968,34 +1013,74 @@ const VOCABULARY_CATEGORIES = {
         lessons: [4, 12]
     },
     emotions: {
-        name: "Emociones",
-        description: "Sentimientos y estados de ánimo",
-        lessons: [9]
+        name: "Emociones y estados de ánimo",
+        description: "Palabras para expresar cómo te sientes",
+        vocabulary: [
+            { english: "Happy", spanish: "Feliz", pronunciation: "ˈhæpi" },
+            { english: "Sad", spanish: "Triste", pronunciation: "sæd" },
+            { english: "Angry", spanish: "Enojado", pronunciation: "ˈæŋɡri" },
+            { english: "Tired", spanish: "Cansado", pronunciation: "ˈtaɪərd" },
+            { english: "Excited", spanish: "Emocionado", pronunciation: "ɪkˈsaɪtɪd" },
+            { english: "Worried", spanish: "Preocupado", pronunciation: "ˈwɜːrid" },
+            { english: "Surprised", spanish: "Sorprendido", pronunciation: "sərˈpraɪzd" },
+            { english: "Bored", spanish: "Aburrido", pronunciation: "bɔːrd" }
+        ]
     },
     home: {
-        name: "Hogar",
-        description: "Partes de la casa y muebles",
-        lessons: [10]
+        name: "Hogar y objetos cotidianos",
+        description: "Palabras para la casa y objetos de uso diario",
+        vocabulary: [
+            { english: "House", spanish: "Casa", pronunciation: "haʊs" },
+            { english: "Room", spanish: "Habitación", pronunciation: "ruːm" },
+            { english: "Kitchen", spanish: "Cocina", pronunciation: "ˈkɪʧɪn" },
+            { english: "Bathroom", spanish: "Baño", pronunciation: "ˈbæθruːm" },
+            { english: "Chair", spanish: "Silla", pronunciation: "ʧɛər" },
+            { english: "Table", spanish: "Mesa", pronunciation: "ˈteɪbəl" },
+            { english: "Bed", spanish: "Cama", pronunciation: "bɛd" },
+            { english: "Window", spanish: "Ventana", pronunciation: "ˈwɪndoʊ" }
+        ]
     },
     health: {
-        name: "Salud",
-        description: "Medicina y bienestar",
-        lessons: [13]
+        name: "Salud y emergencias",
+        description: "Vocabulario para situaciones médicas y de emergencia",
+        vocabulary: [
+            { english: "Doctor", spanish: "Doctor", pronunciation: "ˈdɑktər" },
+            { english: "Hospital", spanish: "Hospital", pronunciation: "ˈhɑːspɪtəl" },
+            { english: "Pharmacy", spanish: "Farmacia", pronunciation: "ˈfɑːrməsi" },
+            { english: "Medicine", spanish: "Medicina", pronunciation: "ˈmɛdɪsɪn" },
+            { english: "I feel sick", spanish: "Me siento mal", pronunciation: "aɪ fiːl sɪk" },
+            { english: "Call an ambulance!", spanish: "¡Llame una ambulancia!", pronunciation: "kɔːl æn ˈæmbjələns" },
+            { english: "Pain", spanish: "Dolor", pronunciation: "peɪn" },
+            { english: "Allergy", spanish: "Alergia", pronunciation: "ˈælərdʒi" }
+        ]
     },
-    education: {
-        name: "Educación",
-        description: "Estudios y aprendizaje",
-        lessons: [14]
+    work: {
+        name: "Trabajo y oficina",
+        description: "Palabras comunes en el entorno laboral",
+        vocabulary: [
+            { english: "Office", spanish: "Oficina", pronunciation: "ˈɑːfɪs" },
+            { english: "Boss", spanish: "Jefe", pronunciation: "bɒs" },
+            { english: "Meeting", spanish: "Reunión", pronunciation: "ˈmiːtɪŋ" },
+            { english: "Colleague", spanish: "Compañero de trabajo", pronunciation: "ˈkɒliːɡ" },
+            { english: "Deadline", spanish: "Fecha límite", pronunciation: "ˈdɛdlaɪn" },
+            { english: "Salary", spanish: "Salario", pronunciation: "ˈsæləri" },
+            { english: "I have a question", spanish: "Tengo una pregunta", pronunciation: "aɪ hæv ə ˈkwɛsʧən" },
+            { english: "Can you help me?", spanish: "¿Puedes ayudarme?", pronunciation: "kæn juː hɛlp miː" }
+        ]
     },
-    art: {
-        name: "Arte y Cultura",
-        description: "Expresiones artísticas y culturales",
-        lessons: [15]
-    },
-    environment: {
-        name: "Medio Ambiente",
-        description: "Naturaleza y sostenibilidad",
-        lessons: [16]
+    shopping: {
+        name: "Compras y ropa",
+        description: "Vocabulario para ir de compras y hablar de ropa",
+        vocabulary: [
+            { english: "Store", spanish: "Tienda", pronunciation: "stɔːr" },
+            { english: "Price", spanish: "Precio", pronunciation: "praɪs" },
+            { english: "Discount", spanish: "Descuento", pronunciation: "ˈdɪskaʊnt" },
+            { english: "Shirt", spanish: "Camisa", pronunciation: "ʃɜːrt" },
+            { english: "Pants", spanish: "Pantalones", pronunciation: "pænts" },
+            { english: "Dress", spanish: "Vestido", pronunciation: "drɛs" },
+            { english: "How much is this?", spanish: "¿Cuánto cuesta esto?", pronunciation: "haʊ mʌʧ ɪz ðɪs" },
+            { english: "Can I try it on?", spanish: "¿Puedo probármelo?", pronunciation: "kæn aɪ traɪ ɪt ɒn" }
+        ]
     }
 };
 
@@ -1849,7 +1934,7 @@ function handleExerciseAnswer(button) {
         }
     } else {
         if (resultDiv) {
-            resultDiv.innerHTML = '<div class="error">Incorrecto. Intenta de nuevo.</div>';
+        resultDiv.innerHTML = '<div class="error">Incorrecto. Intenta de nuevo.</div>';
         }
         playFailSound();
         practiceStreak = 0;
@@ -1903,7 +1988,7 @@ function handleExerciseAnswer(button) {
             btn.style.color = '';
         });
         if (resultDiv) {
-            resultDiv.innerHTML = '';
+        resultDiv.innerHTML = '';
         }
     }, 1200);
 }
@@ -2095,6 +2180,28 @@ function loadVocabularyCategories() {
     
     categoriesGrid.innerHTML = '';
     
+    // Agregar sección de palabras difíciles al inicio
+    const difficultWords = getDifficultWords();
+    if (difficultWords.length > 0) {
+        const difficultCard = document.createElement('div');
+        difficultCard.className = 'category-card difficult-words-card';
+        difficultCard.onclick = () => loadDifficultWordsSection();
+        
+        difficultCard.innerHTML = `
+            <h3><span style="font-size:1.2em">🚩</span> Palabras Difíciles</h3>
+            <p>Repasa las palabras que has marcado como difíciles</p>
+            <div class="category-stats">
+                <span>${difficultWords.length} palabras</span>
+                <span>Para repasar</span>
+            </div>
+            <div class="category-progress">
+                <div class="category-progress-fill" style="width: 100%; background: linear-gradient(90deg, #ff6b6b, #ee5a24);"></div>
+            </div>
+        `;
+        
+        categoriesGrid.appendChild(difficultCard);
+    }
+    
     Object.entries(VOCABULARY_CATEGORIES).forEach(([key, category]) => {
         const vocabulary = getVocabularyByCategory(key);
         const learnedCount = Math.floor(vocabulary.length * 0.3); // Simular progreso
@@ -2138,12 +2245,19 @@ function loadVocabularyDetail(categoryKey) {
             ${category.name} - ${vocabulary.length} palabras
         </h3>
         <div class="vocabulary-list">
-            ${vocabulary.map(item => `
-                <div class="vocabulary-item-detail">
+            ${vocabulary.map((item, index) => `
+                <div class="vocabulary-item-detail" data-word-index="${index}">
                     <div class="vocab-header">
                         <div class="english">${item.english}</div>
                         <button class="speak-btn" onclick="speakText('${item.english}', 'en-US')" title="Escuchar pronunciación">
                             <i class="fas fa-volume-up"></i>
+                        </button>
+                        <button class="difficult-btn" 
+                                data-english="${item.english}"
+                                data-spanish="${item.spanish}"
+                                data-pronunciation="${item.pronunciation}"
+                                title="${isWordDifficult(item) ? 'Quitar de difíciles' : 'Marcar como difícil'}">
+                            ${isWordDifficult(item) ? '🚩' : '🏳️'}
                         </button>
                     </div>
                     <div class="spanish">${item.spanish}</div>
@@ -2152,6 +2266,19 @@ function loadVocabularyDetail(categoryKey) {
             `).join('')}
         </div>
     `;
+    
+    // Agregar event listeners para los botones de palabras difíciles
+    const difficultButtons = vocabularyDetail.querySelectorAll('.difficult-btn');
+    difficultButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const wordObj = {
+                english: this.getAttribute('data-english'),
+                spanish: this.getAttribute('data-spanish'),
+                pronunciation: this.getAttribute('data-pronunciation')
+            };
+            toggleDifficultWord(wordObj);
+        });
+    });
 }
 
 // --- Autenticación básica (modal) ---
@@ -3500,3 +3627,127 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('❌ Error durante la inicialización:', error);
     }
 }); 
+
+// --- Palabras difíciles ---
+function getDifficultWords() {
+    const user = getCurrentUser();
+    if (!user) return [];
+    const key = `difficult_words_${user.email}`;
+    return JSON.parse(localStorage.getItem(key) || '[]');
+}
+
+function saveDifficultWords(words) {
+    const user = getCurrentUser();
+    if (!user) return;
+    const key = `difficult_words_${user.email}`;
+    localStorage.setItem(key, JSON.stringify(words));
+}
+
+function isWordDifficult(wordObj) {
+    const difficult = getDifficultWords();
+    return difficult.some(w => w.english === wordObj.english && w.spanish === wordObj.spanish);
+}
+
+function toggleDifficultWord(wordObj) {
+    let difficult = getDifficultWords();
+    const wasDifficult = isWordDifficult(wordObj);
+    
+    if (wasDifficult) {
+        difficult = difficult.filter(w => !(w.english === wordObj.english && w.spanish === wordObj.spanish));
+        showNotification(`"${wordObj.english}" removida de palabras difíciles`, 'info');
+    } else {
+        difficult.push(wordObj);
+        showNotification(`"${wordObj.english}" marcada como difícil`, 'success');
+    }
+    
+    saveDifficultWords(difficult);
+    
+    // Actualizar visualmente el botón que se hizo clic
+    const clickedButton = event.target.closest('.difficult-btn');
+    if (clickedButton) {
+        if (wasDifficult) {
+            clickedButton.innerHTML = '🏳️';
+            clickedButton.title = 'Marcar como difícil';
+        } else {
+            clickedButton.innerHTML = '🚩';
+            clickedButton.title = 'Quitar de difíciles';
+        }
+    }
+    
+    // Refrescar vista si estamos en detalle
+    if (document.getElementById('vocabularyDetail').style.display === 'block') {
+        // Recargar detalle actual
+        const currentCategory = document.getElementById('vocabularyDetail').getAttribute('data-category');
+        if (currentCategory) loadVocabularyDetail(currentCategory);
+    }
+    
+    // Refrescar sección de difíciles si está visible
+    if (document.getElementById('difficultWordsSection')) {
+        loadDifficultWordsSection();
+    }
+}
+
+function loadDifficultWordsSection() {
+    const difficult = getDifficultWords();
+    const categoriesGrid = document.getElementById('categoriesGrid');
+    const vocabularyDetail = document.getElementById('vocabularyDetail');
+    
+    // Ocultar categorías y mostrar detalle
+    categoriesGrid.style.display = 'none';
+    vocabularyDetail.style.display = 'block';
+    
+    if (difficult.length === 0) {
+        vocabularyDetail.innerHTML = `
+            <button class="back-button" onclick="loadVocabularyCategories()">
+                <i class="fas fa-arrow-left"></i> Volver a Categorías
+            </button>
+            <h3><span style="font-size:1.2em">🚩</span> Palabras Difíciles</h3>
+            <p>No tienes palabras marcadas como difíciles aún. ¡Marca algunas palabras mientras estudias!</p>
+        `;
+        return;
+    }
+    
+    vocabularyDetail.innerHTML = `
+        <button class="back-button" onclick="loadVocabularyCategories()">
+            <i class="fas fa-arrow-left"></i> Volver a Categorías
+        </button>
+        <h3>
+            <span style="font-size:1.2em">🚩</span> Palabras Difíciles - ${difficult.length} palabras
+        </h3>
+        <p>Repasa estas palabras que has marcado como difíciles para mejorar tu vocabulario.</p>
+        <div class="vocabulary-list">
+            ${difficult.map(item => `
+                <div class="vocabulary-item-detail">
+                    <div class="vocab-header">
+                        <div class="english">${item.english}</div>
+                        <button class="speak-btn" onclick="speakText('${item.english}', 'en-US')" title="Escuchar pronunciación">
+                            <i class="fas fa-volume-up"></i>
+                        </button>
+                        <button class="difficult-btn" 
+                                data-english="${item.english}"
+                                data-spanish="${item.spanish}"
+                                data-pronunciation="${item.pronunciation}"
+                                title="Quitar de difíciles">
+                            🚩
+                        </button>
+                    </div>
+                    <div class="spanish">${item.spanish}</div>
+                    <div class="pronunciation">[${item.pronunciation}]</div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    
+    // Agregar event listeners para los botones de palabras difíciles
+    const difficultButtons = vocabularyDetail.querySelectorAll('.difficult-btn');
+    difficultButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const wordObj = {
+                english: this.getAttribute('data-english'),
+                spanish: this.getAttribute('data-spanish'),
+                pronunciation: this.getAttribute('data-pronunciation')
+            };
+            toggleDifficultWord(wordObj);
+        });
+    });
+}
