@@ -1827,14 +1827,21 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 1010;
-    background: linear-gradient(135deg, #f3e7e9 0%, #a7bfff 100%);
-    border-radius: 20px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
-    padding: 0;
-    min-width: 350px;
-    max-width: 95vw;
-    animation: fadeIn 0.4s;
+    background: var(--surface-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    z-index: 1001;
+    max-width: 500px;
+    width: 90vw;
+    max-height: 95vh;
+    height: auto;
+    overflow-y: auto;
+    padding-bottom: 1rem;
+}
+.auth-container {
+    max-height: 100%;
+    overflow-y: auto;
+    padding-bottom: 1rem;
 }
 .auth-header h1 {
     color: #7c3aed;
@@ -1972,4 +1979,100 @@ body {
   display: inline-block;
   letter-spacing: 1px;
   text-shadow: 0 2px 8px rgba(16,185,129,0.10), 0 1px 0 #fff;
+} 
+
+/* Estilos específicos para el diagnóstico */
+.diagnostic-progress {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: var(--background-color);
+    border-radius: var(--border-radius);
+}
+.diagnostic-progress .progress-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.diagnostic-progress .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+.diagnostic-progress .progress-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    min-width: 50px;
+    text-align: center;
+}
+.question-number {
+    font-size: 0.9rem;
+    color: var(--accent-color);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    background: rgba(245, 158, 11, 0.1);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    display: inline-block;
+}
+.diagnostic-result {
+    text-align: center;
+    padding: 2rem;
+}
+.diagnostic-result h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+.diagnostic-result p {
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+.diagnostic-result select {
+    width: 100%;
+    max-width: 300px;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+.diagnostic-result select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+@media (max-width: 600px) {
+  .auth-modal {
+    max-width: 98vw;
+    width: 98vw;
+    padding: 0.5rem;
+    max-height: 98vh;
+  }
+  .auth-container {
+    padding: 0.5rem;
+    max-height: 100%;
+    overflow-y: auto;
+  }
+  .diagnostic-progress {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  .diagnostic-result {
+    padding: 1rem;
+  }
+  .form-group {
+    padding: 0.5rem 0;
+  }
+  .diagnostic-result select {
+    max-width: 100%;
+  }
 } 

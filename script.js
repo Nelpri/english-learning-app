@@ -1867,37 +1867,53 @@ function hideDiagnosticModal() {
 }
 // Evaluar respuestas y sugerir nivel MCER
 function evaluateDiagnostic(formData) {
-    // Respuestas correctas: q1=a, q2=c, q3=b, q4=a
+    // Respuestas correctas: q1=a, q2=c, q3=b, q4=a, q5=b, q6=b, q7=b, q8=c, q9=c, q10=a, q11=c, q12=b
     let score = 0;
     if (formData.get('q1') === 'a') score++;
     if (formData.get('q2') === 'c') score++;
     if (formData.get('q3') === 'b') score++;
     if (formData.get('q4') === 'a') score++;
+    if (formData.get('q5') === 'b') score++;
+    if (formData.get('q6') === 'b') score++;
+    if (formData.get('q7') === 'b') score++;
+    if (formData.get('q8') === 'c') score++;
+    if (formData.get('q9') === 'c') score++;
+    if (formData.get('q10') === 'a') score++;
+    if (formData.get('q11') === 'c') score++;
+    if (formData.get('q12') === 'b') score++;
     // Asignar nivel según score
     let level = '', mcer = '';
-    if (score === 0 || score === 1) { level = 'Principiante'; mcer = 'A1'; }
-    else if (score === 2) { level = 'Básico'; mcer = 'A2'; }
-    else if (score === 3) { level = 'Intermedio'; mcer = 'B1'; }
-    else if (score === 4) { level = 'Avanzado'; mcer = 'B2'; }
-    // Para Experto (C1/C2), podrías agregar más preguntas difíciles
+    if (score <= 3) { level = 'Principiante'; mcer = 'A1'; }
+    else if (score <= 6) { level = 'Básico'; mcer = 'A2'; }
+    else if (score <= 9) { level = 'Intermedio'; mcer = 'B1'; }
+    else { level = 'Avanzado'; mcer = 'B2'; }
     return { level, mcer, score };
 }
 // Mostrar resultado y permitir ajuste
 function showDiagnosticResult(result) {
     const resultDiv = document.getElementById('diagnosticResult');
+    
+    // Obtener el nombre del usuario del formulario de registro
+    const userName = document.getElementById('registerName') ? document.getElementById('registerName').value.trim() : '';
+    
     let niveles = [
-        { label: 'Principiante', mcer: 'A1' },
-        { label: 'Básico', mcer: 'A2' },
-        { label: 'Intermedio', mcer: 'B1' },
-        { label: 'Avanzado', mcer: 'B2' },
-        { label: 'Experto', mcer: 'C1/C2' }
+        { label: 'Principiante', mcer: 'A1', mensaje: '¡Perfecto para comenzar desde cero! Te guiaremos paso a paso.' },
+        { label: 'Básico', mcer: 'A2', mensaje: '¡Buen trabajo! Ya tienes bases, sigamos avanzando.' },
+        { label: 'Intermedio', mcer: 'B1', mensaje: '¡Muy bien! Puedes desenvolverte en situaciones cotidianas.' },
+        { label: 'Avanzado', mcer: 'B2', mensaje: '¡Excelente! Tienes un dominio sólido del inglés.' }
     ];
+    let nivelActual = niveles.find(n => n.label === result.level) || niveles[0];
     let nivelOptions = niveles.map(n =>
         `<option value="${n.label}|${n.mcer}" ${n.label === result.level ? 'selected' : ''}>${n.label} (${n.mcer})</option>`
     ).join('');
+    
+    const saludo = userName ? `¡Hola ${userName}!` : '¡Hola!';
+    
     resultDiv.innerHTML = `
         <h3>Resultado del Diagnóstico</h3>
+        <p>${saludo}</p>
         <p>Tu nivel sugerido es: <strong>${result.level} (${result.mcer})</strong></p>
+        <p>${nivelActual.mensaje}</p>
         <label>Ajustar nivel si lo consideras necesario:</label><br>
         <select id="diagnosticLevelSelect">${nivelOptions}</select>
         <br><br>
