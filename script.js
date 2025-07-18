@@ -25,6 +25,10 @@ const appState = {
     }
 };
 
+// Variables globales para práctica
+let practiceStreak = 0;
+let practiceLessonIndex = 0; // Índice de la lección actual dentro de las permitidas
+
 // Base de datos de lecciones (estructura escalable)
 const LESSONS_DATABASE = {
     level1: [
@@ -748,11 +752,11 @@ const ACHIEVEMENTS = {
 // Funciones de utilidad
 function getTotalVocabularyLearned() {
     let total = 0;
-    Object.values(appState.userProgress).forEach(lesson => {
+        Object.values(appState.userProgress).forEach(lesson => {
         if (lesson.vocabularyCompleted) {
-            total += lesson.vocabulary.length || 0;
-        }
-    });
+                total += lesson.vocabulary.length || 0;
+            }
+        });
     return total;
 }
 
@@ -862,16 +866,16 @@ function speakText(text, language = 'en-US', rate = 0.8) {
         
         // Esperar a que las voces estén disponibles
         const speakWithVoice = () => {
-            const voices = speechSynthesis.getVoices();
+        const voices = speechSynthesis.getVoices();
             const englishVoice = voices.find(voice => 
                 voice.lang.startsWith('en') && (voice.name.includes('US') || voice.name.includes('en-US'))
             ) || voices.find(voice => voice.lang.startsWith('en'));
             
-            if (englishVoice) {
-                utterance.voice = englishVoice;
-            }
-            
-            speechSynthesis.speak(utterance);
+        if (englishVoice) {
+            utterance.voice = englishVoice;
+        }
+        
+        speechSynthesis.speak(utterance);
         };
         
         // Si las voces ya están disponibles, usar directamente
@@ -884,7 +888,7 @@ function speakText(text, language = 'en-US', rate = 0.8) {
         
         return true;
     }
-    return false;
+        return false;
 }
 
 // Función para practicar pronunciación con grabación
@@ -947,25 +951,25 @@ async function recordAudio() {
         const audioChunks = [];
         
         return new Promise((resolve, reject) => {
-            mediaRecorder.ondataavailable = (event) => {
-                audioChunks.push(event.data);
-            };
-            
-            mediaRecorder.onstop = () => {
+        mediaRecorder.ondataavailable = (event) => {
+            audioChunks.push(event.data);
+        };
+        
+        mediaRecorder.onstop = () => {
                 const audioBlob = new Blob(audioChunks);
-                const audioUrl = URL.createObjectURL(audioBlob);
+            const audioUrl = URL.createObjectURL(audioBlob);
                 resolve(audioUrl);
             };
             
             mediaRecorder.onerror = reject;
-            mediaRecorder.start();
+        mediaRecorder.start();
             
             // Detener grabación después de 5 segundos
-            setTimeout(() => {
+        setTimeout(() => {
                 mediaRecorder.stop();
                 stream.getTracks().forEach(track => track.stop());
-            }, 5000);
-        });
+        }, 5000);
+    });
     } catch (error) {
         console.error('Error al grabar audio:', error);
         throw error;
@@ -1009,7 +1013,17 @@ function updateUI() {
         progressText.textContent = `${Math.round(progressPercentage)}%`;
     }
     
-    console.log(`Progreso del nivel: ${progressPercentage.toFixed(1)}%`);
+    // Actualizar información del usuario en el header
+    updateUserDisplay();
+    
+    // Mostrar nivel MCER en el header si hay usuario
+    const user = getCurrentUser();
+    if (user && user.mcer) {
+        const levelElement = document.getElementById('currentLevel');
+        if (levelElement) {
+            levelElement.textContent = `${appState.currentLevel} (${user.mcer})`;
+        }
+    }
 }
 
 // Navegación entre secciones
@@ -1046,6 +1060,8 @@ function loadSectionContent(section) {
             break;
         case 'practice':
             loadPracticeModes();
+            // Sincronizar práctica con la lección actual de aprendizaje
+            practiceLessonIndex = syncPracticeWithLearning();
             break;
         case 'apply':
             loadConversationScenario();
@@ -1094,16 +1110,16 @@ function loadCurrentLesson() {
         // Escapar comillas simples para el atributo onclick
         const safeEnglish = item.english.replace(/'/g, "\\'");
         vocabItem.innerHTML = `
-            <div class="vocab-header">
-                <div class="english">${item.english}</div>
+                                <div class="vocab-header">
+                                    <div class="english">${item.english}</div>
                 <div class="pronunciation-buttons">
                     <button class="speak-btn" onclick="speakText('${safeEnglish}', 'en-US')" title="Escuchar pronunciación">
-                        <i class="fas fa-volume-up"></i>
-                    </button>
+                                        <i class="fas fa-volume-up"></i>
+                                    </button>
                 </div>
-            </div>
-            <div class="spanish">${item.spanish}</div>
-            <div class="pronunciation">[${item.pronunciation}]</div>
+                                </div>
+                                <div class="spanish">${item.spanish}</div>
+                                <div class="pronunciation">[${item.pronunciation}]</div>
         `;
         vocabularyGrid.appendChild(vocabItem);
     });
@@ -1113,11 +1129,11 @@ function loadCurrentLesson() {
     grammarContent.innerHTML = `
         <h5>${currentLesson.grammar.title}</h5>
         <p>${currentLesson.grammar.explanation}</p>
-        <div class="examples">
+                        <div class="examples">
             <h6>Ejemplos:</h6>
-            <ul>
+                            <ul>
                 ${currentLesson.grammar.examples.map(example => `<li>${example}</li>`).join('')}
-            </ul>
+                            </ul>
         </div>
     `;
 }
@@ -1140,6 +1156,22 @@ function loadPracticeModes() {
         document.querySelector('.practice-modes').appendChild(pronunciationCard);
     }
 
+    // Mostrar información de sincronización
+    const syncInfo = document.createElement('div');
+    syncInfo.className = 'sync-info';
+    syncInfo.innerHTML = `
+        <div class="sync-message">
+            <i class="fas fa-sync-alt"></i>
+            <span>Los ejercicios de práctica están sincronizados con tu lección actual de aprendizaje</span>
+        </div>
+    `;
+    
+    // Insertar antes de los mode cards
+    const practiceModes = document.querySelector('.practice-modes');
+    if (practiceModes && !document.querySelector('.sync-info')) {
+        practiceModes.insertBefore(syncInfo, practiceModes.firstChild);
+    }
+
     document.querySelectorAll('.mode-card').forEach(card => {
         card.onclick = () => {
             const mode = card.dataset.mode;
@@ -1150,10 +1182,72 @@ function loadPracticeModes() {
     });
 }
 
+// --- Filtrado de lecciones según nivel MCER ---
+function getUserLevelMCER() {
+    // Buscar el usuario actual y su nivel MCER
+    const session = JSON.parse(localStorage.getItem('englishLearningSession') || 'null');
+    if (session && session.email) {
+        const users = JSON.parse(localStorage.getItem('englishLearningUsers') || '[]');
+        const user = users.find(u => u.email === session.email);
+        if (user && user.mcer) return user.mcer;
+        if (user && user.level) {
+            // Fallback: deducir MCER por nombre de nivel
+            if (user.level.toLowerCase().includes('principiante')) return 'A1';
+            if (user.level.toLowerCase().includes('básico')) return 'A2';
+            if (user.level.toLowerCase().includes('intermedio')) return 'B1';
+            if (user.level.toLowerCase().includes('avanzado')) return 'B2';
+        }
+    }
+    // Si no hay usuario, por defecto A1
+    return 'A1';
+}
+
+function getAllowedLessonsByLevel() {
+    const mcer = getUserLevelMCER();
+    // Relación MCER -> dificultad
+    const allowedDifficulties = [];
+    if (mcer === 'A1') allowedDifficulties.push('Principiante');
+    if (mcer === 'A2') allowedDifficulties.push('Principiante', 'Básico');
+    if (mcer === 'B1') allowedDifficulties.push('Principiante', 'Básico', 'Intermedio');
+    if (mcer === 'B2' || mcer === 'C1' || mcer === 'C2') allowedDifficulties.push('Principiante', 'Básico', 'Intermedio', 'Avanzado');
+    // Filtrar lecciones
+    return LESSONS_DATABASE.level1.filter(lesson => allowedDifficulties.includes(lesson.difficulty));
+}
+
+// Función para sincronizar la lección de práctica con la lección de aprendizaje
+function syncPracticeWithLearning() {
+    const allowedLessons = getAllowedLessonsByLevel();
+    if (allowedLessons.length === 0) return;
+    
+    // Buscar la lección actual de aprendizaje en las lecciones permitidas
+    const currentLearningLesson = LESSONS_DATABASE.level1[appState.currentLesson];
+    const practiceLessonIndex = allowedLessons.findIndex(lesson => lesson.id === currentLearningLesson.id);
+    
+    if (practiceLessonIndex !== -1) {
+        // Si la lección actual está en las permitidas, usarla
+        return practiceLessonIndex;
+    } else {
+        // Si no está, usar la primera lección permitida
+        return 0;
+    }
+}
+
+// --- Cambios en práctica ---
 function loadPracticeExercise(mode) {
     const practiceArea = document.getElementById('practiceArea');
-    const currentLesson = LESSONS_DATABASE.level1[appState.currentLesson];
-    if (!currentLesson) return;
+    const allowedLessons = getAllowedLessonsByLevel();
+    if (allowedLessons.length === 0) {
+        practiceArea.innerHTML = '<div class="error">No hay lecciones disponibles para tu nivel actual.</div>';
+        return;
+    }
+    
+    // Sincronizar con la lección de aprendizaje
+    practiceLessonIndex = syncPracticeWithLearning();
+    
+    // Asegurar que el índice esté dentro de rango
+    if (practiceLessonIndex >= allowedLessons.length) practiceLessonIndex = 0;
+    const currentLesson = allowedLessons[practiceLessonIndex];
+    
     let exerciseHTML = '';
     switch(mode) {
         case 'vocabulary':
@@ -1169,15 +1263,37 @@ function loadPracticeExercise(mode) {
             exerciseHTML = createPronunciationPractice(currentLesson);
             break;
     }
+    
+    // Mostrar el nombre de la lección actual en la cabecera
+    const lessonTitle = currentLesson.title || '';
+    const currentLessonNumber = practiceLessonIndex + 1;
+    const totalLessons = allowedLessons.length;
+    
     practiceArea.innerHTML = `
         <div class="practice-header">
-            <button class="btn btn-secondary" onclick="backToPracticeModes()">
-                <i class="fas fa-arrow-left"></i> Volver
-            </button>
-            <h3>${mode.charAt(0).toUpperCase() + mode.slice(1)}</h3>
+            <div class="practice-nav-buttons">
+                <button class="btn btn-secondary" onclick="backToPracticeModes()">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <button class="btn btn-primary" onclick="nextPracticeLesson('${mode}')" id="nextPracticeBtn">
+                    <i class="fas fa-arrow-right"></i> Siguiente Lección
+                </button>
+            </div>
+            <div class="practice-info">
+                <h3>${mode.charAt(0).toUpperCase() + mode.slice(1)}</h3>
+                <div class="practice-lesson-info">
+                    <span class="practice-lesson-title">Lección: <strong>${lessonTitle}</strong></span>
+                    <span class="practice-lesson-counter">${currentLessonNumber} de ${totalLessons}</span>
+                </div>
+            </div>
         </div>
         ${exerciseHTML}
     `;
+    
+    // Reasignar event listeners inmediatamente
+    setTimeout(() => {
+        reattachOptionBtnListeners();
+    }, 50);
 }
 
 function createVocabularyExercise(lesson) {
@@ -1235,7 +1351,7 @@ function createListeningExercise(lesson) {
                 <div class="pronunciation-practice">
                     <p>Practica la pronunciación de: <strong>Hello</strong></p>
                     <button class="btn btn-primary">Grabar</button>
-                </div>
+            </div>
             </div>
         </div>
     `;
@@ -1252,10 +1368,10 @@ function createPronunciationPractice(lesson) {
                 <div class="english">${vocab.english}</div>
                 <button class="speak-btn" onclick="speakText('${safeEnglish}', 'en-US')" title="Escuchar pronunciación">
                     <i class="fas fa-volume-up"></i>
-                </button>
+                    </button>
                 <button class="practice-btn" onclick="practicePronunciation('${safeEnglish}')" title="Grabar tu pronunciación">
-                    <i class="fas fa-microphone"></i> Grabar
-                </button>
+                        <i class="fas fa-microphone"></i> Grabar
+                    </button>
             </div>
         </div>
     `;
@@ -1264,6 +1380,30 @@ function createPronunciationPractice(lesson) {
 function backToPracticeModes() {
     document.querySelector('.practice-modes').style.display = 'grid';
     document.getElementById('practiceArea').style.display = 'none';
+}
+
+// Función para avanzar a la siguiente lección de práctica
+function nextPracticeLesson(mode) {
+    const allowedLessons = getAllowedLessonsByLevel();
+    
+    // Avanzar al siguiente índice
+    practiceLessonIndex++;
+    
+    // Si llegamos al final, volver al inicio
+    if (practiceLessonIndex >= allowedLessons.length) {
+        practiceLessonIndex = 0;
+        showNotification('¡Has completado todas las lecciones de práctica! Volviendo al inicio. 🔄', 'info');
+    } else {
+        showNotification('Avanzando a la siguiente lección de práctica... 🚀', 'success');
+    }
+    
+    // Cargar el ejercicio con la nueva lección
+    loadPracticeExercise(mode);
+    
+    // Reasignar event listeners
+    setTimeout(() => {
+        reattachOptionBtnListeners();
+    }, 50);
 }
 
 // Sección APLICAR
@@ -1295,8 +1435,11 @@ function addMessageToChat(text, type) {
 // Sección PROGRESO
 function loadProgressChart() {
     const chartContainer = document.getElementById('weeklyChart');
+    if (!chartContainer || chartContainer.nodeName !== 'CANVAS') {
+        console.warn('No se encontró el canvas para el gráfico de progreso.');
+        return;
+    }
     const weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-    
     // Simular datos de progreso semanal
     const weeklyData = [
         appState.currentXP * 0.1,
@@ -1307,50 +1450,47 @@ function loadProgressChart() {
         appState.currentXP * 0.20,
         appState.currentXP * 0.22
     ];
-    
     // Crear gráfico con Chart.js
     const ctx = chartContainer.getContext('2d');
-    
     // Destruir gráfico anterior si existe
     if (window.weeklyChart) {
         window.weeklyChart.destroy();
     }
-    
-    window.weeklyChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: weekDays,
-            datasets: [{
-                label: 'XP Ganados',
-                data: weeklyData,
-                backgroundColor: 'rgba(79, 70, 229, 0.8)',
-                borderColor: 'rgba(79, 70, 229, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.1)'
+        window.weeklyChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: weekDays,
+                datasets: [{
+                    label: 'XP Ganados',
+                    data: weeklyData,
+                    backgroundColor: 'rgba(79, 70, 229, 0.8)',
+                    borderColor: 'rgba(79, 70, 229, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
                     }
                 },
-                x: {
-                    grid: {
+                plugins: {
+                    legend: {
                         display: false
                     }
                 }
-            },
-            plugins: {
-                legend: {
-                    display: false
-                }
             }
-        }
-    });
+        });
 }
 
 // Sistema de logros
@@ -1379,44 +1519,13 @@ function unlockAchievement(achievement) {
     saveProgress();
 }
 
-// Event listeners
-document.addEventListener('DOMContentLoaded', function() {
-    loadProgress();
-    initializeNavigation();
-    loadCurrentLesson();
-    
-    // Event listeners para ejercicios
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('option-btn')) {
-            handleExerciseAnswer(e.target);
-        }
-    });
-    
-    // Event listener para chat
-    const sendMessageBtn = document.getElementById('sendMessageBtn');
-    const chatInput = document.getElementById('chatInput');
-    
-    if (sendMessageBtn && chatInput) {
-        sendMessageBtn.addEventListener('click', sendChatMessage);
-        chatInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendChatMessage();
-            }
-        });
-    }
-    
-    // Botones de lección
-    const nextLessonBtn = document.getElementById('nextLessonBtn');
-    const reviewLessonBtn = document.getElementById('reviewLessonBtn');
-    
-    if (nextLessonBtn) {
-        nextLessonBtn.addEventListener('click', completeLesson);
-    }
-    
-    if (reviewLessonBtn) {
-        reviewLessonBtn.addEventListener('click', reviewLesson);
-    }
-});
+// Event listeners para ejercicios (ya manejados en la inicialización principal)
+
+// --- Sonidos de feedback ---
+const successSound = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b7bfa.mp3'); // éxito
+const failSound = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b7bfa.mp3'); // fallo (puedes cambiar por otro)
+successSound.volume = 0.5;
+failSound.volume = 0.5;
 
 function handleExerciseAnswer(button) {
     const isCorrect = button.dataset.correct === 'true';
@@ -1434,17 +1543,55 @@ function handleExerciseAnswer(button) {
         }
     });
     
+    // Emojis motivadores
+    const emojis = ['🎉', '🚀', '👏', '💪', '🌟', '🔥', '😃', '🥳', '🏆', '😎'];
+    const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+    
     if (isCorrect) {
-        resultDiv.innerHTML = '<div class="success">¡Correcto! 🎉</div>';
+        resultDiv.innerHTML = `<div class="success exercise-success-animate">¡Correcto! ${randomEmoji} ¡Sigue así!</div>`;
         appState.currentXP += 10;
+        try { successSound.currentTime = 0; successSound.play(); } catch(e){}
+        practiceStreak++;
     } else {
         resultDiv.innerHTML = '<div class="error">Incorrecto. Intenta de nuevo.</div>';
+        try { failSound.currentTime = 0; failSound.play(); } catch(e){}
+        practiceStreak = 0;
     }
     
     updateUI();
     saveProgress();
     
     setTimeout(() => {
+        // Si estamos en la sección de práctica y modo vocabulario, gramática o listening, avanzar a la siguiente pregunta
+        const practiceArea = document.getElementById('practiceArea');
+        if (practiceArea && practiceArea.offsetParent !== null) {
+            // Buscar el título de la sección para saber el modo
+            const header = practiceArea.querySelector('.practice-header h3');
+            if (header) {
+                const modo = header.textContent.trim().toLowerCase();
+                if (['vocabulario', 'gramática', 'comprensión'].includes(modo)) {
+                    // Avance automático de lección tras 5 aciertos
+                    const allowedLessons = getAllowedLessonsByLevel();
+                    if (isCorrect && practiceStreak >= 5) {
+                        practiceStreak = 0;
+                        practiceLessonIndex++;
+                        if (practiceLessonIndex >= allowedLessons.length) {
+                            practiceLessonIndex = 0;
+                            showNotification('¡Felicidades! Has completado todas las lecciones de tu nivel. ¡Sigue practicando para subir de nivel! 🎓', 'success');
+                        } else {
+                            showNotification('¡Avanzas a la siguiente lección de tu nivel! 🚀', 'success');
+                        }
+                        loadPracticeExercise(modo === 'vocabulario' ? 'vocabulary' : modo === 'gramática' ? 'grammar' : 'listening');
+                        return;
+                    }
+                    if (isCorrect) {
+                        loadPracticeExercise(modo === 'vocabulario' ? 'vocabulary' : modo === 'gramática' ? 'grammar' : 'listening');
+                        return;
+                    }
+                }
+            }
+        }
+        
         // Volver a habilitar botones para siguiente ejercicio
         document.querySelectorAll('.option-btn').forEach(btn => {
             btn.disabled = false;
@@ -1452,8 +1599,22 @@ function handleExerciseAnswer(button) {
             btn.style.color = '';
         });
         resultDiv.innerHTML = '';
-    }, 2000);
+    }, 1200);
 }
+
+// Reasignar event listeners a los botones de opción tras recargar pregunta
+function reattachOptionBtnListeners() {
+    document.querySelectorAll('.option-btn').forEach(btn => {
+        btn.onclick = function() { handleExerciseAnswer(btn); };
+    });
+}
+
+// Delegación de eventos global (por si acaso)
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('option-btn')) {
+        handleExerciseAnswer(e.target);
+    }
+});
 
 function sendChatMessage() {
     const chatInput = document.getElementById('chatInput');
@@ -1519,6 +1680,28 @@ function completeLesson() {
     
     // Cargar siguiente lección
     loadCurrentLesson();
+    
+    // Sincronizar práctica con la nueva lección
+    if (document.getElementById('practice').classList.contains('active')) {
+        // Si estamos en la sección de práctica, actualizar para mostrar la nueva lección
+        const practiceArea = document.getElementById('practiceArea');
+        if (practiceArea && practiceArea.style.display !== 'none') {
+            // Si hay un ejercicio activo, recargarlo con la nueva lección
+            const header = practiceArea.querySelector('.practice-header h3');
+            if (header) {
+                const modo = header.textContent.trim().toLowerCase();
+                if (['vocabulario', 'gramática', 'comprensión', 'pronunciación'].includes(modo)) {
+                    const modeMap = {
+                        'vocabulario': 'vocabulary',
+                        'gramática': 'grammar',
+                        'comprensión': 'listening',
+                        'pronunciación': 'pronunciation'
+                    };
+                    loadPracticeExercise(modeMap[modo]);
+                }
+            }
+        }
+    }
     
     // Mostrar notificación
     const xpMessage = leveledUp ? 
@@ -1755,9 +1938,9 @@ function setupAuthTabs() {
                 document.getElementById('loginForm').classList.add('active');
             } else {
                 document.getElementById('registerForm').classList.add('active');
-            }
+                }
+            });
         });
-    });
 }
 
 // Registrar usuario
@@ -1799,7 +1982,7 @@ function handleLogin(e) {
         showNotification('Email o contraseña incorrectos', 'error');
         return;
     }
-    localStorage.setItem('englishLearningSession', JSON.stringify({ 
+    localStorage.setItem('englishLearningSession', JSON.stringify({
         email: user.email, 
         name: user.name 
     }));
@@ -1808,20 +1991,25 @@ function handleLogin(e) {
     // Mostrar mensaje de bienvenida
     showNotification(`👋 ¡Bienvenido de vuelta, ${user.name}!`, 'success');
     
-    // Actualizar la visualización del usuario después de un pequeño delay
-    setTimeout(() => {
-        updateUserDisplay();
-    }, 1000);
+    // Actualizar la visualización del usuario inmediatamente
+    updateUserDisplay();
+    
+    // Cargar el progreso del usuario
+    loadProgress();
+    
+    // Actualizar la UI
+    updateUI();
+    
+    // Cargar la lección actual
+    loadCurrentLesson();
 }
 
 // Función para obtener el usuario actual
 function getCurrentUser() {
     const session = JSON.parse(localStorage.getItem('englishLearningSession') || 'null');
-    console.log('Session:', session); // Debug
     if (session && session.email) {
         const users = JSON.parse(localStorage.getItem('englishLearningUsers') || '[]');
         const user = users.find(u => u.email === session.email);
-        console.log('Found user:', user); // Debug
         return user;
     }
     return null;
@@ -1832,8 +2020,6 @@ function updateUserDisplay() {
     const user = getCurrentUser();
     const userDisplay = document.getElementById('userDisplay');
     
-    console.log('updateUserDisplay called, user:', user, 'userDisplay:', userDisplay); // Debug
-    
     if (user && userDisplay) {
         userDisplay.innerHTML = `
             <div class="user-info">
@@ -1842,10 +2028,8 @@ function updateUserDisplay() {
             </div>
         `;
         userDisplay.style.display = 'flex';
-        console.log('User display updated successfully'); // Debug
     } else if (userDisplay) {
         userDisplay.style.display = 'none';
-        console.log('User display hidden'); // Debug
     }
 }
 
@@ -1854,7 +2038,10 @@ function checkAuth() {
     const session = JSON.parse(localStorage.getItem('englishLearningSession') || 'null');
     if (session && session.email) {
         hideAuthModal();
-        updateUserDisplay(); // Actualizar la visualización del usuario
+        updateUserDisplay();
+        loadProgress();
+        updateUI();
+        loadCurrentLesson();
     } else {
         showAuthModal();
     }
@@ -1863,7 +2050,7 @@ function checkAuth() {
 // Cerrar sesión
 function logout() {
     localStorage.removeItem('englishLearningSession');
-    updateUserDisplay(); // Ocultar la información del usuario
+    updateUserDisplay();
     showAuthModal();
 }
 
@@ -1871,7 +2058,43 @@ function logout() {
 window.addEventListener('DOMContentLoaded', function() {
     setupAuthTabs();
     checkAuth();
-    updateUserDisplay(); // Asegurar que se muestre el usuario si hay sesión activa
+    
+    // Configurar navegación
+    initializeNavigation();
+    
+    // Event listeners para ejercicios
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('option-btn')) {
+            handleExerciseAnswer(e.target);
+        }
+    });
+
+    // Event listener para chat
+    const sendMessageBtn = document.getElementById('sendMessageBtn');
+    const chatInput = document.getElementById('chatInput');
+
+    if (sendMessageBtn && chatInput) {
+        sendMessageBtn.addEventListener('click', sendChatMessage);
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendChatMessage();
+            }
+        });
+    }
+
+    // Botones de lección
+    const nextLessonBtn = document.getElementById('nextLessonBtn');
+    const reviewLessonBtn = document.getElementById('reviewLessonBtn');
+    
+    if (nextLessonBtn) {
+        nextLessonBtn.addEventListener('click', completeLesson);
+    }
+    
+    if (reviewLessonBtn) {
+        reviewLessonBtn.addEventListener('click', reviewLesson);
+    }
+    
+    // Event listeners para autenticación
     const registerForm = document.getElementById('registerForm');
     if (registerForm) registerForm.addEventListener('submit', handleRegister);
     const loginForm = document.getElementById('loginForm');
@@ -1913,7 +2136,8 @@ function checkLevelUp() {
     const newLevel = calculateLevel(appState.currentXP);
     if (newLevel > appState.currentLevel) {
         appState.currentLevel = newLevel;
-        showNotification(`¡Nivel ${newLevel} alcanzado! 🎉`, 'success');
+        practiceLessonIndex = 0;
+        showNotification(`¡Nivel ${newLevel} alcanzado! 🎉 Nuevas lecciones de práctica desbloqueadas.`, 'success');
         return true;
     }
     return false;
@@ -1921,23 +2145,24 @@ function checkLevelUp() {
 
 // Función para mostrar mensaje de bienvenida elaborado
 function showWelcomeMessage(name, level, mcer) {
-    const welcomeDiv = document.createElement('div');  welcomeDiv.className = 'welcome-message';
+    const welcomeDiv = document.createElement('div');
+    welcomeDiv.className = 'welcome-message';
     welcomeDiv.innerHTML = `
         <div class="welcome-content">
-            <div class=welcome-header>
+            <div class="welcome-header">
                 <div class="welcome-icon">🎓</div>
                 <div class="welcome-sparkles">
                     <span>✨</span><span>⭐</span><span>✨</span>
                 </div>
             </div>
             <h3>¡Bienvenido a English Learning!</h3>
-            <p class="welcome-name>Hola, <strong>${name}</strong></p>
-            <div class="welcome-level-container>
-                <p class=welcome-level">Tu nivel asignado es:</p>
-                <span class="level-badge>${level} (${mcer})</span>
+            <p class="welcome-name">Hola, <strong>${name}</strong></p>
+            <div class="welcome-level-container">
+                <p class="welcome-level">Tu nivel asignado es:</p>
+                <span class="level-badge">${level} (${mcer})</span>
             </div>
             <p class="welcome-text">¡Estás listo para comenzar tu viaje de aprendizaje del inglés!</p>
-            <div class="welcome-features>
+            <div class="welcome-features">
                 <div class="feature-item">
                     <i class="fas fa-book"></i>
                     <span>Aprender</span>
@@ -1951,14 +2176,19 @@ function showWelcomeMessage(name, level, mcer) {
                     <span>Aplicar</span>
                 </div>
             </div>
-            <button class="btn btn-violet welcome-btn" onclick="this.parentElement.parentElement.remove()>
-                <i class=fas fa-rocket></i> ¡Comenzar Aprendizaje!
+            <button class="btn btn-violet welcome-btn" id="closeWelcomeBtn">
+                <i class="fas fa-rocket"></i> ¡Comenzar Aprendizaje!
             </button>
         </div>
     `;
-    
     document.body.appendChild(welcomeDiv);
-    
+    // Cerrar al hacer click en el botón
+    const closeBtn = welcomeDiv.querySelector('#closeWelcomeBtn');
+    if (closeBtn) {
+        closeBtn.onclick = () => {
+            if (welcomeDiv.parentElement) welcomeDiv.remove();
+        };
+    }
     // Remover automáticamente después de 10 segundos
     setTimeout(() => {
         if (welcomeDiv.parentElement) {
