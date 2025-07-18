@@ -2538,6 +2538,10 @@ body {
     line-height: 1.6;
     color: var(--text-primary);
     margin-bottom: 15px;
+    font-family: 'Courier New', monospace;
+}
+
+.transcript-container {
     display: none; /* Oculto por defecto */
 }
 
@@ -2677,14 +2681,29 @@ body {
 
 .option-btn:hover {
     border-color: var(--primary-color);
-    background: var(--bg-secondary);
-    transform: translateY(-1px);
+    background: var(--primary-light);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
 }
 
 .option-btn.selected {
     border-color: var(--primary-color);
-    background: var(--primary-color);
+    background: var(--primary-color) !important;
+    color: white !important;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.option-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.option-btn:disabled[data-correct="true"] {
+    background: var(--success-color);
     color: white;
+    opacity: 1;
 }
 
 .question-feedback {
@@ -2740,6 +2759,12 @@ body {
     color: var(--text-secondary);
     font-size: 1rem;
     line-height: 1.5;
+}
+
+.result-message {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    font-weight: 600;
 }
 
 /* Responsive para listening */
@@ -3203,4 +3228,83 @@ body {
     .form-actions {
         flex-direction: column;
     }
+}
+
+/* Animaciones adicionales para el sistema de listening */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Estilos para el avance automático */
+.auto-advance-countdown {
+    background: var(--accent-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 1rem;
+    display: inline-block;
+    animation: pulse 1s infinite;
+}
+
+/* Mejoras para el sistema de listening */
+.listening-exercise {
+    background: var(--surface-color);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+    margin-top: 1rem;
+}
+
+.difficulty-badge {
+    background: linear-gradient(135deg, var(--accent-color), #f97316);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+    margin-left: 1rem;
+}
+
+/* Animación para respuestas correctas/incorrectas */
+.option-btn.correct {
+    background: var(--success-color) !important;
+    color: white !important;
+    animation: popSuccess 0.3s ease;
+}
+
+.option-btn.incorrect {
+    background: var(--error-color) !important;
+    color: white !important;
+    animation: shake 0.5s ease;
+}
+
+/* Mejoras para las preguntas */
+.question-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+}
+
+.question-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
 } 

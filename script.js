@@ -1624,19 +1624,121 @@ function createGrammarExercise(lesson) {
 }
 
 function createListeningExercise(lesson) {
+    // Seleccionar una frase o palabra del vocabulario de la lección
+    const vocab = lesson.vocabulary[Math.floor(Math.random() * lesson.vocabulary.length)];
+    const safeEnglish = vocab.english.replace(/'/g, "\\'");
+    
+    // Crear ejercicios de comprensión auditiva
+    const listeningExercises = [
+        {
+            type: 'word',
+            text: vocab.english,
+            question: `¿Qué palabra escuchaste?`,
+            options: [
+                vocab.english,
+                vocab.spanish,
+                vocab.english.split('').reverse().join(''), // Opción incorrecta
+                vocab.english.toUpperCase()
+            ]
+        },
+        {
+            type: 'phrase',
+            text: `Hello, how are you?`,
+            question: `¿Qué frase escuchaste?`,
+            options: [
+                'Hello, how are you?',
+                'Hi, how are you?',
+                'Hello, how do you do?',
+                'Hi, how do you do?'
+            ]
+        },
+        {
+            type: 'question',
+            text: `What is your name?`,
+            question: `¿Qué pregunta escuchaste?`,
+            options: [
+                'What is your name?',
+                'What is your age?',
+                'Where are you from?',
+                'How old are you?'
+            ]
+        }
+    ];
+    
+    const exercise = listeningExercises[Math.floor(Math.random() * listeningExercises.length)];
+    
     return `
         <div class="exercise-container">
-            <h4>Escucha y repite:</h4>
+            <h4><i class="fas fa-headphones"></i> Ejercicio de Comprensión Auditiva</h4>
             <div class="listening-exercise">
                 <div class="audio-player">
-                    <i class="fas fa-play-circle"></i>
-                    <span>Reproducir audio</span>
+                    <div class="audio-controls">
+                        <button class="play-btn" data-text="${exercise.text.replace(/"/g, '&quot;')}" title="Reproducir audio">
+                            <i class="fas fa-play"></i>
+                </button>
+                        <button class="pause-btn" title="Pausar" style="display: none;">
+                            <i class="fas fa-pause"></i>
+                        </button>
                 </div>
-                <div class="pronunciation-practice">
-                    <p>Practica la pronunciación de: <strong>Hello</strong></p>
-                    <button class="btn btn-primary">Grabar</button>
+                    <div class="speed-controls">
+                        <label>Velocidad:</label>
+                        <select onchange="changeListeningSpeed(this.value)">
+                            <option value="0.7">Lento</option>
+                            <option value="1.0" selected>Normal</option>
+                            <option value="1.3">Rápido</option>
+                        </select>
             </div>
-            </div>
+                    <div class="audio-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+        </div>
+                        <div class="time-display">
+                            <span class="current-time">0:00</span> / <span class="total-time">0:00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="transcript-section">
+                    <button class="show-transcript-btn" onclick="toggleTranscript()" title="Mostrar/ocultar transcripción">
+                        <i class="fas fa-eye"></i> Mostrar Transcripción
+            </button>
+                    <div class="transcript-container" style="display: none;">
+                        <div class="transcript-text">${exercise.text}</div>
+        </div>
+                </div>
+                
+                <div class="questions-section">
+                    <h4><i class="fas fa-question-circle"></i> ${exercise.question}</h4>
+                    <div class="questions-container">
+                        <div class="question-card">
+                            <div class="options-grid">
+                                ${exercise.options.map((option, index) => `
+                                    <button class="option-btn" data-correct="${option === exercise.text}" onclick="handleListeningAnswer(this)">
+                                        ${String.fromCharCode(65 + index)}. ${option}
+                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    
+                <div class="exercise-actions">
+                    <button class="btn btn-secondary" onclick="resetListeningExercise()">
+                        <i class="fas fa-redo"></i> Repetir
+                    </button>
+                    <button class="btn btn-primary" onclick="checkListeningAnswers()">
+                        <i class="fas fa-check"></i> Verificar Respuesta
+                    </button>
+                </div>
+                
+                <div class="exercise-result" style="display: none;">
+                    <h4>Resultado</h4>
+                    <p class="result-message"></p>
+                    <button class="btn btn-primary" onclick="nextListeningExercise()">
+                        <i class="fas fa-arrow-right"></i> Siguiente Ejercicio
+                    </button>
+                </div>
+                </div>
         </div>
     `;
 }
@@ -1659,6 +1761,261 @@ function createPronunciationPractice(lesson) {
             </div>
         </div>
     `;
+}
+
+// Variables globales para el ejercicio de listening
+let currentListeningAudio = null;
+let listeningAudioSpeed = 1.0;
+let selectedListeningAnswer = null;
+
+// Función para reproducir audio del ejercicio de listening
+function playListeningAudio(text) {
+    // Verificar si Web Speech API está disponible
+    if (!window.speechSynthesis) {
+        showNotification('Tu navegador no soporta audio. Intenta con Chrome o Edge.', 'error');
+        return;
+    }
+    
+    // Cancelar audio anterior si existe
+    if (currentListeningAudio) {
+        speechSynthesis.cancel();
+    }
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = listeningAudioSpeed;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    
+    // Mostrar botón de pausa
+    const playBtn = document.querySelector('.play-btn');
+    const pauseBtn = document.querySelector('.pause-btn');
+    if (playBtn && pauseBtn) {
+        playBtn.style.display = 'none';
+        pauseBtn.style.display = 'inline-block';
+    }
+    
+    // Simular progreso del audio
+    let progress = 0;
+    const progressFill = document.querySelector('.audio-progress .progress-fill');
+    const currentTimeSpan = document.querySelector('.current-time');
+    const totalTimeSpan = document.querySelector('.total-time');
+    
+    const progressInterval = setInterval(() => {
+        progress += 2;
+        if (progressFill) progressFill.style.width = `${progress}%`;
+        if (currentTimeSpan) currentTimeSpan.textContent = formatTime(Math.floor(progress / 2));
+        if (totalTimeSpan) totalTimeSpan.textContent = formatTime(Math.floor(100 / 2));
+        
+        if (progress >= 100) {
+            clearInterval(progressInterval);
+            if (playBtn && pauseBtn) {
+                playBtn.style.display = 'inline-block';
+                pauseBtn.style.display = 'none';
+            }
+            if (progressFill) progressFill.style.width = '0%';
+            if (currentTimeSpan) currentTimeSpan.textContent = '0:00';
+        }
+    }, 100);
+    
+    utterance.onend = () => {
+        clearInterval(progressInterval);
+        if (playBtn && pauseBtn) {
+            playBtn.style.display = 'inline-block';
+            pauseBtn.style.display = 'none';
+        }
+        if (progressFill) progressFill.style.width = '0%';
+        if (currentTimeSpan) currentTimeSpan.textContent = '0:00';
+    };
+    
+    utterance.onerror = (event) => {
+        console.error('Error en audio:', event);
+        clearInterval(progressInterval);
+        if (playBtn && pauseBtn) {
+            playBtn.style.display = 'inline-block';
+            pauseBtn.style.display = 'none';
+        }
+        if (progressFill) progressFill.style.width = '0%';
+        if (currentTimeSpan) currentTimeSpan.textContent = '0:00';
+        showNotification('Error al reproducir audio. Intenta nuevamente.', 'error');
+    };
+    
+    currentListeningAudio = utterance;
+    
+    try {
+        speechSynthesis.speak(utterance);
+        console.log('Reproduciendo audio:', text);
+    } catch (error) {
+        console.error('Error al iniciar audio:', error);
+        showNotification('Error al reproducir audio. Intenta con otro navegador.', 'error');
+    }
+}
+
+// Función para pausar audio del ejercicio de listening
+function pauseListeningAudio() {
+    if (currentListeningAudio) {
+        speechSynthesis.cancel();
+        currentListeningAudio = null;
+    }
+    
+    const playBtn = document.querySelector('.play-btn');
+    const pauseBtn = document.querySelector('.pause-btn');
+    if (playBtn && pauseBtn) {
+        playBtn.style.display = 'inline-block';
+        pauseBtn.style.display = 'none';
+    }
+    
+    const progressFill = document.querySelector('.audio-progress .progress-fill');
+    const currentTimeSpan = document.querySelector('.current-time');
+    if (progressFill) progressFill.style.width = '0%';
+    if (currentTimeSpan) currentTimeSpan.textContent = '0:00';
+}
+
+// Función para cambiar velocidad del audio
+function changeListeningSpeed(speed) {
+    listeningAudioSpeed = parseFloat(speed);
+    if (currentListeningAudio) {
+        currentListeningAudio.rate = listeningAudioSpeed;
+    }
+}
+
+// Función para mostrar/ocultar transcripción
+function toggleTranscript() {
+    const transcriptContainer = document.querySelector('.transcript-container');
+    const showBtn = document.querySelector('.show-transcript-btn');
+    
+    if (transcriptContainer && showBtn) {
+        if (transcriptContainer.style.display === 'none') {
+            transcriptContainer.style.display = 'block';
+            showBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Ocultar Transcripción';
+        } else {
+            transcriptContainer.style.display = 'none';
+            showBtn.innerHTML = '<i class="fas fa-eye"></i> Mostrar Transcripción';
+        }
+    }
+}
+
+// Función para manejar selección de respuesta
+function handleListeningAnswer(button) {
+    // Remover selección anterior
+    const allButtons = document.querySelectorAll('.option-btn');
+    allButtons.forEach(btn => btn.classList.remove('selected'));
+    
+    // Seleccionar nueva respuesta
+    button.classList.add('selected');
+    selectedListeningAnswer = button;
+}
+
+// Función para verificar respuestas
+function checkListeningAnswers() {
+    if (!selectedListeningAnswer) {
+        showNotification('Por favor selecciona una respuesta', 'warning');
+        return;
+    }
+    
+    const isCorrect = selectedListeningAnswer.getAttribute('data-correct') === 'true';
+    const resultDiv = document.querySelector('.exercise-result');
+    const resultMessage = resultDiv.querySelector('.result-message');
+    
+    if (isCorrect) {
+        resultMessage.innerHTML = '<span style="color: var(--success-color);">✅ ¡Correcto! Has identificado bien el audio.</span>';
+        playSuccessSound();
+        addXP(15);
+        showNotification('¡Excelente comprensión auditiva! +15 XP', 'success');
+    } else {
+        resultMessage.innerHTML = '<span style="color: var(--error-color);">❌ Incorrecto. Intenta escuchar el audio nuevamente.</span>';
+        playFailSound();
+        showNotification('Sigue practicando tu comprensión auditiva', 'info');
+    }
+    
+    resultDiv.style.display = 'block';
+    
+    // Deshabilitar botones de opciones
+    const allButtons = document.querySelectorAll('.option-btn');
+    allButtons.forEach(btn => {
+        btn.disabled = true;
+        if (btn.getAttribute('data-correct') === 'true') {
+            btn.style.background = 'var(--success-color)';
+            btn.style.color = 'white';
+        }
+    });
+}
+
+// Función para resetear ejercicio
+function resetListeningExercise() {
+    selectedListeningAnswer = null;
+    
+    // Resetear botones
+    const allButtons = document.querySelectorAll('.option-btn');
+    allButtons.forEach(btn => {
+        btn.classList.remove('selected');
+        btn.disabled = false;
+        btn.style.background = '';
+        btn.style.color = '';
+    });
+    
+    // Ocultar resultado
+    const resultDiv = document.querySelector('.exercise-result');
+    if (resultDiv) resultDiv.style.display = 'none';
+    
+    // Resetear audio
+    pauseListeningAudio();
+    
+    // Ocultar transcripción
+    const transcriptContainer = document.querySelector('.transcript-container');
+    const showBtn = document.querySelector('.show-transcript-btn');
+    if (transcriptContainer) transcriptContainer.style.display = 'none';
+    if (showBtn) showBtn.innerHTML = '<i class="fas fa-eye"></i> Mostrar Transcripción';
+}
+
+// Función para siguiente ejercicio
+function nextListeningExercise() {
+    // Cargar nuevo ejercicio de listening
+    const allowedLessons = getAllowedLessonsByLevel();
+    const currentLesson = allowedLessons[practiceLessonIndex];
+    const practiceArea = document.getElementById('practiceArea');
+    
+    if (practiceArea) {
+        practiceArea.innerHTML = createListeningExercise(currentLesson);
+        resetListeningExercise();
+    }
+}
+
+// Función auxiliar para formatear tiempo
+function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+// Función para probar el audio (para debugging)
+function testAudio() {
+    if (!window.speechSynthesis) {
+        console.error('Web Speech API no disponible');
+        showNotification('Web Speech API no disponible en este navegador', 'error');
+        return;
+    }
+    
+    const testText = 'Hello, this is a test of the audio system.';
+    console.log('Probando audio con:', testText);
+    
+    const utterance = new SpeechSynthesisUtterance(testText);
+    utterance.lang = 'en-US';
+    utterance.rate = 1.0;
+    utterance.volume = 1;
+    
+    utterance.onstart = () => console.log('Audio iniciado');
+    utterance.onend = () => console.log('Audio terminado');
+    utterance.onerror = (event) => console.error('Error en audio:', event);
+    
+    speechSynthesis.speak(utterance);
+    showNotification('Probando audio... Deberías escuchar "Hello, this is a test"', 'info');
+}
+
+// Función para probar el ejercicio de listening específicamente
+function testListeningExercise() {
+    console.log('Probando ejercicio de listening...');
+    playListeningAudio('Hello, how are you?');
 }
 
 function backToPracticeModes() {
@@ -2279,6 +2636,24 @@ function loadVocabularyDetail(categoryKey) {
             toggleDifficultWord(wordObj);
         });
     });
+    
+    // Agregar event listeners para los botones de audio del ejercicio de listening
+    const playBtn = vocabularyDetail.querySelector('.play-btn');
+    const pauseBtn = vocabularyDetail.querySelector('.pause-btn');
+    
+    if (playBtn) {
+        playBtn.addEventListener('click', function() {
+            const text = this.getAttribute('data-text');
+            console.log('Reproduciendo audio:', text);
+            playListeningAudio(text);
+        });
+    }
+    
+    if (pauseBtn) {
+        pauseBtn.addEventListener('click', function() {
+            pauseListeningAudio();
+        });
+    }
 }
 
 // --- Autenticación básica (modal) ---
@@ -2733,7 +3108,7 @@ const LISTENING_SYSTEM = {
             id: 'listening_3',
             title: 'Conversación Casual',
             difficulty: 'B1',
-            audioUrl: null, // Usar Web Speech API en su lugar
+            audioUrl: null,
             transcript: 'The weather is really nice today. I think I will go for a walk in the park.',
             questions: [
                 {
@@ -2748,6 +3123,146 @@ const LISTENING_SYSTEM = {
                 }
             ],
             vocabulary: ['weather', 'nice', 'walk', 'park']
+        },
+        {
+            id: 'listening_4',
+            title: 'En el Aeropuerto',
+            difficulty: 'A2',
+            audioUrl: null,
+            transcript: 'Excuse me, where is the departure gate for flight 123?',
+            questions: [
+                {
+                    question: '¿Qué está preguntando la persona?',
+                    options: ['El precio del boleto', 'La puerta de embarque', 'El horario del vuelo', 'La ubicación del baño'],
+                    correct: 1
+                },
+                {
+                    question: '¿Cuál es el número del vuelo?',
+                    options: ['123', '321', '132', '213'],
+                    correct: 0
+                }
+            ],
+            vocabulary: ['excuse', 'departure', 'gate', 'flight']
+        },
+        {
+            id: 'listening_5',
+            title: 'Conversación de Trabajo',
+            difficulty: 'B1',
+            audioUrl: null,
+            transcript: 'I have a meeting at 3 PM tomorrow. Can you send me the agenda?',
+            questions: [
+                {
+                    question: '¿Cuándo es la reunión?',
+                    options: ['Hoy a las 3 PM', 'Mañana a las 3 PM', 'Esta semana', 'El próximo mes'],
+                    correct: 1
+                },
+                {
+                    question: '¿Qué pide la persona?',
+                    options: ['Un café', 'La agenda', 'Un taxi', 'Un documento'],
+                    correct: 1
+                }
+            ],
+            vocabulary: ['meeting', 'tomorrow', 'send', 'agenda']
+        },
+        {
+            id: 'listening_6',
+            title: 'En la Tienda',
+            difficulty: 'A2',
+            audioUrl: null,
+            transcript: 'How much does this shirt cost? Do you have it in blue?',
+            questions: [
+                {
+                    question: '¿Qué está preguntando sobre el precio?',
+                    options: ['Un pantalón', 'Una camisa', 'Un zapato', 'Un sombrero'],
+                    correct: 1
+                },
+                {
+                    question: '¿En qué color lo quiere?',
+                    options: ['Rojo', 'Azul', 'Verde', 'Negro'],
+                    correct: 1
+                }
+            ],
+            vocabulary: ['much', 'cost', 'shirt', 'blue']
+        },
+        {
+            id: 'listening_7',
+            title: 'Conversación Familiar',
+            difficulty: 'B1',
+            audioUrl: null,
+            transcript: 'What time will you be home for dinner? I\'m making your favorite pasta.',
+            questions: [
+                {
+                    question: '¿Qué está preguntando?',
+                    options: ['El precio de la cena', 'La hora de llegada', 'El menú del restaurante', 'El clima'],
+                    correct: 1
+                },
+                {
+                    question: '¿Qué está preparando para la cena?',
+                    options: ['Pollo', 'Pasta', 'Ensalada', 'Sopa'],
+                    correct: 1
+                }
+            ],
+            vocabulary: ['time', 'home', 'dinner', 'favorite', 'pasta']
+        },
+        {
+            id: 'listening_8',
+            title: 'En el Hospital',
+            difficulty: 'B2',
+            audioUrl: null,
+            transcript: 'The doctor will see you in about 15 minutes. Please fill out this form while you wait.',
+            questions: [
+                {
+                    question: '¿Cuánto tiempo debe esperar?',
+                    options: ['5 minutos', '15 minutos', '30 minutos', '1 hora'],
+                    correct: 1
+                },
+                {
+                    question: '¿Qué debe hacer mientras espera?',
+                    options: ['Ir a casa', 'Llenar un formulario', 'Tomar medicamentos', 'Hacer ejercicio'],
+                    correct: 1
+                }
+            ],
+            vocabulary: ['doctor', 'minutes', 'fill', 'form', 'wait']
+        },
+        {
+            id: 'listening_9',
+            title: 'Conversación Académica',
+            difficulty: 'B2',
+            audioUrl: null,
+            transcript: 'Your research paper is due next Friday. Make sure to include proper citations.',
+            questions: [
+                {
+                    question: '¿Cuándo vence el trabajo?',
+                    options: ['Hoy', 'Mañana', 'El próximo viernes', 'El próximo mes'],
+                    correct: 2
+                },
+                {
+                    question: '¿Qué debe incluir el trabajo?',
+                    options: ['Fotos', 'Citas apropiadas', 'Música', 'Videos'],
+                    correct: 1
+                }
+            ],
+            vocabulary: ['research', 'paper', 'due', 'include', 'citations']
+        },
+        {
+            id: 'listening_10',
+            title: 'Conversación Social Avanzada',
+            difficulty: 'C1',
+            audioUrl: null,
+            transcript: 'I\'ve been thinking about traveling to Europe this summer. Have you ever been there?',
+            questions: [
+                {
+                    question: '¿Qué está considerando hacer?',
+                    options: ['Comprar una casa', 'Viajar a Europa', 'Cambiar de trabajo', 'Estudiar'],
+                    correct: 1
+                },
+                {
+                    question: '¿Cuándo planea viajar?',
+                    options: ['En invierno', 'En primavera', 'En verano', 'En otoño'],
+                    correct: 2
+                }
+            ],
+            vocabulary: ['thinking', 'traveling', 'Europe', 'summer', 'ever']
         }
     ],
     
@@ -2885,14 +3400,10 @@ const LISTENING_SYSTEM = {
         }
     },
     
-    // Mostrar mensaje cuando el audio no está disponible
+    // Mostrar mensaje cuando el audio no está disponible (SISTEMA ANTIGUO - NO USAR)
     showAudioUnavailableMessage() {
-        const playBtn = document.getElementById('playBtn');
-        if (playBtn) {
-            playBtn.innerHTML = '<i class="fas fa-volume-mute"></i> Audio no disponible';
-            playBtn.disabled = true;
-            playBtn.style.opacity = '0.5';
-        }
+        // Este sistema está deprecado - usar playListeningAudio en su lugar
+        console.warn('Sistema de audio antiguo detectado - usar playListeningAudio');
     },
     
     // Reproducir audio
@@ -2982,23 +3493,49 @@ const LISTENING_SYSTEM = {
     
     // Adjuntar event listeners
     attachEventListeners() {
-        document.querySelectorAll('.option-btn').forEach(btn => {
+        const optionButtons = document.querySelectorAll('.option-btn');
+        console.log('Adjuntando event listeners a', optionButtons.length, 'botones');
+        
+        optionButtons.forEach((btn, index) => {
+            // Remover event listeners previos para evitar duplicados
+            btn.removeEventListener('click', this.handleOptionClick);
+            
+            // Agregar nuevo event listener
             btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 this.handleOptionClick(e.target);
             });
+            
+            console.log(`Botón ${index}: data-question="${btn.dataset.question}", data-option="${btn.dataset.option}"`);
         });
     },
     
     // Manejar clic en opción
     handleOptionClick(button) {
-        // Remover selección previa de la misma pregunta
+        // Verificar que el botón tenga los datos necesarios
+        if (!button.dataset.question) {
+            console.warn('Botón sin data-question:', button);
+            return;
+        }
+        
         const questionIndex = button.dataset.question;
-        document.querySelectorAll(`[data-question="${questionIndex}"]`).forEach(btn => {
+        console.log('Seleccionando pregunta:', questionIndex, 'opción:', button.dataset.option);
+        
+        // Remover selección previa de la misma pregunta
+        const sameQuestionButtons = document.querySelectorAll(`[data-question="${questionIndex}"]`);
+        sameQuestionButtons.forEach(btn => {
             btn.classList.remove('selected');
+            btn.style.background = '';
+            btn.style.color = '';
         });
         
         // Seleccionar nueva opción
         button.classList.add('selected');
+        button.style.background = 'var(--primary-color)';
+        button.style.color = 'white';
+        
+        console.log('Botones de la pregunta', questionIndex, ':', sameQuestionButtons.length);
     },
     
     // Verificar respuestas
@@ -3061,6 +3598,20 @@ const LISTENING_SYSTEM = {
         appState.currentXP += xpEarned;
         updateUI();
         saveProgress();
+        
+        // Mostrar animación de éxito/fracaso
+        if (percentage >= 70) {
+            playSuccessSound();
+            showNotification(`¡Excelente! Ganaste ${xpEarned} XP`, 'success');
+        } else {
+            playFailSound();
+            showNotification(`¡Sigue practicando! Ganaste ${xpEarned} XP`, 'info');
+        }
+        
+        // Avanzar automáticamente a la siguiente lección después de 3 segundos
+        setTimeout(() => {
+            this.nextListeningExercise();
+        }, 3000);
     },
     
     // Obtener mensaje de resultado
@@ -3105,6 +3656,57 @@ const LISTENING_SYSTEM = {
             transcriptText.style.display = 'none';
             showBtn.innerHTML = '<i class="fas fa-eye"></i> Mostrar Transcripción';
         }
+    },
+    
+    // Avanzar al siguiente ejercicio de listening
+    nextListeningExercise() {
+        // Obtener el nivel del usuario
+        const userLevel = getUserLevelMCER();
+        const levelOrder = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+        const userLevelIndex = levelOrder.indexOf(userLevel);
+        
+        // Filtrar ejercicios disponibles para el nivel del usuario
+        const availableExercises = this.exercises.filter(ex => {
+            const exerciseLevelIndex = levelOrder.indexOf(ex.difficulty);
+            return exerciseLevelIndex <= userLevelIndex;
+        });
+        
+        if (availableExercises.length === 0) {
+            showNotification('No hay más ejercicios disponibles para tu nivel', 'info');
+            backToPracticeModes();
+            return;
+        }
+        
+        // Seleccionar un ejercicio aleatorio diferente al actual
+        let currentExerciseId = null;
+        const currentExerciseTitle = document.querySelector('.listening-exercise h3')?.textContent;
+        if (currentExerciseTitle) {
+            const currentExercise = this.exercises.find(ex => 
+                currentExerciseTitle.includes(ex.title)
+            );
+            if (currentExercise) {
+                currentExerciseId = currentExercise.id;
+            }
+        }
+        
+        const remainingExercises = availableExercises.filter(ex => ex.id !== currentExerciseId);
+        const nextExercise = remainingExercises.length > 0 
+            ? remainingExercises[Math.floor(Math.random() * remainingExercises.length)]
+            : availableExercises[Math.floor(Math.random() * availableExercises.length)];
+        
+        // Crear el siguiente ejercicio
+        this.createListeningExercise(nextExercise);
+        
+        // Mostrar notificación
+        showNotification(`Nuevo ejercicio: ${nextExercise.title}`, 'info');
+        
+        // Reproducir audio automáticamente después de 1 segundo
+        setTimeout(() => {
+            const transcriptText = document.getElementById('transcriptText');
+            if (transcriptText) {
+                playListeningAudio(transcriptText.textContent);
+            }
+        }, 1000);
     }
 };
 
@@ -3589,6 +4191,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inicializar sistemas
     try {
+        // Verificar Web Speech API
+        if ('speechSynthesis' in window) {
+            console.log('✅ Web Speech API disponible');
+            // Cargar voces disponibles
+            speechSynthesis.onvoiceschanged = function() {
+                const voices = speechSynthesis.getVoices();
+                console.log(`✅ ${voices.length} voces cargadas`);
+            };
+        } else {
+            console.warn('⚠️ Web Speech API no disponible');
+        }
+        
         // Inicializar sistema de estadísticas
         STATISTICS_SYSTEM.init();
         console.log('✅ Sistema de estadísticas inicializado');
