@@ -29,6 +29,8 @@ const appState = {
 let practiceStreak = 0;
 let practiceLessonIndex = 0; // Índice de la lección actual dentro de las permitidas
 
+
+
 // Base de datos de lecciones (estructura escalable)
 const LESSONS_DATABASE = {
     level1: [
@@ -696,56 +698,229 @@ const CONVERSATION_SCENARIOS = [
     }
 ];
 
-// Sistema de logros
-const ACHIEVEMENTS = {
-    FIRST_LESSON: {
-        id: 'FIRST_LESSON',
-        name: '🎓 Primera Lección',
-        description: 'Completaste tu primera lección',
-        condition: () => appState.lessonsCompleted >= 1,
-        earned: false
-    },
-    WEEK_STREAK: {
-        id: 'WEEK_STREAK',
-        name: '🔥 Racha Semanal',
+// Sistema de Logros y Gamificación
+const ACHIEVEMENTS_SYSTEM = {
+    achievements: [
+        {
+            id: 'first_lesson',
+            title: 'Primer Paso',
+            description: 'Completa tu primera lección',
+            icon: '🎯',
+            xpReward: 50,
+            unlocked: false
+        },
+        {
+            id: 'streak_7',
+            title: 'Constancia',
         description: '7 días consecutivos de estudio',
-        condition: () => appState.streakDays >= 7,
-        earned: false
-    },
-    VOCABULARY_MASTER: {
-        id: 'VOCABULARY_MASTER',
-        name: '📚 Maestro del Vocabulario',
-        description: 'Aprendiste 50 palabras',
-        condition: () => getTotalVocabularyLearned() >= 50,
-        earned: false
-    },
-    GRAMMAR_EXPERT: {
-        id: 'GRAMMAR_EXPERT',
-        name: '✏️ Experto en Gramática',
-        description: 'Completaste 20 ejercicios de gramática',
-        condition: () => appState.grammarExercises >= 20,
-        earned: false
-    },
-    CONVERSATION_PRO: {
-        id: 'CONVERSATION_PRO',
-        name: '💬 Profesional de Conversación',
-        description: 'Completaste 10 conversaciones',
-        condition: () => appState.conversationsCompleted >= 10,
-        earned: false
-    },
-    DAILY_LEARNER: {
-        id: 'DAILY_LEARNER',
-        name: '📅 Aprendiz Diario',
+            icon: '🔥',
+            xpReward: 100,
+            unlocked: false
+        },
+        {
+            id: 'streak_30',
+            title: 'Dedicación',
         description: '30 días consecutivos de estudio',
-        condition: () => appState.streakDays >= 30,
-        earned: false
+            icon: '💎',
+            xpReward: 300,
+            unlocked: false
+        },
+        {
+            id: 'vocabulary_100',
+            title: 'Palabras Maestro',
+            description: 'Aprende 100 palabras',
+            icon: '📚',
+            xpReward: 150,
+            unlocked: false
+        },
+        {
+            id: 'vocabulary_500',
+            title: 'Léxico Rico',
+            description: 'Aprende 500 palabras',
+            icon: '📖',
+            xpReward: 400,
+            unlocked: false
+        },
+        {
+            id: 'lessons_10',
+            title: 'Estudiante Aplicado',
+            description: 'Completa 10 lecciones',
+            icon: '🎓',
+            xpReward: 200,
+            unlocked: false
+        },
+        {
+            id: 'lessons_50',
+            title: 'Experto en Aprendizaje',
+            description: 'Completa 50 lecciones',
+            icon: '👨‍🎓',
+            xpReward: 500,
+            unlocked: false
+        },
+        {
+            id: 'perfect_score',
+            title: 'Perfección',
+            description: 'Obtén 100% en un ejercicio',
+            icon: '⭐',
+            xpReward: 75,
+            unlocked: false
+        },
+        {
+            id: 'practice_master',
+            title: 'Maestro de la Práctica',
+            description: 'Completa 100 ejercicios de práctica',
+            icon: '🏋️',
+            xpReward: 250,
+            unlocked: false
+        },
+        {
+            id: 'level_up_3',
+            title: 'Ascenso Rápido',
+            description: 'Sube 3 niveles',
+            icon: '🚀',
+            xpReward: 300,
+            unlocked: false
+        }
+    ],
+    
+    // Verificar logros
+    checkAchievements() {
+        const user = getCurrentUser();
+        if (!user) return;
+        
+        const unlockedAchievements = [];
+        
+        this.achievements.forEach(achievement => {
+            if (achievement.unlocked) return; // Ya desbloqueado
+            
+            let shouldUnlock = false;
+            
+            switch(achievement.id) {
+                case 'first_lesson':
+                    shouldUnlock = appState.lessonsCompleted >= 1;
+                    break;
+                case 'streak_7':
+                    shouldUnlock = appState.streakDays >= 7;
+                    break;
+                case 'streak_30':
+                    shouldUnlock = appState.streakDays >= 30;
+                    break;
+                case 'vocabulary_100':
+                    shouldUnlock = appState.vocabularyWordsLearned >= 100;
+                    break;
+                case 'vocabulary_500':
+                    shouldUnlock = appState.vocabularyWordsLearned >= 500;
+                    break;
+                case 'lessons_10':
+                    shouldUnlock = appState.lessonsCompleted >= 10;
+                    break;
+                case 'lessons_50':
+                    shouldUnlock = appState.lessonsCompleted >= 50;
+                    break;
+                case 'perfect_score':
+                    // Se verifica en handleExerciseAnswer
+                    break;
+                case 'practice_master':
+                    shouldUnlock = (appState.grammarExercises || 0) >= 100;
+                    break;
+                case 'level_up_3':
+                    shouldUnlock = appState.currentLevel >= 3;
+                    break;
+            }
+            
+            if (shouldUnlock) {
+                achievement.unlocked = true;
+                unlockedAchievements.push(achievement);
+                appState.currentXP += achievement.xpReward;
+                this.showAchievementNotification(achievement);
+            }
+        });
+        
+        if (unlockedAchievements.length > 0) {
+            updateUI();
+            saveProgress();
+        }
     },
-    SPEED_LEARNER: {
-        id: 'SPEED_LEARNER',
-        name: '⚡ Aprendiz Veloz',
-        description: 'Completaste 5 lecciones en un día',
-        condition: () => appState.lessonsCompleted >= 5,
-        earned: false
+    
+    // Mostrar notificación de logro
+    showAchievementNotification(achievement) {
+        const notification = document.createElement('div');
+        notification.className = 'achievement-notification achievement-popup';
+        notification.innerHTML = `
+            <div class="achievement-content">
+                <div class="achievement-icon">${achievement.icon}</div>
+                <div class="achievement-text">
+                    <h4>¡Logro Desbloqueado!</h4>
+                    <p><strong>${achievement.title}</strong></p>
+                    <p>${achievement.description}</p>
+                    <span class="achievement-xp">+${achievement.xpReward} XP</span>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Animación de entrada
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 100);
+        
+        // Remover después de 5 segundos
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 300);
+        }, 5000);
+    },
+    
+    // Cargar logros del usuario
+    loadUserAchievements() {
+        const user = getCurrentUser();
+        if (!user) return;
+        
+        const userAchievements = JSON.parse(localStorage.getItem(`achievements_${user.email}`) || '[]');
+        
+        this.achievements.forEach(achievement => {
+            const userAchievement = userAchievements.find(ua => ua.id === achievement.id);
+            if (userAchievement) {
+                achievement.unlocked = userAchievement.unlocked;
+                achievement.unlockedAt = userAchievement.unlockedAt;
+            }
+        });
+    },
+    
+    // Guardar logros del usuario
+    saveUserAchievements() {
+        const user = getCurrentUser();
+        if (!user) return;
+        
+        const achievementsToSave = this.achievements.map(achievement => ({
+            id: achievement.id,
+            unlocked: achievement.unlocked,
+            unlockedAt: achievement.unlockedAt
+        }));
+        
+        localStorage.setItem(`achievements_${user.email}`, JSON.stringify(achievementsToSave));
+    },
+    
+    // Obtener logros desbloqueados
+    getUnlockedAchievements() {
+        return this.achievements.filter(achievement => achievement.unlocked);
+    },
+    
+    // Obtener progreso de logros
+    getAchievementProgress() {
+        const user = getCurrentUser();
+        if (!user) return { unlocked: 0, total: 0, percentage: 0 };
+        
+        const unlocked = this.getUnlockedAchievements().length;
+        const total = this.achievements.length;
+        const percentage = Math.round((unlocked / total) * 100);
+        
+        return { unlocked, total, percentage };
     }
 };
 
@@ -981,6 +1156,9 @@ function saveProgress() {
         ...appState,
         lastSaved: new Date().toISOString()
     }));
+    
+    // Guardar logros del usuario
+    ACHIEVEMENTS_SYSTEM.saveUserAchievements();
 }
 
 function loadProgress() {
@@ -988,8 +1166,12 @@ function loadProgress() {
     if (saved) {
         const progress = JSON.parse(saved);
         Object.assign(appState, progress);
-        updateUI();
     }
+    
+    // Cargar logros del usuario
+    ACHIEVEMENTS_SYSTEM.loadUserAchievements();
+    
+        updateUI();
 }
 
 function updateUI() {
@@ -997,7 +1179,9 @@ function updateUI() {
     document.getElementById('currentXP').textContent = appState.currentXP;
     document.getElementById('streakDays').textContent = appState.streakDays;
     document.getElementById('lessonsCompleted').textContent = appState.lessonsCompleted;
-    document.getElementById('achievementsEarned').textContent = appState.achievements.length;
+    // Actualizar contador de logros usando el nuevo sistema
+    const achievementProgress = ACHIEVEMENTS_SYSTEM.getAchievementProgress();
+    document.getElementById('achievementsEarned').textContent = achievementProgress.unlocked;
     
     // Actualizar barra de progreso del nivel
     const xpForNextLevel = getXPForNextLevel(appState.currentLevel);
@@ -1240,7 +1424,7 @@ function loadPracticeExercise(mode) {
         practiceArea.innerHTML = '<div class="error">No hay lecciones disponibles para tu nivel actual.</div>';
         return;
     }
-    
+
     // Sincronizar con la lección de aprendizaje
     practiceLessonIndex = syncPracticeWithLearning();
     
@@ -1257,7 +1441,22 @@ function loadPracticeExercise(mode) {
             exerciseHTML = createGrammarExercise(currentLesson);
             break;
         case 'listening':
-            exerciseHTML = createListeningExercise(currentLesson);
+            // Usar el nuevo sistema de listening mejorado
+            const userLevel = getUserLevelMCER();
+            const availableExercises = LISTENING_SYSTEM.exercises.filter(ex => {
+                const levelOrder = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+                const userLevelIndex = levelOrder.indexOf(userLevel);
+                const exerciseLevelIndex = levelOrder.indexOf(ex.difficulty);
+                return exerciseLevelIndex <= userLevelIndex;
+            });
+            
+            if (availableExercises.length > 0) {
+                const exerciseIndex = practiceLessonIndex % availableExercises.length;
+                LISTENING_SYSTEM.createListeningExercise(availableExercises[exerciseIndex]);
+                return; // Salir temprano ya que createListeningExercise maneja el HTML
+            } else {
+                exerciseHTML = createListeningExercise(currentLesson); // Fallback al sistema anterior
+            }
             break;
         case 'pronunciation':
             exerciseHTML = createPronunciationPractice(currentLesson);
@@ -1491,41 +1690,123 @@ function loadProgressChart() {
                 }
             }
         });
+    
+    // Cargar panel de logros
+    loadAchievementsPanel();
+    
+    // Cargar panel de estadísticas detalladas
+    loadDetailedStatsPanel();
+}
+
+function loadDetailedStatsPanel() {
+    const progressContainer = document.querySelector('.progress-container');
+    if (!progressContainer) return;
+    
+    // Verificar si ya existe el panel de estadísticas
+    let statsPanel = progressContainer.querySelector('.stats-dashboard');
+    if (!statsPanel) {
+        statsPanel = document.createElement('div');
+        statsPanel.className = 'stats-dashboard';
+        progressContainer.appendChild(statsPanel);
+    }
+    
+
+    
+    statsPanel.innerHTML = STATISTICS_SYSTEM.createDetailedStatsPanel();
+}
+
+function loadAchievementsPanel() {
+    const progressContainer = document.querySelector('.progress-container');
+    if (!progressContainer) return;
+    
+    // Verificar si ya existe el panel de logros
+    let achievementsPanel = progressContainer.querySelector('.achievements-panel');
+    if (!achievementsPanel) {
+        achievementsPanel = document.createElement('div');
+        achievementsPanel.className = 'achievements-panel';
+        progressContainer.appendChild(achievementsPanel);
+    }
+    
+    const achievementProgress = ACHIEVEMENTS_SYSTEM.getAchievementProgress();
+    
+    achievementsPanel.innerHTML = `
+        <div class="achievements-header">
+            <h3 class="achievements-title">
+                <i class="fas fa-trophy"></i> Logros y Recompensas
+            </h3>
+            <div class="achievements-progress">
+                <span>${achievementProgress.unlocked}/${achievementProgress.total}</span>
+                <span>(${achievementProgress.percentage}%)</span>
+            </div>
+        </div>
+        <div class="achievements-grid">
+            ${ACHIEVEMENTS_SYSTEM.achievements.map(achievement => `
+                <div class="achievement-card ${achievement.unlocked ? 'unlocked' : 'locked'}">
+                    <div class="achievement-card-header">
+                        <div class="achievement-card-icon">
+                            ${achievement.icon}
+                        </div>
+                        <h4 class="achievement-card-title">${achievement.title}</h4>
+                    </div>
+                    <p class="achievement-card-description">${achievement.description}</p>
+                    <div class="achievement-card-reward">
+                        <span class="achievement-xp-reward">+${achievement.xpReward} XP</span>
+                        ${achievement.unlocked && achievement.unlockedAt ? 
+                            `<span class="achievement-unlock-date">Desbloqueado: ${new Date(achievement.unlockedAt).toLocaleDateString()}</span>` : 
+                            '<span class="achievement-unlock-date">No desbloqueado</span>'
+                        }
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
 }
 
 // Sistema de logros
 function checkAchievements() {
-    Object.values(ACHIEVEMENTS).forEach(achievement => {
-        if (!achievement.earned && achievement.condition()) {
-            unlockAchievement(achievement);
-        }
-    });
+    // Verificar logros usando el nuevo sistema
+    ACHIEVEMENTS_SYSTEM.checkAchievements();
 }
 
 function unlockAchievement(achievement) {
-    achievement.earned = true;
-    appState.achievements.push(achievement.id);
-    
-    const notification = document.getElementById('achievementNotification');
-    const achievementText = document.getElementById('achievementText');
-    
-    achievementText.textContent = achievement.name;
-    notification.style.display = 'flex';
-    
-    setTimeout(() => {
-        notification.style.display = 'none';
-    }, 3000);
-    
-    saveProgress();
+    // Función legacy - ahora usa ACHIEVEMENTS_SYSTEM
+    ACHIEVEMENTS_SYSTEM.showAchievementNotification(achievement);
 }
 
 // Event listeners para ejercicios (ya manejados en la inicialización principal)
 
 // --- Sonidos de feedback ---
-const successSound = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b7bfa.mp3'); // éxito
-const failSound = new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b7bfa.mp3'); // fallo (puedes cambiar por otro)
-successSound.volume = 0.5;
-failSound.volume = 0.5;
+// Función para crear sonidos usando Web Audio API
+function createSound(frequency, duration, type = 'sine') {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = frequency;
+        oscillator.type = type;
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + duration);
+    } catch (e) {
+        console.log('Audio no disponible:', e);
+    }
+}
+
+// Sonidos de feedback usando Web Audio API
+function playSuccessSound() {
+    createSound(800, 0.3, 'sine'); // Sonido agudo para éxito
+}
+
+function playFailSound() {
+    createSound(200, 0.5, 'sawtooth'); // Sonido grave para fallo
+}
 
 function handleExerciseAnswer(button) {
     const isCorrect = button.dataset.correct === 'true';
@@ -1548,18 +1829,41 @@ function handleExerciseAnswer(button) {
     const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
     
     if (isCorrect) {
-        resultDiv.innerHTML = `<div class="success exercise-success-animate">¡Correcto! ${randomEmoji} ¡Sigue así!</div>`;
+        if (resultDiv) {
+            resultDiv.innerHTML = `<div class="success exercise-success-animate">¡Correcto! ${randomEmoji} ¡Sigue así!</div>`;
+        }
         appState.currentXP += 10;
-        try { successSound.currentTime = 0; successSound.play(); } catch(e){}
+        playSuccessSound();
         practiceStreak++;
+        
+        // Verificar logro de puntuación perfecta (si es el primer ejercicio correcto de la sesión)
+        if (practiceStreak === 1) {
+            // Verificar si ya tiene el logro de puntuación perfecta
+            const perfectScoreAchievement = ACHIEVEMENTS_SYSTEM.achievements.find(a => a.id === 'perfect_score');
+            if (perfectScoreAchievement && !perfectScoreAchievement.unlocked) {
+                perfectScoreAchievement.unlocked = true;
+                perfectScoreAchievement.unlockedAt = new Date().toISOString();
+                appState.currentXP += perfectScoreAchievement.xpReward;
+                ACHIEVEMENTS_SYSTEM.showAchievementNotification(perfectScoreAchievement);
+            }
+        }
     } else {
-        resultDiv.innerHTML = '<div class="error">Incorrecto. Intenta de nuevo.</div>';
-        try { failSound.currentTime = 0; failSound.play(); } catch(e){}
+        if (resultDiv) {
+            resultDiv.innerHTML = '<div class="error">Incorrecto. Intenta de nuevo.</div>';
+        }
+        playFailSound();
         practiceStreak = 0;
     }
     
     updateUI();
     saveProgress();
+    
+    // Registrar actividad en estadísticas
+    STATISTICS_SYSTEM.recordActivity('exercise_completed', {
+        type: 'vocabulary',
+        success: isCorrect,
+        xpEarned: isCorrect ? 10 : 0
+    });
     
     setTimeout(() => {
         // Si estamos en la sección de práctica y modo vocabulario, gramática o listening, avanzar a la siguiente pregunta
@@ -1598,7 +1902,9 @@ function handleExerciseAnswer(button) {
             btn.style.background = '';
             btn.style.color = '';
         });
-        resultDiv.innerHTML = '';
+        if (resultDiv) {
+            resultDiv.innerHTML = '';
+        }
     }, 1200);
 }
 
@@ -1678,6 +1984,16 @@ function completeLesson() {
     saveProgress();
     checkAchievements();
     
+    // Verificar logros específicos después de completar lección
+    ACHIEVEMENTS_SYSTEM.checkAchievements();
+    
+    // Registrar actividad en estadísticas
+    STATISTICS_SYSTEM.recordActivity('lesson_completed', {
+        lessonId: currentLessonId,
+        xpEarned: LEVEL_SYSTEM.xpPerLesson,
+        success: true
+    });
+    
     // Cargar siguiente lección
     loadCurrentLesson();
     
@@ -1756,6 +2072,15 @@ function checkDailyStreak() {
         
         appState.lastLoginDate = new Date().toISOString();
         saveProgress();
+        
+        // Verificar logros de racha después de actualizar
+        ACHIEVEMENTS_SYSTEM.checkAchievements();
+        
+        // Registrar actividad de racha
+        STATISTICS_SYSTEM.recordActivity('streak_updated', {
+            streakDays: appState.streakDays,
+            xpEarned: 0
+        });
     }
 }
 
@@ -1829,16 +2154,26 @@ function loadVocabularyDetail(categoryKey) {
     `;
 }
 
-// Inicializar verificación de racha
-checkDailyStreak(); 
-
 // --- Autenticación básica (modal) ---
 
 // Mostrar modal y overlay
 function showAuthModal() {
-    document.getElementById('authOverlay').style.display = 'block';
-    document.getElementById('authModal').style.display = 'block';
-    document.getElementById('mainApp').style.filter = 'blur(2px)';
+    console.log('Mostrando modal de autenticación...');
+    const authOverlay = document.getElementById('authOverlay');
+    const authModal = document.getElementById('authModal');
+    const mainApp = document.getElementById('mainApp');
+    
+    if (authOverlay && authModal && mainApp) {
+        authOverlay.style.display = 'block';
+        authModal.style.display = 'block';
+        mainApp.style.filter = 'blur(2px)';
+        console.log('Modal de autenticación mostrado correctamente');
+    } else {
+        console.error('Error: No se encontraron elementos del modal de autenticación');
+        console.log('authOverlay:', authOverlay);
+        console.log('authModal:', authModal);
+        console.log('mainApp:', mainApp);
+    }
 }
 // Ocultar modal y overlay
 function hideAuthModal() {
@@ -2011,13 +2346,13 @@ function handleLogin(e) {
     updateUserDisplay();
     
     // Cargar el progreso del usuario
-    loadProgress();
+        loadProgress();
     
     // Actualizar la UI
     updateUI();
     
     // Cargar la lección actual
-    loadCurrentLesson();
+        loadCurrentLesson();
 }
 
 // Función para obtener el usuario actual
@@ -2037,10 +2372,14 @@ function updateUserDisplay() {
     const userDisplay = document.getElementById('userDisplay');
     
     if (user && userDisplay) {
+        const userLevel = user.mcer || 'A1'; // Usar el nivel MCER del usuario o A1 por defecto
         userDisplay.innerHTML = `
             <div class="user-info">
                 <i class="fas fa-user-graduate"></i>
-                <span class="user-name">${user.name}</span>
+                <div class="user-details">
+                    <span class="user-name">${user.name}</span>
+                    <span class="user-level">${userLevel}</span>
+                </div>
             </div>
         `;
         userDisplay.style.display = 'flex';
@@ -2051,14 +2390,19 @@ function updateUserDisplay() {
 
 // Verificar sesión al cargar
 function checkAuth() {
+    console.log('Verificando autenticación...');
     const session = JSON.parse(localStorage.getItem('englishLearningSession') || 'null');
+    console.log('Sesión encontrada:', session);
+    
     if (session && session.email) {
+        console.log('Usuario autenticado, ocultando modal...');
         hideAuthModal();
         updateUserDisplay();
         loadProgress();
         updateUI();
         loadCurrentLesson();
     } else {
+        console.log('Usuario no autenticado, mostrando modal...');
         showAuthModal();
     }
 }
@@ -2072,6 +2416,7 @@ function logout() {
 
 // Asignar eventos
 window.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM cargado, inicializando aplicación...');
     setupAuthTabs();
     checkAuth();
     
@@ -2212,3 +2557,946 @@ function showWelcomeMessage(name, level, mcer) {
         }
     }, 10000);
 }
+
+// Sistema de Listening Mejorado
+const LISTENING_SYSTEM = {
+    // Base de datos de ejercicios de listening
+    exercises: [
+        {
+            id: 'listening_1',
+            title: 'Saludos y Presentaciones',
+            difficulty: 'A1',
+            audioUrl: null, // Usar Web Speech API en su lugar
+            transcript: 'Hello, my name is Sarah. Nice to meet you!',
+            questions: [
+                {
+                    question: '¿Cuál es el nombre de la persona?',
+                    options: ['Sarah', 'Susan', 'Sara', 'Sally'],
+                    correct: 0
+                },
+                {
+                    question: '¿Qué está haciendo la persona?',
+                    options: ['Despidiéndose', 'Presentándose', 'Preguntando la hora', 'Ordenando comida'],
+                    correct: 1
+                }
+            ],
+            vocabulary: ['hello', 'name', 'nice', 'meet']
+        },
+        {
+            id: 'listening_2',
+            title: 'En el Restaurante',
+            difficulty: 'A2',
+            audioUrl: null, // Usar Web Speech API en su lugar
+            transcript: 'I would like to order a pizza and a glass of water, please.',
+            questions: [
+                {
+                    question: '¿Qué quiere ordenar la persona?',
+                    options: ['Una hamburguesa', 'Una pizza', 'Una ensalada', 'Un sandwich'],
+                    correct: 1
+                },
+                {
+                    question: '¿Qué bebida pide?',
+                    options: ['Coca cola', 'Agua', 'Café', 'Té'],
+                    correct: 1
+                }
+            ],
+            vocabulary: ['order', 'pizza', 'glass', 'water', 'please']
+        },
+        {
+            id: 'listening_3',
+            title: 'Conversación Casual',
+            difficulty: 'B1',
+            audioUrl: null, // Usar Web Speech API en su lugar
+            transcript: 'The weather is really nice today. I think I will go for a walk in the park.',
+            questions: [
+                {
+                    question: '¿Cómo está el clima?',
+                    options: ['Lluvioso', 'Agradable', 'Frío', 'Caluroso'],
+                    correct: 1
+                },
+                {
+                    question: '¿Qué planea hacer la persona?',
+                    options: ['Quedarse en casa', 'Ir al parque', 'Ir de compras', 'Ver una película'],
+                    correct: 1
+                }
+            ],
+            vocabulary: ['weather', 'nice', 'walk', 'park']
+        }
+    ],
+    
+    // Crear ejercicio de listening mejorado
+    createListeningExercise(exercise) {
+        const practiceArea = document.getElementById('practiceArea');
+        
+        practiceArea.innerHTML = `
+            <div class="practice-header">
+                <button class="back-btn" onclick="backToPracticeModes()">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <h3><i class="fas fa-headphones"></i> Comprensión Auditiva</h3>
+                <div class="difficulty-badge">${exercise.difficulty}</div>
+            </div>
+            
+            <div class="listening-exercise">
+                <div class="audio-player">
+                    <div class="audio-controls">
+                        <button class="play-btn" id="playBtn" onclick="LISTENING_SYSTEM.playAudio()">
+                            <i class="fas fa-play"></i> Reproducir
+                        </button>
+                        <button class="pause-btn" id="pauseBtn" onclick="LISTENING_SYSTEM.pauseAudio()" style="display: none;">
+                            <i class="fas fa-pause"></i> Pausar
+                        </button>
+                        <div class="speed-controls">
+                            <label>Velocidad:</label>
+                            <select id="speedSelect" onchange="LISTENING_SYSTEM.changeSpeed()">
+                                <option value="0.5">0.5x</option>
+                                <option value="0.75">0.75x</option>
+                                <option value="1" selected>1x</option>
+                                <option value="1.25">1.25x</option>
+                                <option value="1.5">1.5x</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="audio-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="audioProgress"></div>
+                        </div>
+                        <span class="time-display" id="timeDisplay">0:00 / 0:00</span>
+                    </div>
+                </div>
+                
+                <div class="transcript-section">
+                    <h4><i class="fas fa-file-text"></i> Transcripción</h4>
+                    <div class="transcript-container">
+                        <p class="transcript-text" id="transcriptText">${exercise.transcript}</p>
+                        <button class="show-transcript-btn" id="showTranscriptBtn" onclick="LISTENING_SYSTEM.toggleTranscript()">
+                            <i class="fas fa-eye"></i> Mostrar Transcripción
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="vocabulary-section">
+                    <h4><i class="fas fa-book"></i> Vocabulario Clave</h4>
+                    <div class="vocabulary-list">
+                        ${exercise.vocabulary.map(word => `
+                            <div class="vocab-item">
+                                <span class="word">${word}</span>
+                                <button class="speak-btn" onclick="speakText('${word}', 'en-US')">
+                                    <i class="fas fa-volume-up"></i>
+                                </button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="questions-section">
+                    <h4><i class="fas fa-question-circle"></i> Preguntas de Comprensión</h4>
+                    <div class="questions-container">
+                        ${exercise.questions.map((q, index) => `
+                            <div class="question-card">
+                                <h5>Pregunta ${index + 1}</h5>
+                                <p>${q.question}</p>
+                                <div class="options-grid">
+                                    ${q.options.map((option, optIndex) => `
+                                        <button class="option-btn" data-question="${index}" data-option="${optIndex}" data-correct="${optIndex === q.correct}">
+                                            ${option}
+                                        </button>
+                                    `).join('')}
+                                </div>
+                                <div class="question-feedback" id="feedback-${index}" style="display: none;"></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <div class="exercise-actions">
+                    <button class="btn btn-primary" onclick="LISTENING_SYSTEM.checkAnswers()">
+                        <i class="fas fa-check"></i> Verificar Respuestas
+                    </button>
+                    <button class="btn btn-secondary" onclick="LISTENING_SYSTEM.resetExercise()">
+                        <i class="fas fa-redo"></i> Reiniciar
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Inicializar audio
+        this.initializeAudio(exercise.audioUrl);
+        
+        // Adjuntar event listeners
+        this.attachEventListeners();
+    },
+    
+    // Inicializar audio
+    initializeAudio(audioUrl) {
+        if (audioUrl) {
+            // Si hay URL de audio, usar el archivo
+            this.audio = new Audio(audioUrl);
+            this.audio.preload = 'metadata';
+            
+            this.audio.addEventListener('loadedmetadata', () => {
+                this.updateTimeDisplay();
+            });
+            
+            this.audio.addEventListener('timeupdate', () => {
+                this.updateProgress();
+            });
+            
+            this.audio.addEventListener('ended', () => {
+                this.onAudioEnd();
+            });
+            
+            this.audio.addEventListener('error', (e) => {
+                console.log('Error cargando audio:', e);
+                this.audio = null;
+                this.showAudioUnavailableMessage();
+            });
+        } else {
+            // Si no hay URL, usar Web Speech API
+            this.audio = null;
+            this.showAudioUnavailableMessage();
+        }
+    },
+    
+    // Mostrar mensaje cuando el audio no está disponible
+    showAudioUnavailableMessage() {
+        const playBtn = document.getElementById('playBtn');
+        if (playBtn) {
+            playBtn.innerHTML = '<i class="fas fa-volume-mute"></i> Audio no disponible';
+            playBtn.disabled = true;
+            playBtn.style.opacity = '0.5';
+        }
+    },
+    
+    // Reproducir audio
+    playAudio() {
+        if (this.audio) {
+            this.audio.play();
+            document.getElementById('playBtn').style.display = 'none';
+            document.getElementById('pauseBtn').style.display = 'inline-block';
+        } else {
+            // Si no hay audio, usar Web Speech API para leer la transcripción
+            const transcriptText = document.getElementById('transcriptText');
+            if (transcriptText) {
+                speakText(transcriptText.textContent, 'en-US');
+            }
+        }
+    },
+    
+    // Pausar audio
+    pauseAudio() {
+        if (this.audio) {
+            this.audio.pause();
+            document.getElementById('playBtn').style.display = 'inline-block';
+            document.getElementById('pauseBtn').style.display = 'none';
+        }
+    },
+    
+    // Cambiar velocidad
+    changeSpeed() {
+        const speed = parseFloat(document.getElementById('speedSelect').value);
+        if (this.audio) {
+            this.audio.playbackRate = speed;
+        }
+        // Nota: La velocidad no se puede cambiar para Web Speech API
+    },
+    
+    // Actualizar progreso del audio
+    updateProgress() {
+        if (this.audio) {
+            const progress = (this.audio.currentTime / this.audio.duration) * 100;
+            document.getElementById('audioProgress').style.width = `${progress}%`;
+            this.updateTimeDisplay();
+        } else {
+            // Si no hay audio, mostrar progreso simulado
+            document.getElementById('audioProgress').style.width = '0%';
+        }
+    },
+    
+    // Actualizar display de tiempo
+    updateTimeDisplay() {
+        if (this.audio) {
+            const current = this.formatTime(this.audio.currentTime);
+            const total = this.formatTime(this.audio.duration);
+            document.getElementById('timeDisplay').textContent = `${current} / ${total}`;
+        } else {
+            // Si no hay audio, mostrar tiempo simulado
+            document.getElementById('timeDisplay').textContent = '0:00 / 0:00';
+        }
+    },
+    
+    // Formatear tiempo
+    formatTime(seconds) {
+        if (isNaN(seconds)) return '0:00';
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    },
+    
+    // Audio terminado
+    onAudioEnd() {
+        document.getElementById('playBtn').style.display = 'inline-block';
+        document.getElementById('pauseBtn').style.display = 'none';
+    },
+    
+    // Mostrar/ocultar transcripción
+    toggleTranscript() {
+        const transcriptText = document.getElementById('transcriptText');
+        const showBtn = document.getElementById('showTranscriptBtn');
+        
+        if (transcriptText.style.display === 'none') {
+            transcriptText.style.display = 'block';
+            showBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Ocultar Transcripción';
+        } else {
+            transcriptText.style.display = 'none';
+            showBtn.innerHTML = '<i class="fas fa-eye"></i> Mostrar Transcripción';
+        }
+    },
+    
+    // Adjuntar event listeners
+    attachEventListeners() {
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.handleOptionClick(e.target);
+            });
+        });
+    },
+    
+    // Manejar clic en opción
+    handleOptionClick(button) {
+        // Remover selección previa de la misma pregunta
+        const questionIndex = button.dataset.question;
+        document.querySelectorAll(`[data-question="${questionIndex}"]`).forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        
+        // Seleccionar nueva opción
+        button.classList.add('selected');
+    },
+    
+    // Verificar respuestas
+    checkAnswers() {
+        let correctAnswers = 0;
+        const totalQuestions = document.querySelectorAll('.question-card').length;
+        
+        document.querySelectorAll('.question-card').forEach((card, index) => {
+            const selectedOption = card.querySelector('.option-btn.selected');
+            const feedback = card.querySelector('.question-feedback');
+            
+            if (selectedOption) {
+                const isCorrect = selectedOption.dataset.correct === 'true';
+                
+                if (isCorrect) {
+                    correctAnswers++;
+                    selectedOption.style.background = 'var(--success-color)';
+                    selectedOption.style.color = 'white';
+                    feedback.innerHTML = '<div class="success"><i class="fas fa-check"></i> ¡Correcto!</div>';
+                } else {
+                    selectedOption.style.background = 'var(--error-color)';
+                    selectedOption.style.color = 'white';
+                    
+                    // Mostrar respuesta correcta
+                    const correctOption = card.querySelector('[data-correct="true"]');
+                    correctOption.style.background = 'var(--success-color)';
+                    correctOption.style.color = 'white';
+                    correctOption.style.border = '2px solid var(--success-color)';
+                    
+                    feedback.innerHTML = '<div class="error"><i class="fas fa-times"></i> Incorrecto</div>';
+                }
+                
+                feedback.style.display = 'block';
+            } else {
+                feedback.innerHTML = '<div class="warning"><i class="fas fa-exclamation-triangle"></i> Selecciona una respuesta</div>';
+                feedback.style.display = 'block';
+            }
+        });
+        
+        // Mostrar resultado final
+        const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+        const resultMessage = `
+            <div class="exercise-result">
+                <h4>Resultado: ${correctAnswers}/${totalQuestions} (${percentage}%)</h4>
+                <p>${this.getResultMessage(percentage)}</p>
+            </div>
+        `;
+        
+        // Agregar resultado al final
+        const exerciseActions = document.querySelector('.exercise-actions');
+        const existingResult = document.querySelector('.exercise-result');
+        if (existingResult) {
+            existingResult.remove();
+        }
+        
+        exerciseActions.insertAdjacentHTML('beforebegin', resultMessage);
+        
+        // Sumar XP basado en el resultado
+        const xpEarned = Math.round((correctAnswers / totalQuestions) * 20);
+        appState.currentXP += xpEarned;
+        updateUI();
+        saveProgress();
+    },
+    
+    // Obtener mensaje de resultado
+    getResultMessage(percentage) {
+        if (percentage >= 90) return '¡Excelente! Tienes una comprensión auditiva muy buena. 🎉';
+        if (percentage >= 70) return '¡Muy bien! Tu comprensión auditiva es buena. 👍';
+        if (percentage >= 50) return 'Bien, pero puedes mejorar. Sigue practicando. 💪';
+        return 'Necesitas más práctica. No te rindas, sigue escuchando. 📚';
+    },
+    
+    // Reiniciar ejercicio
+    resetExercise() {
+        // Limpiar selecciones
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.classList.remove('selected');
+            btn.style.background = '';
+            btn.style.color = '';
+            btn.style.border = '';
+        });
+        
+        // Ocultar feedback
+        document.querySelectorAll('.question-feedback').forEach(feedback => {
+            feedback.style.display = 'none';
+        });
+        
+        // Remover resultado
+        const existingResult = document.querySelector('.exercise-result');
+        if (existingResult) {
+            existingResult.remove();
+        }
+        
+        // Reiniciar audio
+        if (this.audio) {
+            this.audio.currentTime = 0;
+            this.pauseAudio();
+        }
+        
+        // Ocultar transcripción
+        const transcriptText = document.getElementById('transcriptText');
+        const showBtn = document.getElementById('showTranscriptBtn');
+        if (transcriptText) {
+            transcriptText.style.display = 'none';
+            showBtn.innerHTML = '<i class="fas fa-eye"></i> Mostrar Transcripción';
+        }
+    }
+};
+
+// Sistema de Estadísticas Detalladas
+const STATISTICS_SYSTEM = {
+    // Metas personalizadas del usuario
+    goals: {
+        dailyStudyTime: 30, // minutos
+        weeklyLessons: 5,
+        monthlyXP: 500,
+        vocabularyGoal: 100
+    },
+    
+    // Historial de actividades
+    activityHistory: [],
+    
+    // Inicializar sistema
+    init() {
+        this.loadUserGoals();
+        this.loadActivityHistory();
+    },
+    
+    // Cargar metas del usuario
+    loadUserGoals() {
+        const user = getCurrentUser();
+        if (!user) return;
+        
+        const savedGoals = localStorage.getItem(`goals_${user.email}`);
+        if (savedGoals) {
+            this.goals = { ...this.goals, ...JSON.parse(savedGoals) };
+        }
+    },
+    
+    // Guardar metas del usuario
+    saveUserGoals() {
+        const user = getCurrentUser();
+        if (!user) return;
+        
+        localStorage.setItem(`goals_${user.email}`, JSON.stringify(this.goals));
+    },
+    
+    // Cargar historial de actividades
+    loadActivityHistory() {
+        const user = getCurrentUser();
+        if (!user) return;
+        
+        const savedHistory = localStorage.getItem(`activity_history_${user.email}`);
+        if (savedHistory) {
+            this.activityHistory = JSON.parse(savedHistory);
+        }
+    },
+    
+    // Guardar historial de actividades
+    saveActivityHistory() {
+        const user = getCurrentUser();
+        if (!user) return;
+        
+        localStorage.setItem(`activity_history_${user.email}`, JSON.stringify(this.activityHistory));
+    },
+    
+    // Registrar actividad
+    recordActivity(type, details) {
+        const activity = {
+            id: Date.now(),
+            type: type,
+            details: details,
+            timestamp: new Date().toISOString(),
+            xpEarned: details.xpEarned || 0
+        };
+        
+        this.activityHistory.unshift(activity);
+        
+        // Mantener solo los últimos 100 registros
+        if (this.activityHistory.length > 100) {
+            this.activityHistory = this.activityHistory.slice(0, 100);
+        }
+        
+        this.saveActivityHistory();
+    },
+    
+    // Obtener estadísticas generales
+    getGeneralStats() {
+        const totalXP = appState.currentXP;
+        const totalLessons = appState.lessonsCompleted;
+        const streakDays = appState.streakDays;
+        const vocabularyWords = appState.vocabularyWordsLearned || 0;
+        
+        // Calcular tiempo total de estudio (estimado)
+        const totalStudyTime = totalLessons * 15; // 15 minutos por lección
+        
+        // Calcular nivel de compromiso
+        const commitmentLevel = this.calculateCommitmentLevel();
+        
+        return {
+            totalXP,
+            totalLessons,
+            streakDays,
+            vocabularyWords,
+            totalStudyTime,
+            commitmentLevel,
+            currentLevel: appState.currentLevel
+        };
+    },
+    
+    // Calcular nivel de compromiso
+    calculateCommitmentLevel() {
+        const recentActivities = this.activityHistory.filter(activity => {
+            const activityDate = new Date(activity.timestamp);
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            return activityDate >= weekAgo;
+        });
+        
+        const dailyActivities = {};
+        recentActivities.forEach(activity => {
+            const date = new Date(activity.timestamp).toDateString();
+            dailyActivities[date] = (dailyActivities[date] || 0) + 1;
+        });
+        
+        const activeDays = Object.keys(dailyActivities).length;
+        const averageActivities = recentActivities.length / 7;
+        
+        if (activeDays >= 6 && averageActivities >= 3) return 'Muy Alto';
+        if (activeDays >= 4 && averageActivities >= 2) return 'Alto';
+        if (activeDays >= 2 && averageActivities >= 1) return 'Medio';
+        return 'Bajo';
+    },
+    
+    // Obtener análisis de fortalezas y debilidades
+    getStrengthsWeaknesses() {
+        const activities = this.activityHistory.slice(0, 50); // Últimas 50 actividades
+        
+        const typeCounts = {};
+        const successRates = {};
+        
+        activities.forEach(activity => {
+            const type = activity.type;
+            typeCounts[type] = (typeCounts[type] || 0) + 1;
+            
+            if (activity.details.success !== undefined) {
+                if (!successRates[type]) {
+                    successRates[type] = { total: 0, successful: 0 };
+                }
+                successRates[type].total++;
+                if (activity.details.success) {
+                    successRates[type].successful++;
+                }
+            }
+        });
+        
+        // Calcular tasas de éxito
+        const rates = {};
+        Object.keys(successRates).forEach(type => {
+            const rate = (successRates[type].successful / successRates[type].total) * 100;
+            rates[type] = Math.round(rate);
+        });
+        
+        // Identificar fortalezas y debilidades
+        const strengths = [];
+        const weaknesses = [];
+        
+        Object.keys(rates).forEach(type => {
+            if (rates[type] >= 80) {
+                strengths.push({ type, rate: rates[type] });
+            } else if (rates[type] <= 50) {
+                weaknesses.push({ type, rate: rates[type] });
+            }
+        });
+        
+        return {
+            strengths: strengths.sort((a, b) => b.rate - a.rate),
+            weaknesses: weaknesses.sort((a, b) => a.rate - b.rate),
+            typeCounts,
+            rates
+        };
+    },
+    
+    // Obtener progreso hacia metas
+    getGoalsProgress() {
+        const stats = this.getGeneralStats();
+        const recentActivities = this.activityHistory.filter(activity => {
+            const activityDate = new Date(activity.timestamp);
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+            return activityDate >= weekAgo;
+        });
+        
+        const weeklyXP = recentActivities.reduce((total, activity) => total + (activity.xpEarned || 0), 0);
+        const weeklyLessons = recentActivities.filter(activity => activity.type === 'lesson_completed').length;
+        
+        return {
+            dailyStudyTime: {
+                current: Math.min(stats.totalStudyTime / 7, this.goals.dailyStudyTime),
+                goal: this.goals.dailyStudyTime,
+                percentage: Math.min((stats.totalStudyTime / 7 / this.goals.dailyStudyTime) * 100, 100)
+            },
+            weeklyLessons: {
+                current: weeklyLessons,
+                goal: this.goals.weeklyLessons,
+                percentage: Math.min((weeklyLessons / this.goals.weeklyLessons) * 100, 100)
+            },
+            monthlyXP: {
+                current: weeklyXP * 4, // Estimación mensual
+                goal: this.goals.monthlyXP,
+                percentage: Math.min(((weeklyXP * 4) / this.goals.monthlyXP) * 100, 100)
+            },
+            vocabularyGoal: {
+                current: stats.vocabularyWords,
+                goal: this.goals.vocabularyGoal,
+                percentage: Math.min((stats.vocabularyWords / this.goals.vocabularyGoal) * 100, 100)
+            }
+        };
+    },
+    
+    // Crear panel de estadísticas detalladas
+    createDetailedStatsPanel() {
+        const stats = this.getGeneralStats();
+        const goalsProgress = this.getGoalsProgress();
+        const strengthsWeaknesses = this.getStrengthsWeaknesses();
+        
+        return `
+            <div class="stats-dashboard">
+                <div class="stats-header">
+                    <h3><i class="fas fa-chart-line"></i> Estadísticas Detalladas</h3>
+                    <button class="btn btn-secondary" onclick="STATISTICS_SYSTEM.showGoalsModal()">
+                        <i class="fas fa-cog"></i> Configurar Metas
+                    </button>
+                </div>
+                
+                <!-- Estadísticas Generales -->
+                <div class="stats-section">
+                    <h4><i class="fas fa-info-circle"></i> Resumen General</h4>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">🎯</div>
+                            <div class="stat-content">
+                                <h5>Nivel Actual</h5>
+                                <span class="stat-value">${stats.currentLevel}</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⭐</div>
+                            <div class="stat-content">
+                                <h5>XP Total</h5>
+                                <span class="stat-value">${stats.totalXP}</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📚</div>
+                            <div class="stat-content">
+                                <h5>Lecciones Completadas</h5>
+                                <span class="stat-value">${stats.totalLessons}</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">🔥</div>
+                            <div class="stat-content">
+                                <h5>Racha Actual</h5>
+                                <span class="stat-value">${stats.streakDays} días</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">📖</div>
+                            <div class="stat-content">
+                                <h5>Palabras Aprendidas</h5>
+                                <span class="stat-value">${stats.vocabularyWords}</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">⏱️</div>
+                            <div class="stat-content">
+                                <h5>Tiempo de Estudio</h5>
+                                <span class="stat-value">${stats.totalStudyTime} min</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Progreso hacia Metas -->
+                <div class="stats-section">
+                    <h4><i class="fas fa-bullseye"></i> Progreso hacia Metas</h4>
+                    <div class="goals-grid">
+                        ${Object.entries(goalsProgress).map(([goal, data]) => `
+                            <div class="goal-card">
+                                <div class="goal-header">
+                                    <h5>${this.getGoalTitle(goal)}</h5>
+                                    <span class="goal-percentage">${Math.round(data.percentage)}%</span>
+                                </div>
+                                <div class="goal-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: ${data.percentage}%"></div>
+                                    </div>
+                                </div>
+                                <div class="goal-details">
+                                    <span>${data.current} / ${data.goal}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+                
+                <!-- Fortalezas y Debilidades -->
+                <div class="stats-section">
+                    <h4><i class="fas fa-chart-bar"></i> Análisis de Rendimiento</h4>
+                    <div class="performance-analysis">
+                        <div class="strengths-section">
+                            <h5><i class="fas fa-thumbs-up"></i> Fortalezas</h5>
+                            ${strengthsWeaknesses.strengths.length > 0 ? 
+                                strengthsWeaknesses.strengths.map(strength => `
+                                    <div class="strength-item">
+                                        <span class="strength-type">${this.getActivityTypeName(strength.type)}</span>
+                                        <span class="strength-rate">${strength.rate}%</span>
+                                    </div>
+                                `).join('') : 
+                                '<p class="no-data">Aún no hay suficientes datos para identificar fortalezas.</p>'
+                            }
+                        </div>
+                        <div class="weaknesses-section">
+                            <h5><i class="fas fa-exclamation-triangle"></i> Áreas de Mejora</h5>
+                            ${strengthsWeaknesses.weaknesses.length > 0 ? 
+                                strengthsWeaknesses.weaknesses.map(weakness => `
+                                    <div class="weakness-item">
+                                        <span class="weakness-type">${this.getActivityTypeName(weakness.type)}</span>
+                                        <span class="weakness-rate">${weakness.rate}%</span>
+                                    </div>
+                                `).join('') : 
+                                '<p class="no-data">¡Excelente! No se identificaron áreas de mejora.</p>'
+                            }
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Historial de Actividades -->
+                <div class="stats-section">
+                    <h4><i class="fas fa-history"></i> Actividad Reciente</h4>
+                    <div class="activity-history">
+                        ${this.activityHistory.slice(0, 10).map(activity => `
+                            <div class="activity-item">
+                                <div class="activity-icon">
+                                    ${this.getActivityIcon(activity.type)}
+                                </div>
+                                <div class="activity-content">
+                                    <div class="activity-title">${this.getActivityTitle(activity.type)}</div>
+                                    <div class="activity-time">${this.formatActivityTime(activity.timestamp)}</div>
+                                </div>
+                                ${activity.xpEarned > 0 ? 
+                                    `<div class="activity-xp">+${activity.xpEarned} XP</div>` : ''
+                                }
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+    
+    // Mostrar modal de configuración de metas
+    showGoalsModal() {
+        const modal = document.createElement('div');
+        modal.className = 'modal-overlay';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-bullseye"></i> Configurar Metas Personales</h3>
+                    <button class="close-btn" onclick="this.closest('.modal-overlay').remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="goalsForm">
+                        <div class="form-group">
+                            <label>Tiempo de estudio diario (minutos)</label>
+                            <input type="number" id="dailyStudyTime" value="${this.goals.dailyStudyTime}" min="5" max="180">
+                        </div>
+                        <div class="form-group">
+                            <label>Lecciones por semana</label>
+                            <input type="number" id="weeklyLessons" value="${this.goals.weeklyLessons}" min="1" max="20">
+                        </div>
+                        <div class="form-group">
+                            <label>XP mensual objetivo</label>
+                            <input type="number" id="monthlyXP" value="${this.goals.monthlyXP}" min="100" max="2000">
+                        </div>
+                        <div class="form-group">
+                            <label>Palabras de vocabulario objetivo</label>
+                            <input type="number" id="vocabularyGoal" value="${this.goals.vocabularyGoal}" min="10" max="1000">
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Guardar Metas</button>
+                            <button type="button" class="btn btn-secondary" onclick="this.closest('.modal-overlay').remove()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Event listener para guardar metas
+        document.getElementById('goalsForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.goals.dailyStudyTime = parseInt(document.getElementById('dailyStudyTime').value);
+            this.goals.weeklyLessons = parseInt(document.getElementById('weeklyLessons').value);
+            this.goals.monthlyXP = parseInt(document.getElementById('monthlyXP').value);
+            this.goals.vocabularyGoal = parseInt(document.getElementById('vocabularyGoal').value);
+            
+            this.saveUserGoals();
+            modal.remove();
+            
+            // Recargar panel de estadísticas
+            if (document.getElementById('progress').classList.contains('active')) {
+                loadProgressChart();
+            }
+            
+            showNotification('Metas actualizadas correctamente. 🎯', 'success');
+        });
+    },
+    
+    // Funciones auxiliares
+    getGoalTitle(goal) {
+        const titles = {
+            dailyStudyTime: 'Tiempo Diario',
+            weeklyLessons: 'Lecciones Semanales',
+            monthlyXP: 'XP Mensual',
+            vocabularyGoal: 'Vocabulario'
+        };
+        return titles[goal] || goal;
+    },
+    
+    getActivityTypeName(type) {
+        const names = {
+            lesson_completed: 'Lecciones',
+            exercise_completed: 'Ejercicios',
+            vocabulary_learned: 'Vocabulario',
+            achievement_unlocked: 'Logros',
+            streak_updated: 'Racha'
+        };
+        return names[type] || type;
+    },
+    
+    getActivityIcon(type) {
+        const icons = {
+            lesson_completed: '📚',
+            exercise_completed: '✏️',
+            vocabulary_learned: '📖',
+            achievement_unlocked: '🏆',
+            streak_updated: '🔥'
+        };
+        return icons[type] || '📝';
+    },
+    
+    getActivityTitle(type) {
+        const titles = {
+            lesson_completed: 'Lección Completada',
+            exercise_completed: 'Ejercicio Completado',
+            vocabulary_learned: 'Vocabulario Aprendido',
+            achievement_unlocked: 'Logro Desbloqueado',
+            streak_updated: 'Racha Actualizada'
+        };
+        return titles[type] || 'Actividad';
+    },
+    
+    formatActivityTime(timestamp) {
+        const date = new Date(timestamp);
+        const now = new Date();
+        const diffMs = now - date;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMs / 3600000);
+        const diffDays = Math.floor(diffMs / 86400000);
+        
+        if (diffMins < 1) return 'Hace un momento';
+        if (diffMins < 60) return `Hace ${diffMins} min`;
+        if (diffHours < 24) return `Hace ${diffHours} h`;
+        if (diffDays < 7) return `Hace ${diffDays} días`;
+        return date.toLocaleDateString();
+    }
+};
+
+// ===== INICIALIZACIÓN DE LA APLICACIÓN =====
+// Esperar a que el DOM esté completamente cargado
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Inicializando English Learning App...');
+    
+    // Inicializar sistemas
+    try {
+        // Inicializar sistema de estadísticas
+        STATISTICS_SYSTEM.init();
+        console.log('✅ Sistema de estadísticas inicializado');
+        
+        // Inicializar sistema de logros
+        ACHIEVEMENTS_SYSTEM.loadUserAchievements();
+        console.log('✅ Sistema de logros inicializado');
+        
+        // Cargar progreso guardado
+        loadProgress();
+        console.log('✅ Progreso cargado');
+        
+        // Configurar navegación
+        initializeNavigation();
+        console.log('✅ Navegación inicializada');
+        
+        // Configurar pestañas de autenticación
+        setupAuthTabs();
+        console.log('✅ Pestañas de autenticación configuradas');
+        
+        // Verificar autenticación
+        checkAuth();
+        console.log('✅ Autenticación verificada');
+        
+        // Actualizar UI
+        updateUI();
+        console.log('✅ UI actualizada');
+        
+        // Verificar racha diaria (después de que todos los sistemas estén inicializados)
+        checkDailyStreak();
+        console.log('✅ Racha diaria verificada');
+        
+        console.log('🎉 English Learning App inicializada correctamente');
+        
+    } catch (error) {
+        console.error('❌ Error durante la inicialización:', error);
+    }
+}); 
