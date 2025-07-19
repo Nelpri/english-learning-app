@@ -1546,6 +1546,13 @@ function loadPracticeExercise(mode) {
         case 'pronunciation':
             exerciseHTML = createPronunciationPractice(currentLesson);
             break;
+        case 'spaced-repetition':
+            // Inicializar sistema de repaso espaciado si no está inicializado
+            if (!SPACED_REPETITION_SYSTEM.reviewItems.length) {
+                SPACED_REPETITION_SYSTEM.init();
+            }
+            SPACED_REPETITION_SYSTEM.loadSpacedRepetitionInterface();
+            return; // Salir temprano ya que loadSpacedRepetitionInterface maneja el HTML
     }
     
     // Mostrar el nombre de la lección actual en la cabecera
@@ -4211,6 +4218,10 @@ document.addEventListener('DOMContentLoaded', function() {
         ACHIEVEMENTS_SYSTEM.loadUserAchievements();
         console.log('✅ Sistema de logros inicializado');
         
+        // Inicializar sistema de repaso espaciado
+        SPACED_REPETITION_SYSTEM.init();
+        console.log('✅ Sistema de repaso espaciado inicializado');
+        
         // Cargar progreso guardado
         loadProgress();
         console.log('✅ Progreso cargado');
@@ -4365,3 +4376,675 @@ function loadDifficultWordsSection() {
         });
     });
 }
+
+// Sistema de Repaso Espaciado
+const SPACED_REPETITION_SYSTEM = {
+    // Configuración del algoritmo
+    config: {
+        initialInterval: 1, // días
+        easyBonus: 1.3, // multiplicador para respuestas fáciles
+        hardPenalty: 0.8, // multiplicador para respuestas difíciles
+        maxInterval: 365, // días máximo
+        minInterval: 1, // días mínimo
+        qualityLevels: {
+            again: 0, // olvidado completamente
+            hard: 1, // difícil de recordar
+            good: 2, // recordado correctamente
+            easy: 3 // muy fácil
+        }
+    },
+
+    // Base de datos de palabras para repaso
+    reviewItems: [],
+
+    // Inicializar sistema
+    init() {
+        this.loadReviewItems();
+        this.scheduleReviews();
+    },
+
+    // Cargar elementos de repaso
+    loadReviewItems() {
+        const user = getCurrentUser();
+        if (!user) return;
+
+        const savedItems = localStorage.getItem(`spaced_repetition_${user.email}`);
+        if (savedItems) {
+            this.reviewItems = JSON.parse(savedItems);
+        }
+    },
+
+    // Guardar elementos de repaso
+    saveReviewItems() {
+        const user = getCurrentUser();
+        if (!user) return;
+
+        localStorage.setItem(`spaced_repetition_${user.email}`, JSON.stringify(this.reviewItems));
+    },
+
+    // Agregar nueva palabra al sistema de repaso
+    addWord(wordObj, source = 'vocabulary') {
+        const user = getCurrentUser();
+        if (!user) return;
+
+        // Verificar si la palabra ya existe
+        const existingItem = this.reviewItems.find(item => 
+            item.word === wordObj.english && item.spanish === wordObj.spanish
+        );
+
+        if (existingItem) {
+            return; // Ya existe en el sistema
+        }
+
+        const newItem = {
+            id: Date.now() + Math.random(),
+            word: wordObj.english,
+            spanish: wordObj.spanish,
+            pronunciation: wordObj.pronunciation || '',
+            source: source, // 'vocabulary', 'listening', 'grammar'
+            difficulty: 2.5, // dificultad inicial (0-5)
+            interval: this.config.initialInterval,
+            repetitions: 0,
+            easeFactor: 2.5, // factor de facilidad
+            nextReview: new Date().toISOString(),
+            lastReview: null,
+            reviewHistory: [],
+            streak: 0,
+            totalReviews: 0,
+            correctReviews: 0,
+            createdAt: new Date().toISOString()
+        };
+
+        this.reviewItems.push(newItem);
+        this.saveReviewItems();
+        
+        console.log(`Palabra agregada al repaso: ${wordObj.english}`);
+    },
+
+    // Obtener palabras para repasar hoy
+    getTodayReviews() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        return this.reviewItems.filter(item => {
+            const reviewDate = new Date(item.nextReview);
+            reviewDate.setHours(0, 0, 0, 0);
+            return reviewDate <= today;
+        });
+    },
+
+    // Obtener estadísticas de repaso
+    getReviewStats() {
+        const totalWords = this.reviewItems.length;
+        const todayReviews = this.getTodayReviews().length;
+        const masteredWords = this.reviewItems.filter(item => item.interval >= 30).length;
+        const learningWords = this.reviewItems.filter(item => item.interval < 7).length;
+
+        const totalReviews = this.reviewItems.reduce((sum, item) => sum + item.totalReviews, 0);
+        const correctReviews = this.reviewItems.reduce((sum, item) => sum + item.correctReviews, 0);
+        const accuracy = totalReviews > 0 ? (correctReviews / totalReviews) * 100 : 0;
+
+        return {
+            totalWords,
+            todayReviews,
+            masteredWords,
+            learningWords,
+            accuracy: Math.round(accuracy),
+            totalReviews,
+            correctReviews
+        };
+    },
+
+    // Procesar respuesta del usuario
+    processResponse(itemId, quality) {
+        const item = this.reviewItems.find(i => i.id === itemId);
+        if (!item) return;
+
+        const now = new Date();
+        const review = {
+            date: now.toISOString(),
+            quality: quality,
+            interval: item.interval
+        };
+
+        item.reviewHistory.push(review);
+        item.lastReview = now.toISOString();
+        item.totalReviews++;
+        item.repetitions++;
+
+        // Calcular nuevo intervalo basado en la calidad de la respuesta
+        if (quality >= this.config.qualityLevels.good) {
+            item.correctReviews++;
+            item.streak++;
+            
+            if (item.repetitions === 1) {
+                // Primera repetición correcta
+                item.interval = 6;
+            } else if (item.repetitions === 2) {
+                // Segunda repetición correcta
+                item.interval = Math.round(item.interval * item.easeFactor);
+            } else {
+                // Repeticiones posteriores
+                item.interval = Math.round(item.interval * item.easeFactor);
+            }
+
+            // Ajustar factor de facilidad
+            if (quality === this.config.qualityLevels.easy) {
+                item.easeFactor += 0.15;
+            } else if (quality === this.config.qualityLevels.good) {
+                item.easeFactor += 0.1;
+            }
+        } else {
+            // Respuesta incorrecta
+            item.streak = 0;
+            item.interval = this.config.initialInterval;
+            item.repetitions = 0;
+            item.easeFactor = Math.max(1.3, item.easeFactor - 0.2);
+        }
+
+        // Limitar el factor de facilidad
+        item.easeFactor = Math.max(1.3, Math.min(2.5, item.easeFactor));
+        
+        // Limitar el intervalo
+        item.interval = Math.max(this.config.minInterval, 
+                                Math.min(this.config.maxInterval, item.interval));
+
+        // Calcular próxima fecha de repaso
+        const nextReview = new Date(now);
+        nextReview.setDate(nextReview.getDate() + item.interval);
+        item.nextReview = nextReview.toISOString();
+
+        this.saveReviewItems();
+        
+        return {
+            newInterval: item.interval,
+            nextReview: item.nextReview,
+            streak: item.streak,
+            easeFactor: item.easeFactor
+        };
+    },
+
+    // Crear ejercicio de repaso
+    createReviewExercise() {
+        const todayReviews = this.getTodayReviews();
+        
+        if (todayReviews.length === 0) {
+            return {
+                type: 'no_reviews',
+                message: '¡Excelente! No tienes palabras para repasar hoy. 🎉'
+            };
+        }
+
+        // Seleccionar palabra aleatoria para repasar
+        const randomIndex = Math.floor(Math.random() * todayReviews.length);
+        const item = todayReviews[randomIndex];
+
+        // Crear opciones incorrectas
+        const allWords = this.reviewItems
+            .filter(i => i.id !== item.id)
+            .map(i => i.word);
+        
+        const incorrectOptions = this.shuffleArray(allWords)
+            .slice(0, 3);
+
+        const options = this.shuffleArray([item.word, ...incorrectOptions]);
+
+        return {
+            type: 'review',
+            item: item,
+            question: `¿Cómo se dice "${item.spanish}" en inglés?`,
+            options: options,
+            correctAnswer: item.word,
+            pronunciation: item.pronunciation
+        };
+    },
+
+    // Ejercicio de repaso inverso (inglés a español)
+    createReverseReviewExercise() {
+        const todayReviews = this.getTodayReviews();
+        
+        if (todayReviews.length === 0) {
+            return {
+                type: 'no_reviews',
+                message: '¡Excelente! No tienes palabras para repasar hoy. 🎉'
+            };
+        }
+
+        const randomIndex = Math.floor(Math.random() * todayReviews.length);
+        const item = todayReviews[randomIndex];
+
+        const allTranslations = this.reviewItems
+            .filter(i => i.id !== item.id)
+            .map(i => i.spanish);
+        
+        const incorrectOptions = this.shuffleArray(allTranslations)
+            .slice(0, 3);
+
+        const options = this.shuffleArray([item.spanish, ...incorrectOptions]);
+
+        return {
+            type: 'reverse_review',
+            item: item,
+            question: `¿Qué significa "${item.word}"?`,
+            options: options,
+            correctAnswer: item.spanish,
+            pronunciation: item.pronunciation
+        };
+    },
+
+    // Ejercicio de pronunciación
+    createPronunciationExercise() {
+        const todayReviews = this.getTodayReviews();
+        
+        if (todayReviews.length === 0) {
+            return {
+                type: 'no_reviews',
+                message: '¡Excelente! No tienes palabras para repasar hoy. 🎉'
+            };
+        }
+
+        const randomIndex = Math.floor(Math.random() * todayReviews.length);
+        const item = todayReviews[randomIndex];
+
+        return {
+            type: 'pronunciation',
+            item: item,
+            question: `Pronuncia correctamente: "${item.word}"`,
+            word: item.word,
+            pronunciation: item.pronunciation,
+            spanish: item.spanish
+        };
+    },
+
+    // Mezclar array
+    shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    },
+
+    // Programar repasos automáticamente
+    scheduleReviews() {
+        // Agregar palabras del vocabulario al sistema de repaso
+        const vocabularyCategories = VOCABULARY_CATEGORIES;
+        Object.keys(vocabularyCategories).forEach(category => {
+            vocabularyCategories[category].vocabulary.forEach(word => {
+                this.addWord(word, 'vocabulary');
+            });
+        });
+
+        // Agregar palabras de listening al sistema de repaso
+        LISTENING_SYSTEM.exercises.forEach(exercise => {
+            exercise.vocabulary.forEach(word => {
+                this.addWord({ english: word, spanish: word }, 'listening');
+            });
+        });
+    },
+
+    // Obtener palabras difíciles (baja precisión o alta frecuencia de repaso)
+    getDifficultWords() {
+        return this.reviewItems
+            .filter(item => {
+                const accuracy = item.totalReviews > 0 ? 
+                    (item.correctReviews / item.totalReviews) : 1;
+                return accuracy < 0.7 || item.interval < 3;
+            })
+            .sort((a, b) => {
+                const accuracyA = a.totalReviews > 0 ? (a.correctReviews / a.totalReviews) : 1;
+                const accuracyB = b.totalReviews > 0 ? (b.correctReviews / b.totalReviews) : 1;
+                return accuracyA - accuracyB;
+            })
+            .slice(0, 10); // Top 10 palabras más difíciles
+    },
+
+    // Obtener palabras dominadas (alta precisión y largo intervalo)
+    getMasteredWords() {
+        return this.reviewItems
+            .filter(item => {
+                const accuracy = item.totalReviews > 0 ? 
+                    (item.correctReviews / item.totalReviews) : 0;
+                return accuracy >= 0.9 && item.interval >= 30;
+            })
+            .sort((a, b) => b.interval - a.interval);
+    },
+
+    // Generar reporte de progreso
+    generateProgressReport() {
+        const stats = this.getReviewStats();
+        const difficultWords = this.getDifficultWords();
+        const masteredWords = this.getMasteredWords();
+
+        return {
+            stats,
+            difficultWords,
+            masteredWords,
+            recentActivity: this.reviewItems
+                .filter(item => item.lastReview)
+                .sort((a, b) => new Date(b.lastReview) - new Date(a.lastReview))
+                .slice(0, 5)
+        };
+    },
+
+    // Cargar interfaz de repaso espaciado
+    loadSpacedRepetitionInterface() {
+        const practiceArea = document.getElementById('practiceArea');
+        const stats = this.getReviewStats();
+        const todayReviews = this.getTodayReviews();
+
+        practiceArea.innerHTML = `
+            <div class="practice-header">
+                <button class="back-btn" onclick="backToPracticeModes()">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <h3><i class="fas fa-brain"></i> Repaso Espaciado</h3>
+                <div class="review-stats">
+                    <span class="today-reviews">${stats.todayReviews} repasos hoy</span>
+                </div>
+            </div>
+            
+            <div class="spaced-repetition-container">
+                <div class="review-overview">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <i class="fas fa-book"></i>
+                            <div class="stat-content">
+                                <h5>Total Palabras</h5>
+                                <span class="stat-value">${stats.totalWords}</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-calendar-day"></i>
+                            <div class="stat-content">
+                                <h5>Repasos Hoy</h5>
+                                <span class="stat-value">${stats.todayReviews}</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-trophy"></i>
+                            <div class="stat-content">
+                                <h5>Dominadas</h5>
+                                <span class="stat-value">${stats.masteredWords}</span>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="fas fa-chart-line"></i>
+                            <div class="stat-content">
+                                <h5>Precisión</h5>
+                                <span class="stat-value">${stats.accuracy}%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="review-modes">
+                    <h4>Modos de Repaso</h4>
+                    <div class="review-modes-grid">
+                        <div class="review-mode-card" onclick="SPACED_REPETITION_SYSTEM.startReviewSession('translation')">
+                            <i class="fas fa-language"></i>
+                            <h5>Traducción</h5>
+                            <p>Español → Inglés</p>
+                            <span class="mode-count">${todayReviews.length} palabras</span>
+                        </div>
+                        <div class="review-mode-card" onclick="SPACED_REPETITION_SYSTEM.startReviewSession('reverse')">
+                            <i class="fas fa-exchange-alt"></i>
+                            <h5>Traducción Inversa</h5>
+                            <p>Inglés → Español</p>
+                            <span class="mode-count">${todayReviews.length} palabras</span>
+                        </div>
+                        <div class="review-mode-card" onclick="SPACED_REPETITION_SYSTEM.startReviewSession('pronunciation')">
+                            <i class="fas fa-volume-up"></i>
+                            <h5>Pronunciación</h5>
+                            <p>Practica la pronunciación</p>
+                            <span class="mode-count">${todayReviews.length} palabras</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="difficult-words-section">
+                    <h4>Palabras Difíciles</h4>
+                    <div class="difficult-words-list">
+                        ${this.getDifficultWords().slice(0, 5).map(word => `
+                            <div class="difficult-word-item">
+                                <span class="word">${word.word}</span>
+                                <span class="translation">${word.spanish}</span>
+                                <span class="accuracy">${Math.round((word.correctReviews / word.totalReviews) * 100)}%</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    // Iniciar sesión de repaso
+    startReviewSession(mode) {
+        let exercise;
+        
+        switch(mode) {
+            case 'translation':
+                exercise = this.createReviewExercise();
+                break;
+            case 'reverse':
+                exercise = this.createReverseReviewExercise();
+                break;
+            case 'pronunciation':
+                exercise = this.createPronunciationExercise();
+                break;
+        }
+
+        if (exercise.type === 'no_reviews') {
+            showNotification(exercise.message, 'success');
+            return;
+        }
+
+        this.currentExercise = exercise;
+        this.currentMode = mode;
+        this.loadExerciseInterface();
+    },
+
+    // Cargar interfaz del ejercicio
+    loadExerciseInterface() {
+        const practiceArea = document.getElementById('practiceArea');
+        const exercise = this.currentExercise;
+
+        if (exercise.type === 'pronunciation') {
+            practiceArea.innerHTML = `
+                <div class="practice-header">
+                    <button class="back-btn" onclick="SPACED_REPETITION_SYSTEM.loadSpacedRepetitionInterface()">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </button>
+                    <h3><i class="fas fa-volume-up"></i> Repaso de Pronunciación</h3>
+                </div>
+                
+                <div class="pronunciation-review">
+                    <div class="word-display">
+                        <h2>${exercise.word}</h2>
+                        <p class="pronunciation">${exercise.pronunciation}</p>
+                        <p class="translation">${exercise.spanish}</p>
+                    </div>
+                    
+                    <div class="pronunciation-controls">
+                        <button class="btn btn-primary" onclick="speakText('${exercise.word}', 'en-US')">
+                            <i class="fas fa-play"></i> Escuchar
+                        </button>
+                        <button class="btn btn-secondary" onclick="SPACED_REPETITION_SYSTEM.recordPronunciation()">
+                            <i class="fas fa-microphone"></i> Grabar
+                        </button>
+                    </div>
+                    
+                    <div class="quality-buttons">
+                        <h4>¿Qué tan bien conocías esta palabra?</h4>
+                        <div class="quality-grid">
+                            <button class="quality-btn again" onclick="SPACED_REPETITION_SYSTEM.processReviewResponse(0)">
+                                <i class="fas fa-times"></i>
+                                <span>Olvidé</span>
+                            </button>
+                            <button class="quality-btn hard" onclick="SPACED_REPETITION_SYSTEM.processReviewResponse(1)">
+                                <i class="fas fa-exclamation"></i>
+                                <span>Difícil</span>
+                            </button>
+                            <button class="quality-btn good" onclick="SPACED_REPETITION_SYSTEM.processReviewResponse(2)">
+                                <i class="fas fa-check"></i>
+                                <span>Bien</span>
+                            </button>
+                            <button class="quality-btn easy" onclick="SPACED_REPETITION_SYSTEM.processReviewResponse(3)">
+                                <i class="fas fa-star"></i>
+                                <span>Fácil</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            practiceArea.innerHTML = `
+                <div class="practice-header">
+                    <button class="back-btn" onclick="SPACED_REPETITION_SYSTEM.loadSpacedRepetitionInterface()">
+                        <i class="fas fa-arrow-left"></i> Volver
+                    </button>
+                    <h3><i class="fas fa-language"></i> Repaso de Traducción</h3>
+                </div>
+                
+                <div class="translation-review">
+                    <div class="question-display">
+                        <h3>${exercise.question}</h3>
+                    </div>
+                    
+                    <div class="options-grid">
+                        ${exercise.options.map((option, index) => `
+                            <button class="option-btn" data-correct="${option === exercise.correctAnswer}" data-index="${index}">
+                                ${option}
+                            </button>
+                        `).join('')}
+                    </div>
+                    
+                    <div class="review-feedback" id="reviewFeedback" style="display: none;"></div>
+                    
+                    <div class="review-actions">
+                        <button class="btn btn-primary" onclick="SPACED_REPETITION_SYSTEM.checkReviewAnswer()">
+                            <i class="fas fa-check"></i> Verificar
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Adjuntar event listeners para las opciones
+        if (exercise.type !== 'pronunciation') {
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+                    e.target.classList.add('selected');
+                });
+            });
+        }
+    },
+
+    // Verificar respuesta del repaso
+    checkReviewAnswer() {
+        const selectedOption = document.querySelector('.option-btn.selected');
+        const feedback = document.getElementById('reviewFeedback');
+        
+        if (!selectedOption) {
+            showNotification('Selecciona una respuesta', 'warning');
+            return;
+        }
+
+        const isCorrect = selectedOption.dataset.correct === 'true';
+        const exercise = this.currentExercise;
+
+        // Mostrar resultado
+        if (isCorrect) {
+            selectedOption.style.background = 'var(--success-color)';
+            selectedOption.style.color = 'white';
+            feedback.innerHTML = '<div class="success"><i class="fas fa-check"></i> ¡Correcto!</div>';
+            feedback.style.display = 'block';
+            
+            // Procesar respuesta exitosa
+            const result = this.processResponse(exercise.item.id, 2); // 'good'
+            playSuccessSound();
+            showNotification('¡Excelente! Palabra repasada correctamente', 'success');
+        } else {
+            selectedOption.style.background = 'var(--error-color)';
+            selectedOption.style.color = 'white';
+            
+            // Mostrar respuesta correcta
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                if (btn.dataset.correct === 'true') {
+                    btn.style.background = 'var(--success-color)';
+                    btn.style.color = 'white';
+                }
+            });
+            
+            feedback.innerHTML = '<div class="error"><i class="fas fa-times"></i> Incorrecto</div>';
+            feedback.style.display = 'block';
+            
+            // Procesar respuesta incorrecta
+            const result = this.processResponse(exercise.item.id, 0); // 'again'
+            playFailSound();
+            showNotification('No te preocupes, la palabra volverá pronto', 'info');
+        }
+
+        // Sumar XP
+        appState.currentXP += isCorrect ? 15 : 5;
+        updateUI();
+        saveProgress();
+
+        // Continuar con siguiente ejercicio después de 2 segundos
+        setTimeout(() => {
+            this.startReviewSession(this.currentMode);
+        }, 2000);
+    },
+
+    // Procesar respuesta de calidad (para pronunciación)
+    processReviewResponse(quality) {
+        const exercise = this.currentExercise;
+        const result = this.processResponse(exercise.item.id, quality);
+        
+        let message = '';
+        let sound = '';
+        
+        switch(quality) {
+            case 0: // Again
+                message = 'No te preocupes, la palabra volverá pronto';
+                sound = 'fail';
+                break;
+            case 1: // Hard
+                message = 'Difícil, pero lo estás logrando';
+                sound = 'info';
+                break;
+            case 2: // Good
+                message = '¡Bien hecho!';
+                sound = 'success';
+                break;
+            case 3: // Easy
+                message = '¡Excelente! Dominas esta palabra';
+                sound = 'success';
+                break;
+        }
+
+        if (sound === 'success') playSuccessSound();
+        else if (sound === 'fail') playFailSound();
+        
+        showNotification(message, sound);
+        
+        // Sumar XP basado en la calidad
+        const xpEarned = quality * 5;
+        appState.currentXP += xpEarned;
+        updateUI();
+        saveProgress();
+
+        // Continuar con siguiente ejercicio
+        setTimeout(() => {
+            this.startReviewSession(this.currentMode);
+        }, 1500);
+    },
+
+    // Grabar pronunciación
+    recordPronunciation() {
+        // Implementación básica - en una versión futura se puede mejorar
+        showNotification('Función de grabación en desarrollo', 'info');
+    }
+};
