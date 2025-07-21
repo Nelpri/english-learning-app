@@ -598,6 +598,412 @@ const LESSONS_DATABASE = {
                 }
             ]
         }
+    ],
+    level2: [
+        {
+            id: 17,
+            title: "Presente Perfecto y Pasado Simple",
+            difficulty: "Intermedio",
+            vocabulary: [
+                { english: "Experience", spanish: "Experiencia", pronunciation: "ɪkˈspɪriəns" },
+                { english: "Achievement", spanish: "Logro", pronunciation: "əˈtʃivmənt" },
+                { english: "Accomplish", spanish: "Lograr", pronunciation: "əˈkʌmplɪʃ" },
+                { english: "Graduate", spanish: "Graduarse", pronunciation: "ˈɡrædʒueɪt" },
+                { english: "Promote", spanish: "Promover", pronunciation: "prəˈmoʊt" },
+                { english: "Resign", spanish: "Renunciar", pronunciation: "rɪˈzaɪn" },
+                { english: "Launch", spanish: "Lanzar", pronunciation: "lɔntʃ" },
+                { english: "Establish", spanish: "Establecer", pronunciation: "ɪˈstæblɪʃ" },
+                { english: "Expand", spanish: "Expandir", pronunciation: "ɪkˈspænd" },
+                { english: "Innovate", spanish: "Innovar", pronunciation: "ˈɪnəveɪt" },
+                { english: "Collaborate", spanish: "Colaborar", pronunciation: "kəˈlæbəreɪt" },
+                { english: "Negotiate", spanish: "Negociar", pronunciation: "nɪˈɡoʊʃieɪt" },
+                { english: "I have worked here for 5 years", spanish: "He trabajado aquí por 5 años", pronunciation: "aɪ hæv wɜrkt hɪr fɔr faɪv jɪrz" },
+                { english: "She has been promoted twice", spanish: "Ella ha sido promovida dos veces", pronunciation: "ʃi hæz bɪn prəˈmoʊtɪd twaɪs" },
+                { english: "We have never met before", spanish: "Nunca nos hemos conocido antes", pronunciation: "wi hæv ˈnɛvər mɛt bɪˈfɔr" }
+            ],
+            grammar: {
+                title: "Presente Perfecto vs Pasado Simple",
+                explanation: "El Presente Perfecto se usa para acciones que comenzaron en el pasado y continúan en el presente, o para experiencias. El Pasado Simple se usa para acciones completadas en un momento específico del pasado.",
+                examples: [
+                    "I have lived in Madrid for 10 years. (He vivido en Madrid por 10 años - continúa)",
+                    "I lived in Madrid in 2010. (Viví en Madrid en 2010 - acción completada)",
+                    "She has visited Paris three times. (Ella ha visitado París tres veces - experiencia)",
+                    "She visited Paris last summer. (Ella visitó París el verano pasado - momento específico)"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "grammar",
+                    question: "Completa: I ___ in this company since 2018.",
+                    options: ["work", "worked", "have worked", "am working"],
+                    correct: 2
+                }
+            ]
+        },
+        {
+            id: 18,
+            title: "Condicionales y Subjuntivo",
+            difficulty: "Intermedio",
+            vocabulary: [
+                { english: "Hypothesis", spanish: "Hipótesis", pronunciation: "haɪˈpɑθəsɪs" },
+                { english: "Assumption", spanish: "Suposición", pronunciation: "əˈsʌmpʃən" },
+                { english: "Consequence", spanish: "Consecuencia", pronunciation: "ˈkɑnsəkwəns" },
+                { english: "Circumstance", spanish: "Circunstancia", pronunciation: "ˈsɜrkəmstæns" },
+                { english: "Alternative", spanish: "Alternativa", pronunciation: "ɔlˈtɜrnətɪv" },
+                { english: "Possibility", spanish: "Posibilidad", pronunciation: "ˌpɑsəˈbɪləti" },
+                { english: "Probability", spanish: "Probabilidad", pronunciation: "ˌprɑbəˈbɪləti" },
+                { english: "Certainty", spanish: "Certidumbre", pronunciation: "ˈsɜrtənti" },
+                { english: "Doubt", spanish: "Duda", pronunciation: "daʊt" },
+                { english: "Evidence", spanish: "Evidencia", pronunciation: "ˈɛvɪdəns" },
+                { english: "If I were you", spanish: "Si yo fuera tú", pronunciation: "ɪf aɪ wɜr ju" },
+                { english: "What would you do?", spanish: "¿Qué harías tú?", pronunciation: "wʌt wʊd ju du" },
+                { english: "I wish I could", spanish: "Ojalá pudiera", pronunciation: "aɪ wɪʃ aɪ kʊd" },
+                { english: "It's possible that", spanish: "Es posible que", pronunciation: "ɪts ˈpɑsəbəl ðæt" },
+                { english: "In case of emergency", spanish: "En caso de emergencia", pronunciation: "ɪn keɪs əv ɪˈmɜrdʒənsi" }
+            ],
+            grammar: {
+                title: "Condicionales Tipo 2 y Subjuntivo",
+                explanation: "Los condicionales tipo 2 expresan situaciones hipotéticas o improbables. El subjuntivo se usa para expresar deseos, dudas y posibilidades.",
+                examples: [
+                    "If I had money, I would travel the world. (Si tuviera dinero, viajaría por el mundo)",
+                    "I wish I could speak French. (Ojalá pudiera hablar francés)",
+                    "It's important that you be on time. (Es importante que llegues a tiempo)",
+                    "I suggest that he study harder. (Sugiero que estudie más duro)"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "grammar",
+                    question: "Completa: If I ___ rich, I would buy a house.",
+                    options: ["am", "was", "were", "be"],
+                    correct: 2
+                }
+            ]
+        },
+        {
+            id: 20,
+            title: "Reported Speech y Estilo Indirecto",
+            difficulty: "Intermedio",
+            vocabulary: [
+                { english: "Announce", spanish: "Anunciar", pronunciation: "əˈnaʊns" },
+                { english: "Declare", spanish: "Declarar", pronunciation: "dɪˈklɛr" },
+                { english: "Confirm", spanish: "Confirmar", pronunciation: "kənˈfɜrm" },
+                { english: "Deny", spanish: "Negar", pronunciation: "dɪˈnaɪ" },
+                { english: "Admit", spanish: "Admitir", pronunciation: "ədˈmɪt" },
+                { english: "Claim", spanish: "Afirmar", pronunciation: "kleɪm" },
+                { english: "Suggest", spanish: "Sugerir", pronunciation: "səɡˈdʒɛst" },
+                { english: "Insist", spanish: "Insistir", pronunciation: "ɪnˈsɪst" },
+                { english: "Promise", spanish: "Prometer", pronunciation: "ˈprɑmɪs" },
+                { english: "Warn", spanish: "Advertir", pronunciation: "wɔrn" },
+                { english: "He said he was tired", spanish: "Él dijo que estaba cansado", pronunciation: "hi sɛd hi wəz ˈtaɪrd" },
+                { english: "She told me she would come", spanish: "Ella me dijo que vendría", pronunciation: "ʃi toʊld mi ʃi wʊd kʌm" },
+                { english: "They announced that the meeting was cancelled", spanish: "Anunciaron que la reunión fue cancelada", pronunciation: "ðeɪ əˈnaʊnst ðæt ðə ˈmitɪŋ wəz ˈkænsəld" },
+                { english: "I asked if he could help me", spanish: "Le pregunté si podía ayudarme", pronunciation: "aɪ æskt ɪf hi kʊd hɛlp mi" },
+                { english: "She promised to call me", spanish: "Ella prometió llamarme", pronunciation: "ʃi ˈprɑmɪst tu kɔl mi" }
+            ],
+            grammar: {
+                title: "Reported Speech - Cambios de Tiempo",
+                explanation: "En el estilo indirecto, los tiempos verbales cambian hacia el pasado. El presente simple se convierte en pasado simple, el presente continuo en pasado continuo, etc.",
+                examples: [
+                    "Direct: 'I am tired' → Reported: He said he was tired",
+                    "Direct: 'I will come' → Reported: He said he would come",
+                    "Direct: 'I have finished' → Reported: He said he had finished",
+                    "Direct: 'I was working' → Reported: He said he had been working"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "grammar",
+                    question: "Completa: She said she ___ the work.",
+                    options: ["finish", "finished", "had finished", "has finished"],
+                    correct: 2
+                }
+            ]
+        }
+    ],
+    level3: [
+        {
+            id: 21,
+            title: "Gerundios e Infinitivos",
+            difficulty: "Avanzado",
+            vocabulary: [
+                { english: "Accomplish", spanish: "Lograr", pronunciation: "əˈkʌmplɪʃ" },
+                { english: "Achieve", spanish: "Alcanzar", pronunciation: "əˈtʃiv" },
+                { english: "Attain", spanish: "Conseguir", pronunciation: "əˈteɪn" },
+                { english: "Pursue", spanish: "Perseguir", pronunciation: "pərˈsu" },
+                { english: "Strive", spanish: "Esforzarse", pronunciation: "straɪv" },
+                { english: "Endeavor", spanish: "Esforzarse", pronunciation: "ɪnˈdɛvər" },
+                { english: "Aspire", spanish: "Aspirar", pronunciation: "əˈspaɪr" },
+                { english: "Commit", spanish: "Comprometerse", pronunciation: "kəˈmɪt" },
+                { english: "Dedicate", spanish: "Dedicar", pronunciation: "ˈdɛdɪkeɪt" },
+                { english: "Devote", spanish: "Dedicar", pronunciation: "dɪˈvoʊt" },
+                { english: "I enjoy reading books", spanish: "Disfruto leyendo libros", pronunciation: "aɪ ɪnˈdʒɔɪ ˈridɪŋ bʊks" },
+                { english: "She decided to study abroad", spanish: "Ella decidió estudiar en el extranjero", pronunciation: "ʃi dɪˈsaɪdɪd tu ˈstʌdi əˈbrɔd" },
+                { english: "He suggested going to the movies", spanish: "Él sugirió ir al cine", pronunciation: "hi səɡˈdʒɛstɪd ˈɡoʊɪŋ tu ðə ˈmuviz" },
+                { english: "We plan to visit Europe", spanish: "Planeamos visitar Europa", pronunciation: "wi plæn tu ˈvɪzɪt ˈjʊrəp" },
+                { english: "They avoid making mistakes", spanish: "Ellos evitan cometer errores", pronunciation: "ðeɪ əˈvɔɪd ˈmeɪkɪŋ mɪˈsteɪks" }
+            ],
+            grammar: {
+                title: "Gerundios vs Infinitivos",
+                explanation: "Los gerundios (-ing) y los infinitivos (to + verb) se usan en diferentes contextos. Algunos verbos van seguidos de gerundio, otros de infinitivo, y algunos pueden usar ambos con diferentes significados.",
+                examples: [
+                    "I enjoy swimming. (Disfruto nadar - gerundio después de 'enjoy')",
+                    "I want to swim. (Quiero nadar - infinitivo después de 'want')",
+                    "I stopped smoking. (Dejé de fumar - gerundio)",
+                    "I stopped to smoke. (Me detuve para fumar - infinitivo)"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "grammar",
+                    question: "Completa: I suggest ___ early.",
+                    options: ["to leave", "leaving", "leave", "left"],
+                    correct: 1
+                }
+            ]
+        },
+        {
+            id: 22,
+            title: "Modales Perfectos y Futuro Perfecto",
+            difficulty: "Avanzado",
+            vocabulary: [
+                { english: "Speculate", spanish: "Especular", pronunciation: "ˈspɛkjəleɪt" },
+                { english: "Predict", spanish: "Predecir", pronunciation: "prɪˈdɪkt" },
+                { english: "Forecast", spanish: "Pronosticar", pronunciation: "ˈfɔrkæst" },
+                { english: "Anticipate", spanish: "Anticipar", pronunciation: "ænˈtɪsəpeɪt" },
+                { english: "Estimate", spanish: "Estimar", pronunciation: "ˈɛstəmeɪt" },
+                { english: "Calculate", spanish: "Calcular", pronunciation: "ˈkælkjəleɪt" },
+                { english: "Project", spanish: "Proyectar", pronunciation: "prəˈdʒɛkt" },
+                { english: "Assume", spanish: "Asumir", pronunciation: "əˈsum" },
+                { english: "Presume", spanish: "Presumir", pronunciation: "prɪˈzum" },
+                { english: "Conclude", spanish: "Concluir", pronunciation: "kənˈklud" },
+                { english: "He must have arrived by now", spanish: "Él debe haber llegado ya", pronunciation: "hi mʌst hæv əˈraɪvd baɪ naʊ" },
+                { english: "She could have won the race", spanish: "Ella podría haber ganado la carrera", pronunciation: "ʃi kʊd hæv wʌn ðə reɪs" },
+                { english: "They will have finished by Friday", spanish: "Ellos habrán terminado para el viernes", pronunciation: "ðeɪ wɪl hæv ˈfɪnɪʃt baɪ ˈfraɪdeɪ" },
+                { english: "I should have studied harder", spanish: "Debería haber estudiado más duro", pronunciation: "aɪ ʃʊd hæv ˈstʌdid ˈhɑrdər" },
+                { english: "We might have missed the train", spanish: "Podríamos haber perdido el tren", pronunciation: "wi maɪt hæv mɪst ðə treɪn" }
+            ],
+            grammar: {
+                title: "Modales Perfectos y Futuro Perfecto",
+                explanation: "Los modales perfectos expresan probabilidad, posibilidad o necesidad en el pasado. El futuro perfecto se usa para acciones que se completarán en un momento futuro específico.",
+                examples: [
+                    "He must have left early. (Debe haber salido temprano - certeza en el pasado)",
+                    "She could have been here. (Podría haber estado aquí - posibilidad en el pasado)",
+                    "By next year, I will have graduated. (Para el próximo año, me habré graduado)",
+                    "They should have called. (Deberían haber llamado - obligación no cumplida)"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "grammar",
+                    question: "Completa: By 2025, she ___ for 10 years.",
+                    options: ["will work", "will have worked", "will be working", "works"],
+                    correct: 1
+                }
+            ]
+        },
+        {
+            id: 23,
+            title: "Inversión y Énfasis",
+            difficulty: "Avanzado",
+            vocabulary: [
+                { english: "Emphasize", spanish: "Enfatizar", pronunciation: "ˈɛmfəsaɪz" },
+                { english: "Highlight", spanish: "Destacar", pronunciation: "ˈhaɪlaɪt" },
+                { english: "Stress", spanish: "Subrayar", pronunciation: "strɛs" },
+                { english: "Underscore", spanish: "Subrayar", pronunciation: "ˌʌndərˈskɔr" },
+                { english: "Accentuate", spanish: "Acentuar", pronunciation: "ækˈsɛntʃueɪt" },
+                { english: "Reinforce", spanish: "Reforzar", pronunciation: "ˌriɪnˈfɔrs" },
+                { english: "Intensify", spanish: "Intensificar", pronunciation: "ɪnˈtɛnsɪfaɪ" },
+                { english: "Amplify", spanish: "Amplificar", pronunciation: "ˈæmplɪfaɪ" },
+                { english: "Magnify", spanish: "Magnificar", pronunciation: "ˈmæɡnɪfaɪ" },
+                { english: "Exaggerate", spanish: "Exagerar", pronunciation: "ɪɡˈzædʒəreɪt" },
+                { english: "Not only did he arrive late", spanish: "No solo llegó tarde", pronunciation: "nɑt ˈoʊnli dɪd hi əˈraɪv leɪt" },
+                { english: "Never have I seen such beauty", spanish: "Nunca he visto tanta belleza", pronunciation: "ˈnɛvər hæv aɪ sin sʌtʃ ˈbjuti" },
+                { english: "Rarely do we get such opportunities", spanish: "Raramente tenemos tales oportunidades", pronunciation: "ˈrɛrli du wi ɡɛt sʌtʃ ˌɑpərˈtunətiz" },
+                { english: "Only then did I understand", spanish: "Solo entonces entendí", pronunciation: "ˈoʊnli ðɛn dɪd aɪ ˌʌndərˈstænd" },
+                { english: "It was John who called", spanish: "Fue John quien llamó", pronunciation: "ɪt wəz dʒɑn hu kɔld" }
+            ],
+            grammar: {
+                title: "Inversión y Estructuras de Énfasis",
+                explanation: "La inversión se usa para dar énfasis o crear un efecto dramático. Las estructuras de énfasis como 'cleft sentences' se usan para destacar información específica.",
+                examples: [
+                    "Not only did he arrive late, but he also forgot the documents.",
+                    "Never have I seen such a beautiful sunset.",
+                    "It was in Paris that I met her. (Fue en París donde la conocí)",
+                    "What I need is more time. (Lo que necesito es más tiempo)"
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "grammar",
+                    question: "Completa: Not only ___ he speak English, but also French.",
+                    options: ["do", "does", "did", "done"],
+                    correct: 1
+                }
+            ]
+        },
+        {
+            id: 24,
+            title: "Conectores Avanzados y Cohesión",
+            difficulty: "Avanzado",
+            vocabulary: [
+                { english: "Furthermore", spanish: "Además", pronunciation: "ˈfɜrðərmɔr" },
+                { english: "Moreover", spanish: "Además", pronunciation: "mɔrˈoʊvər" },
+                { english: "Nevertheless", spanish: "Sin embargo", pronunciation: "ˌnɛvərðəˈlɛs" },
+                { english: "Nonetheless", spanish: "Sin embargo", pronunciation: "ˌnʌnðəˈlɛs" },
+                { english: "Consequently", spanish: "Consecuentemente", pronunciation: "ˈkɑnsəkwəntli" },
+                { english: "Accordingly", spanish: "En consecuencia", pronunciation: "əˈkɔrdɪŋli" },
+                { english: "Subsequently", spanish: "Posteriormente", pronunciation: "ˈsʌbsəkwəntli" },
+                { english: "Meanwhile", spanish: "Mientras tanto", pronunciation: "ˈminwaɪl" },
+                { english: "Otherwise", spanish: "De lo contrario", pronunciation: "ˈʌðərwaɪz" },
+                { english: "Therefore", spanish: "Por lo tanto", pronunciation: "ˈðɛrfɔr" },
+                { english: "In addition to", spanish: "Además de", pronunciation: "ɪn əˈdɪʃən tu" },
+                { english: "As a result of", spanish: "Como resultado de", pronunciation: "æz ə rɪˈzʌlt əv" },
+                { english: "In spite of", spanish: "A pesar de", pronunciation: "ɪn spaɪt əv" },
+                { english: "On the contrary", spanish: "Por el contrario", pronunciation: "ɑn ðə ˈkɑntrɛri" },
+                { english: "In conclusion", spanish: "En conclusión", pronunciation: "ɪn kənˈkluʒən" }
+            ],
+            grammar: {
+                title: "Conectores de Cohesión y Transición",
+                explanation: "Los conectores avanzados ayudan a crear textos coherentes y bien estructurados. Se usan para mostrar relaciones lógicas entre ideas, contrastes, causas y efectos.",
+                examples: [
+                    "The weather was bad; nevertheless, we went hiking.",
+                    "He studied hard; consequently, he passed the exam.",
+                    "In addition to speaking English, she also knows French.",
+                    "The project was complex; however, we completed it on time."
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "grammar",
+                    question: "Completa: It was raining; ___, we decided to go out.",
+                    options: ["however", "therefore", "meanwhile", "otherwise"],
+                    correct: 0
+                }
+            ]
+        }
+    ],
+    level4: [
+        {
+            id: 25,
+            title: "Lenguaje Académico y Formal",
+            difficulty: "Experto",
+            vocabulary: [
+                { english: "Methodology", spanish: "Metodología", pronunciation: "ˌmɛθəˈdɑlədʒi" },
+                { english: "Framework", spanish: "Marco teórico", pronunciation: "ˈfreɪmwɜrk" },
+                { english: "Paradigm", spanish: "Paradigma", pronunciation: "ˈpærədaɪm" },
+                { english: "Hypothesis", spanish: "Hipótesis", pronunciation: "haɪˈpɑθəsɪs" },
+                { english: "Thesis", spanish: "Tesis", pronunciation: "ˈθisɪs" },
+                { english: "Dissertation", spanish: "Disertación", pronunciation: "ˌdɪsərˈteɪʃən" },
+                { english: "Literature review", spanish: "Revisión de literatura", pronunciation: "ˈlɪtərətʃər rɪˈvju" },
+                { english: "Empirical evidence", spanish: "Evidencia empírica", pronunciation: "ɛmˈpɪrɪkəl ˈɛvɪdəns" },
+                { english: "Statistical analysis", spanish: "Análisis estadístico", pronunciation: "stəˈtɪstɪkəl əˈnæləsɪs" },
+                { english: "Peer-reviewed", spanish: "Revisado por pares", pronunciation: "pɪr rɪˈvjud" },
+                { english: "The findings suggest that", spanish: "Los hallazgos sugieren que", pronunciation: "ðə ˈfaɪndɪŋz səɡˈdʒɛst ðæt" },
+                { english: "It can be concluded that", spanish: "Se puede concluir que", pronunciation: "ɪt kæn bi kənˈkludɪd ðæt" },
+                { english: "The data indicates", spanish: "Los datos indican", pronunciation: "ðə ˈdeɪtə ˈɪndɪkeɪts" },
+                { english: "Previous research has shown", spanish: "Investigaciones previas han mostrado", pronunciation: "ˈprivəs rɪˈsɜrtʃ hæz ʃoʊn" },
+                { english: "Further studies are needed", spanish: "Se necesitan más estudios", pronunciation: "ˈfɜrðər ˈstʌdiz ɑr ˈnidɪd" }
+            ],
+            grammar: {
+                title: "Lenguaje Académico y Estilo Formal",
+                explanation: "El lenguaje académico se caracteriza por el uso de vocabulario especializado, estructuras complejas, voz pasiva frecuente y un tono objetivo e impersonal.",
+                examples: [
+                    "It has been demonstrated that climate change affects biodiversity.",
+                    "The research was conducted over a period of three years.",
+                    "Previous studies have indicated a correlation between...",
+                    "The findings of this study suggest that..."
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "grammar",
+                    question: "Completa: The study ___ that there is a correlation.",
+                    options: ["finds", "found", "has found", "was found"],
+                    correct: 2
+                }
+            ]
+        },
+        {
+            id: 26,
+            title: "Lenguaje de Negocios y Finanzas",
+            difficulty: "Experto",
+            vocabulary: [
+                { english: "Revenue", spanish: "Ingresos", pronunciation: "ˈrɛvənu" },
+                { english: "Profitability", spanish: "Rentabilidad", pronunciation: "ˌprɑfɪtəˈbɪləti" },
+                { english: "Market share", spanish: "Cuota de mercado", pronunciation: "ˈmɑrkət ʃɛr" },
+                { english: "Return on investment", spanish: "Retorno de inversión", pronunciation: "rɪˈtɜrn ɑn ɪnˈvɛstmənt" },
+                { english: "Cash flow", spanish: "Flujo de caja", pronunciation: "kæʃ floʊ" },
+                { english: "Balance sheet", spanish: "Balance general", pronunciation: "ˈbæləns ʃit" },
+                { english: "Income statement", spanish: "Estado de resultados", pronunciation: "ˈɪnkʌm ˈsteɪtmənt" },
+                { english: "Liquidity", spanish: "Liquidez", pronunciation: "lɪˈkwɪdəti" },
+                { english: "Solvency", spanish: "Solvencia", pronunciation: "ˈsɑlvənsi" },
+                { english: "Leverage", spanish: "Apalancamiento", pronunciation: "ˈlɛvərɪdʒ" },
+                { english: "The company's revenue increased by 15%", spanish: "Los ingresos de la empresa aumentaron 15%", pronunciation: "ðə ˈkʌmpəni ˈrɛvənu ɪnˈkrist baɪ fɪfˈtin pərˈsɛnt" },
+                { english: "We need to improve our cash flow", spanish: "Necesitamos mejorar nuestro flujo de caja", pronunciation: "wi nid tu ɪmˈpruv ˈaʊər kæʃ floʊ" },
+                { english: "The market is highly competitive", spanish: "El mercado es altamente competitivo", pronunciation: "ðə ˈmɑrkət ɪz ˈhaɪli kəmˈpɛtətɪv" },
+                { english: "Let's discuss the quarterly results", spanish: "Discutamos los resultados trimestrales", pronunciation: "lɛts dɪˈskʌs ðə ˈkwɔrtərli rɪˈzʌlts" },
+                { english: "We should diversify our portfolio", spanish: "Deberíamos diversificar nuestro portafolio", pronunciation: "wi ʃʊd daɪˈvɜrsɪfaɪ ˈaʊər pɔrtˈfoʊlioʊ" }
+            ],
+            grammar: {
+                title: "Lenguaje de Negocios y Presentaciones",
+                explanation: "El lenguaje de negocios incluye términos financieros, expresiones para presentaciones, negociaciones y comunicación corporativa. Se caracteriza por ser directo, profesional y orientado a resultados.",
+                examples: [
+                    "I'd like to present our quarterly results.",
+                    "We need to address the issue of declining sales.",
+                    "The proposal outlines our strategic objectives.",
+                    "Let's touch base next week to discuss the project."
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "grammar",
+                    question: "Completa: The company ___ to increase its market share.",
+                    options: ["aim", "aims", "aiming", "aimed"],
+                    correct: 1
+                }
+            ]
+        },
+        {
+            id: 28,
+            title: "Lenguaje Médico y Científico",
+            difficulty: "Experto",
+            vocabulary: [
+                { english: "Diagnosis", spanish: "Diagnóstico", pronunciation: "ˌdaɪəɡˈnoʊsɪs" },
+                { english: "Prognosis", spanish: "Pronóstico", pronunciation: "prɑɡˈnoʊsɪs" },
+                { english: "Symptomatology", spanish: "Sintomatología", pronunciation: "ˌsɪmptəməˈtɑlədʒi" },
+                { english: "Pathology", spanish: "Patología", pronunciation: "pəˈθɑlədʒi" },
+                { english: "Etiology", spanish: "Etiología", pronunciation: "ˌitiˈɑlədʒi" },
+                { english: "Immunology", spanish: "Inmunología", pronunciation: "ˌɪmjəˈnɑlədʒi" },
+                { english: "Cardiology", spanish: "Cardiología", pronunciation: "ˌkɑrdiˈɑlədʒi" },
+                { english: "Neurology", spanish: "Neurología", pronunciation: "nʊˈrɑlədʒi" },
+                { english: "Oncology", spanish: "Oncología", pronunciation: "ɑŋˈkɑlədʒi" },
+                { english: "Dermatology", spanish: "Dermatología", pronunciation: "ˌdɜrməˈtɑlədʒi" },
+                { english: "The patient exhibits symptoms of", spanish: "El paciente presenta síntomas de", pronunciation: "ðə ˈpeɪʃənt ɪɡˈzɪbɪts ˈsɪmptəmz əv" },
+                { english: "The treatment protocol involves", spanish: "El protocolo de tratamiento involucra", pronunciation: "ðə ˈtritmənt ˈproʊtəkɑl ɪnˈvɑlvz" },
+                { english: "The lab results indicate", spanish: "Los resultados del laboratorio indican", pronunciation: "ðə læb rɪˈzʌlts ˈɪndɪkeɪt" },
+                { english: "We need to monitor the patient's vital signs", spanish: "Necesitamos monitorear los signos vitales del paciente", pronunciation: "wi nid tu ˈmɑnɪtər ðə ˈpeɪʃənts ˈvaɪtəl saɪnz" },
+                { english: "The medication should be administered", spanish: "La medicación debe ser administrada", pronunciation: "ðə ˌmɛdɪˈkeɪʃən ʃʊd bi ædˈmɪnɪstreɪtɪd" }
+            ],
+            grammar: {
+                title: "Lenguaje Médico y Documentación Clínica",
+                explanation: "El lenguaje médico requiere precisión, objetividad y uso de terminología especializada. Los documentos médicos deben ser claros, concisos y técnicamente precisos.",
+                examples: [
+                    "The patient presents with acute abdominal pain.",
+                    "Physical examination reveals normal vital signs.",
+                    "The differential diagnosis includes...",
+                    "Treatment options were discussed with the patient."
+                ]
+            },
+            practiceExercises: [
+                {
+                    type: "grammar",
+                    question: "Completa: The patient ___ to the emergency room.",
+                    options: ["admit", "admitted", "was admitted", "has been admitted"],
+                    correct: 2
+                }
+            ]
+        }
     ]
 };
 
@@ -976,22 +1382,151 @@ const VOCABULARY_CATEGORIES = {
     basic: {
         name: "Básico",
         description: "Palabras fundamentales para principiantes",
-        lessons: [1, 2, 4, 9, 10]
+        vocabulary: [
+            { english: "Hello", spanish: "Hola", pronunciation: "həˈloʊ" },
+            { english: "Goodbye", spanish: "Adiós", pronunciation: "ˌɡʊdˈbaɪ" },
+            { english: "Please", spanish: "Por favor", pronunciation: "pliːz" },
+            { english: "Thank you", spanish: "Gracias", pronunciation: "ˈθæŋk juː" },
+            { english: "You're welcome", spanish: "De nada", pronunciation: "jɔːr ˈwɛlkəm" },
+            { english: "Excuse me", spanish: "Disculpe", pronunciation: "ɪkˈskjuːz miː" },
+            { english: "Sorry", spanish: "Lo siento", pronunciation: "ˈsɑːri" },
+            { english: "Yes", spanish: "Sí", pronunciation: "jɛs" },
+            { english: "No", spanish: "No", pronunciation: "noʊ" },
+            { english: "Maybe", spanish: "Tal vez", pronunciation: "ˈmeɪbi" },
+            { english: "I don't know", spanish: "No sé", pronunciation: "aɪ doʊnt noʊ" },
+            { english: "I understand", spanish: "Entiendo", pronunciation: "aɪ ˌʌndərˈstænd" },
+            { english: "I don't understand", spanish: "No entiendo", pronunciation: "aɪ doʊnt ˌʌndərˈstænd" },
+            { english: "Can you help me?", spanish: "¿Puedes ayudarme?", pronunciation: "kæn juː hɛlp miː" },
+            { english: "What time is it?", spanish: "¿Qué hora es?", pronunciation: "wʌt taɪm ɪz ɪt" },
+            { english: "Where is...?", spanish: "¿Dónde está...?", pronunciation: "wɛr ɪz" },
+            { english: "How much is it?", spanish: "¿Cuánto cuesta?", pronunciation: "haʊ mʌʧ ɪz ɪt" },
+            { english: "I like it", spanish: "Me gusta", pronunciation: "aɪ laɪk ɪt" },
+            { english: "I don't like it", spanish: "No me gusta", pronunciation: "aɪ doʊnt laɪk ɪt" },
+            { english: "It's good", spanish: "Está bien", pronunciation: "ɪts ɡʊd" },
+            { english: "How's it going?", spanish: "¿Cómo va todo?", pronunciation: "haʊz ɪt ˈɡoʊɪŋ" },
+            { english: "What's up?", spanish: "¿Qué tal?", pronunciation: "wʌts ʌp" },
+            { english: "I'll see you later", spanish: "Te veo después", pronunciation: "aɪl siː juː ˈleɪtər" },
+            { english: "You're welcome", spanish: "De nada", pronunciation: "jɔːr ˈwɛlkəm" },
+            { english: "That's great", spanish: "Eso es genial", pronunciation: "ðæts ɡreɪt" },
+            { english: "Let's go", spanish: "Vamos", pronunciation: "lɛts ɡoʊ" },
+            { english: "I've been busy", spanish: "He estado ocupado", pronunciation: "aɪv bɪn ˈbɪzi" },
+            { english: "We're friends", spanish: "Somos amigos", pronunciation: "wɪr frɛndz" },
+            { english: "It's raining", spanish: "Está lloviendo", pronunciation: "ɪts ˈreɪnɪŋ" },
+            { english: "Don't worry", spanish: "No te preocupes", pronunciation: "doʊnt ˈwɜri" }
+        ]
     },
     business: {
         name: "Negocios",
         description: "Vocabulario para el mundo empresarial",
-        lessons: [6, 11]
+        vocabulary: [
+            { english: "Business", spanish: "Negocio", pronunciation: "ˈbɪznəs" },
+            { english: "Company", spanish: "Empresa", pronunciation: "ˈkʌmpəni" },
+            { english: "Office", spanish: "Oficina", pronunciation: "ˈɑːfɪs" },
+            { english: "Meeting", spanish: "Reunión", pronunciation: "ˈmiːtɪŋ" },
+            { english: "Presentation", spanish: "Presentación", pronunciation: "ˌprɛzənˈteɪʃən" },
+            { english: "Project", spanish: "Proyecto", pronunciation: "ˈprɑːdʒɛkt" },
+            { english: "Client", spanish: "Cliente", pronunciation: "ˈklaɪənt" },
+            { english: "Customer", spanish: "Cliente", pronunciation: "ˈkʌstəmər" },
+            { english: "Colleague", spanish: "Colega", pronunciation: "ˈkɑːliːɡ" },
+            { english: "Boss", spanish: "Jefe", pronunciation: "bɒs" },
+            { english: "Manager", spanish: "Gerente", pronunciation: "ˈmænɪdʒər" },
+            { english: "Employee", spanish: "Empleado", pronunciation: "ɪmˈplɔɪiː" },
+            { english: "Salary", spanish: "Salario", pronunciation: "ˈsæləri" },
+            { english: "Deadline", spanish: "Fecha límite", pronunciation: "ˈdɛdlaɪn" },
+            { english: "Budget", spanish: "Presupuesto", pronunciation: "ˈbʌdʒɪt" },
+            { english: "Profit", spanish: "Beneficio", pronunciation: "ˈprɑːfɪt" },
+            { english: "Loss", spanish: "Pérdida", pronunciation: "lɔːs" },
+            { english: "Investment", spanish: "Inversión", pronunciation: "ɪnˈvɛstmənt" },
+            { english: "Strategy", spanish: "Estrategia", pronunciation: "ˈstrætədʒi" },
+            { english: "Marketing", spanish: "Mercadotecnia", pronunciation: "ˈmɑːrkɪtɪŋ" },
+            { english: "Sales", spanish: "Ventas", pronunciation: "seɪlz" },
+            { english: "Revenue", spanish: "Ingresos", pronunciation: "ˈrɛvənuː" },
+            { english: "Expenses", spanish: "Gastos", pronunciation: "ɪkˈspɛnsɪz" },
+            { english: "Contract", spanish: "Contrato", pronunciation: "ˈkɑːntrækt" },
+            { english: "Partnership", spanish: "Sociedad", pronunciation: "ˈpɑːrtnərʃɪp" },
+            { english: "Competition", spanish: "Competencia", pronunciation: "ˌkɑːmpəˈtɪʃən" },
+            { english: "Market", spanish: "Mercado", pronunciation: "ˈmɑːrkɪt" },
+            { english: "Industry", spanish: "Industria", pronunciation: "ˈɪndəstri" },
+            { english: "I have a meeting", spanish: "Tengo una reunión", pronunciation: "aɪ hæv ə ˈmiːtɪŋ" },
+            { english: "Let's discuss this", spanish: "Discutamos esto", pronunciation: "lɛts dɪˈskʌs ðɪs" }
+        ]
     },
     technology: {
         name: "Tecnología",
         description: "Términos tecnológicos y digitales",
-        lessons: [6]
+        vocabulary: [
+            { english: "Computer", spanish: "Computadora", pronunciation: "kəmˈpjuːtər" },
+            { english: "Software", spanish: "Software", pronunciation: "ˈsɔftwɛr" },
+            { english: "Hardware", spanish: "Hardware", pronunciation: "ˈhɑːrdwɛr" },
+            { english: "Internet", spanish: "Internet", pronunciation: "ˈɪntərnɛt" },
+            { english: "Website", spanish: "Sitio web", pronunciation: "ˈwɛbsaɪt" },
+            { english: "App", spanish: "Aplicación", pronunciation: "æp" },
+            { english: "Program", spanish: "Programa", pronunciation: "ˈproʊɡræm" },
+            { english: "Data", spanish: "Datos", pronunciation: "ˈdeɪtə" },
+            { english: "File", spanish: "Archivo", pronunciation: "faɪl" },
+            { english: "Folder", spanish: "Carpeta", pronunciation: "ˈfoʊldər" },
+            { english: "Download", spanish: "Descargar", pronunciation: "ˈdaʊnloʊd" },
+            { english: "Upload", spanish: "Subir", pronunciation: "ˈʌploʊd" },
+            { english: "Email", spanish: "Correo electrónico", pronunciation: "ˈiːmeɪl" },
+            { english: "Password", spanish: "Contraseña", pronunciation: "ˈpæswɜːrd" },
+            { english: "Username", spanish: "Nombre de usuario", pronunciation: "ˈjuːzərneɪm" },
+            { english: "Database", spanish: "Base de datos", pronunciation: "ˈdeɪtəbeɪs" },
+            { english: "Server", spanish: "Servidor", pronunciation: "ˈsɜːrvər" },
+            { english: "Network", spanish: "Red", pronunciation: "ˈnɛtwɜːrk" },
+            { english: "WiFi", spanish: "WiFi", pronunciation: "ˈwaɪfaɪ" },
+            { english: "Bluetooth", spanish: "Bluetooth", pronunciation: "ˈbluːtuːθ" },
+            { english: "Cloud", spanish: "Nube", pronunciation: "klaʊd" },
+            { english: "Backup", spanish: "Respaldo", pronunciation: "ˈbækʌp" },
+            { english: "Virus", spanish: "Virus", pronunciation: "ˈvaɪrəs" },
+            { english: "Firewall", spanish: "Cortafuegos", pronunciation: "ˈfaɪərwɔːl" },
+            { english: "Encryption", spanish: "Encriptación", pronunciation: "ɪnˈkrɪpʃən" },
+            { english: "Algorithm", spanish: "Algoritmo", pronunciation: "ˈælɡərɪðəm" },
+            { english: "Artificial Intelligence", spanish: "Inteligencia artificial", pronunciation: "ˌɑːrtɪˈfɪʃəl ɪnˈtɛlədʒəns" },
+            { english: "Machine Learning", spanish: "Aprendizaje automático", pronunciation: "məˈʃiːn ˈlɜrnɪŋ" },
+            { english: "Virtual Reality", spanish: "Realidad virtual", pronunciation: "ˈvɜrtʃuəl riˈæləti" },
+            { english: "Augmented Reality", spanish: "Realidad aumentada", pronunciation: "ɔːɡˈmɛntɪd riˈæləti" },
+            { english: "I need to restart my computer", spanish: "Necesito reiniciar mi computadora", pronunciation: "aɪ niːd tə riːˈstɑrt maɪ kəmˈpjuːtər" },
+            { english: "Can you help me with this app?", spanish: "¿Puedes ayudarme con esta aplicación?", pronunciation: "kæn juː hɛlp miː wɪð ðɪs æp" }
+        ]
     },
     sports: {
         name: "Deportes",
         description: "Actividades físicas y deportes",
-        lessons: [7]
+        vocabulary: [
+            { english: "Sports", spanish: "Deportes", pronunciation: "spɔːrts" },
+            { english: "Football", spanish: "Fútbol", pronunciation: "ˈfʊtbɔːl" },
+            { english: "Basketball", spanish: "Baloncesto", pronunciation: "ˈbæskɪtbɔːl" },
+            { english: "Tennis", spanish: "Tenis", pronunciation: "ˈtɛnɪs" },
+            { english: "Baseball", spanish: "Béisbol", pronunciation: "ˈbeɪsbɔːl" },
+            { english: "Soccer", spanish: "Fútbol", pronunciation: "ˈsɑːkər" },
+            { english: "Volleyball", spanish: "Voleibol", pronunciation: "ˈvɑːlibɔːl" },
+            { english: "Swimming", spanish: "Natación", pronunciation: "ˈswɪmɪŋ" },
+            { english: "Running", spanish: "Correr", pronunciation: "ˈrʌnɪŋ" },
+            { english: "Cycling", spanish: "Ciclismo", pronunciation: "ˈsaɪklɪŋ" },
+            { english: "Golf", spanish: "Golf", pronunciation: "ɡɑːlf" },
+            { english: "Hockey", spanish: "Hockey", pronunciation: "ˈhɑːki" },
+            { english: "Rugby", spanish: "Rugby", pronunciation: "ˈrʌɡbi" },
+            { english: "Cricket", spanish: "Críquet", pronunciation: "ˈkrɪkɪt" },
+            { english: "Athletics", spanish: "Atletismo", pronunciation: "æθˈlɛtɪks" },
+            { english: "Gymnastics", spanish: "Gimnasia", pronunciation: "dʒɪmˈnæstɪks" },
+            { english: "Boxing", spanish: "Boxeo", pronunciation: "ˈbɑːksɪŋ" },
+            { english: "Wrestling", spanish: "Lucha libre", pronunciation: "ˈrɛslɪŋ" },
+            { english: "Martial arts", spanish: "Artes marciales", pronunciation: "ˈmɑːrʃəl ɑːrts" },
+            { english: "Yoga", spanish: "Yoga", pronunciation: "ˈjoʊɡə" },
+            { english: "Pilates", spanish: "Pilates", pronunciation: "pɪˈlɑːtiːz" },
+            { english: "Gym", spanish: "Gimnasio", pronunciation: "dʒɪm" },
+            { english: "Team", spanish: "Equipo", pronunciation: "tiːm" },
+            { english: "Player", spanish: "Jugador", pronunciation: "ˈpleɪər" },
+            { english: "Coach", spanish: "Entrenador", pronunciation: "koʊtʃ" },
+            { english: "Referee", spanish: "Árbitro", pronunciation: "ˌrɛfəˈriː" },
+            { english: "Score", spanish: "Puntuación", pronunciation: "skɔːr" },
+            { english: "Goal", spanish: "Gol", pronunciation: "ɡoʊl" },
+            { english: "Championship", spanish: "Campeonato", pronunciation: "ˈtʃæmpiənʃɪp" },
+            { english: "Tournament", spanish: "Torneo", pronunciation: "ˈtʊrnəmənt" },
+            { english: "Olympics", spanish: "Juegos Olímpicos", pronunciation: "oʊˈlɪmpɪks" },
+            { english: "I love playing sports", spanish: "Me encanta practicar deportes", pronunciation: "aɪ lʌv ˈpleɪɪŋ spɔːrts" },
+            { english: "Let's go to the gym", spanish: "Vamos al gimnasio", pronunciation: "lɛts ɡoʊ tə ðə dʒɪm" }
+        ]
     },
     travel: {
         name: "Viajes",
@@ -1006,11 +1541,6 @@ const VOCABULARY_CATEGORIES = {
             { english: "I need a taxi", spanish: "Necesito un taxi", pronunciation: "aɪ niːd ə ˈtæksi" },
             { english: "How much does it cost?", spanish: "¿Cuánto cuesta?", pronunciation: "haʊ mʌʧ dʌz ɪt kɔst" }
         ]
-    },
-    food: {
-        name: "Comida",
-        description: "Alimentos y gastronomía",
-        lessons: [4, 12]
     },
     emotions: {
         name: "Emociones y estados de ánimo",
@@ -1078,8 +1608,256 @@ const VOCABULARY_CATEGORIES = {
             { english: "Shirt", spanish: "Camisa", pronunciation: "ʃɜːrt" },
             { english: "Pants", spanish: "Pantalones", pronunciation: "pænts" },
             { english: "Dress", spanish: "Vestido", pronunciation: "drɛs" },
+            { english: "Shoes", spanish: "Zapatos", pronunciation: "ʃuːz" },
+            { english: "Jacket", spanish: "Chaqueta", pronunciation: "ˈdʒækɪt" },
+            { english: "Sweater", spanish: "Suéter", pronunciation: "ˈswɛtər" },
+            { english: "Jeans", spanish: "Jeans", pronunciation: "dʒiːnz" },
+            { english: "Skirt", spanish: "Falda", pronunciation: "skɜːrt" },
+            { english: "T-shirt", spanish: "Camiseta", pronunciation: "ˈtiː ʃɜːrt" },
             { english: "How much is this?", spanish: "¿Cuánto cuesta esto?", pronunciation: "haʊ mʌʧ ɪz ðɪs" },
-            { english: "Can I try it on?", spanish: "¿Puedo probármelo?", pronunciation: "kæn aɪ traɪ ɪt ɒn" }
+            { english: "Can I try it on?", spanish: "¿Puedo probármelo?", pronunciation: "kæn aɪ traɪ ɪt ɒn" },
+            { english: "It's too expensive", spanish: "Es muy caro", pronunciation: "ɪts tuː ɪkˈspɛnsɪv" },
+            { english: "Do you have it in blue?", spanish: "¿Lo tienes en azul?", pronunciation: "duː juː hæv ɪt ɪn bluː" },
+            { english: "I'll take it", spanish: "Me lo llevo", pronunciation: "aɪl teɪk ɪt" },
+            { english: "Cash or card?", spanish: "¿Efectivo o tarjeta?", pronunciation: "kæʃ ɔːr kɑːrd" }
+        ]
+    },
+    education: {
+        name: "Educación",
+        description: "Vocabulario académico y universitario",
+        vocabulary: [
+            { english: "University", spanish: "Universidad", pronunciation: "ˌjuːnɪˈvɜːrsɪti" },
+            { english: "Student", spanish: "Estudiante", pronunciation: "ˈstjuːdənt" },
+            { english: "Professor", spanish: "Profesor", pronunciation: "prəˈfɛsər" },
+            { english: "Classroom", spanish: "Aula", pronunciation: "ˈklæsruːm" },
+            { english: "Homework", spanish: "Tarea", pronunciation: "ˈhoʊmwɜːrk" },
+            { english: "Exam", spanish: "Examen", pronunciation: "ɪɡˈzæm" },
+            { english: "Grade", spanish: "Calificación", pronunciation: "ɡreɪd" },
+            { english: "Subject", spanish: "Materia", pronunciation: "ˈsʌbdʒɪkt" },
+            { english: "Library", spanish: "Biblioteca", pronunciation: "ˈlaɪbrəri" },
+            { english: "Research", spanish: "Investigación", pronunciation: "rɪˈsɜːrtʃ" },
+            { english: "Thesis", spanish: "Tesis", pronunciation: "ˈθiːsɪs" },
+            { english: "Scholarship", spanish: "Beca", pronunciation: "ˈskɑːlərʃɪp" },
+            { english: "Graduation", spanish: "Graduación", pronunciation: "ˌɡrædʒuˈeɪʃən" },
+            { english: "Academic", spanish: "Académico", pronunciation: "ˌækəˈdɛmɪk" },
+            { english: "Study group", spanish: "Grupo de estudio", pronunciation: "ˈstʌdi ɡruːp" },
+            { english: "I need to study", spanish: "Necesito estudiar", pronunciation: "aɪ niːd tə ˈstʌdi" },
+            { english: "What's your major?", spanish: "¿Cuál es tu carrera?", pronunciation: "wʌts jɔːr ˈmeɪdʒər" }
+        ]
+    },
+    entertainment: {
+        name: "Entretenimiento",
+        description: "Películas, música, hobbies y diversión",
+        vocabulary: [
+            { english: "Movie", spanish: "Película", pronunciation: "ˈmuːvi" },
+            { english: "Music", spanish: "Música", pronunciation: "ˈmjuːzɪk" },
+            { english: "Concert", spanish: "Concierto", pronunciation: "ˈkɑːnsərt" },
+            { english: "Theater", spanish: "Teatro", pronunciation: "ˈθiːətər" },
+            { english: "Hobby", spanish: "Pasatiempo", pronunciation: "ˈhɑːbi" },
+            { english: "Game", spanish: "Juego", pronunciation: "ɡeɪm" },
+            { english: "Party", spanish: "Fiesta", pronunciation: "ˈpɑːrti" },
+            { english: "Dance", spanish: "Baile", pronunciation: "dæns" },
+            { english: "Sing", spanish: "Cantar", pronunciation: "sɪŋ" },
+            { english: "Act", spanish: "Actuar", pronunciation: "ækt" },
+            { english: "Director", spanish: "Director", pronunciation: "dəˈrɛktər" },
+            { english: "Actor", spanish: "Actor", pronunciation: "ˈæktər" },
+            { english: "Singer", spanish: "Cantante", pronunciation: "ˈsɪŋər" },
+            { english: "Band", spanish: "Banda", pronunciation: "bænd" },
+            { english: "Album", spanish: "Álbum", pronunciation: "ˈælbəm" },
+            { english: "Song", spanish: "Canción", pronunciation: "sɔːŋ" },
+            { english: "I love this song", spanish: "Me encanta esta canción", pronunciation: "aɪ lʌv ðɪs sɔːŋ" },
+            { english: "Let's go to the movies", spanish: "Vamos al cine", pronunciation: "lɛts ɡoʊ tə ðə ˈmuːviz" }
+        ]
+    },
+    environment: {
+        name: "Medio Ambiente",
+        description: "Naturaleza, clima y ecología",
+        vocabulary: [
+            { english: "Nature", spanish: "Naturaleza", pronunciation: "ˈneɪtʃər" },
+            { english: "Environment", spanish: "Medio ambiente", pronunciation: "ɪnˈvaɪrənmənt" },
+            { english: "Climate", spanish: "Clima", pronunciation: "ˈklaɪmɪt" },
+            { english: "Weather", spanish: "Tiempo", pronunciation: "ˈwɛðər" },
+            { english: "Forest", spanish: "Bosque", pronunciation: "ˈfɔːrɪst" },
+            { english: "Ocean", spanish: "Océano", pronunciation: "ˈoʊʃən" },
+            { english: "Mountain", spanish: "Montaña", pronunciation: "ˈmaʊntən" },
+            { english: "River", spanish: "Río", pronunciation: "ˈrɪvər" },
+            { english: "Pollution", spanish: "Contaminación", pronunciation: "pəˈluːʃən" },
+            { english: "Recycling", spanish: "Reciclaje", pronunciation: "riːˈsaɪklɪŋ" },
+            { english: "Solar energy", spanish: "Energía solar", pronunciation: "ˈsoʊlər ˈɛnərdʒi" },
+            { english: "Wind power", spanish: "Energía eólica", pronunciation: "wɪnd ˈpaʊər" },
+            { english: "Greenhouse effect", spanish: "Efecto invernadero", pronunciation: "ˈɡriːnhaʊs ɪˈfɛkt" },
+            { english: "Endangered species", spanish: "Especies en peligro", pronunciation: "ɪnˈdeɪndʒərd ˈspiːʃiːz" },
+            { english: "Conservation", spanish: "Conservación", pronunciation: "ˌkɑːnsərˈveɪʃən" },
+            { english: "Ecosystem", spanish: "Ecosistema", pronunciation: "ˈiːkoʊˌsɪstəm" },
+            { english: "We need to protect the environment", spanish: "Necesitamos proteger el medio ambiente", pronunciation: "wiː niːd tə prəˈtɛkt ðə ɪnˈvaɪrənmənt" }
+        ]
+    },
+    finance: {
+        name: "Finanzas",
+        description: "Bancos, inversiones y economía",
+        vocabulary: [
+            { english: "Bank", spanish: "Banco", pronunciation: "bæŋk" },
+            { english: "Money", spanish: "Dinero", pronunciation: "ˈmʌni" },
+            { english: "Account", spanish: "Cuenta", pronunciation: "əˈkaʊnt" },
+            { english: "Credit card", spanish: "Tarjeta de crédito", pronunciation: "ˈkrɛdɪt kɑːrd" },
+            { english: "Investment", spanish: "Inversión", pronunciation: "ɪnˈvɛstmənt" },
+            { english: "Loan", spanish: "Préstamo", pronunciation: "loʊn" },
+            { english: "Interest", spanish: "Interés", pronunciation: "ˈɪntrɪst" },
+            { english: "Savings", spanish: "Ahorros", pronunciation: "ˈseɪvɪŋz" },
+            { english: "Budget", spanish: "Presupuesto", pronunciation: "ˈbʌdʒɪt" },
+            { english: "Expense", spanish: "Gasto", pronunciation: "ɪkˈspɛns" },
+            { english: "Income", spanish: "Ingreso", pronunciation: "ˈɪnkʌm" },
+            { english: "Tax", spanish: "Impuesto", pronunciation: "tæks" },
+            { english: "Insurance", spanish: "Seguro", pronunciation: "ɪnˈʃʊrəns" },
+            { english: "Stock market", spanish: "Bolsa de valores", pronunciation: "stɑːk ˈmɑːrkɪt" },
+            { english: "Profit", spanish: "Beneficio", pronunciation: "ˈprɑːfɪt" },
+            { english: "Loss", spanish: "Pérdida", pronunciation: "lɔːs" },
+            { english: "I need to check my balance", spanish: "Necesito revisar mi saldo", pronunciation: "aɪ niːd tə ʧɛk maɪ ˈbæləns" },
+            { english: "Can I open a savings account?", spanish: "¿Puedo abrir una cuenta de ahorros?", pronunciation: "kæn aɪ ˈoʊpən ə ˈseɪvɪŋz əˈkaʊnt" }
+        ]
+    },
+    legal: {
+        name: "Legal",
+        description: "Documentos, contratos y leyes",
+        vocabulary: [
+            { english: "Law", spanish: "Ley", pronunciation: "lɔː" },
+            { english: "Lawyer", spanish: "Abogado", pronunciation: "ˈlɔːjər" },
+            { english: "Contract", spanish: "Contrato", pronunciation: "ˈkɑːntrækt" },
+            { english: "Document", spanish: "Documento", pronunciation: "ˈdɑːkjəmənt" },
+            { english: "Signature", spanish: "Firma", pronunciation: "ˈsɪɡnətʃər" },
+            { english: "Court", spanish: "Tribunal", pronunciation: "kɔːrt" },
+            { english: "Judge", spanish: "Juez", pronunciation: "dʒʌdʒ" },
+            { english: "Witness", spanish: "Testigo", pronunciation: "ˈwɪtnəs" },
+            { english: "Evidence", spanish: "Evidencia", pronunciation: "ˈɛvɪdəns" },
+            { english: "Rights", spanish: "Derechos", pronunciation: "raɪts" },
+            { english: "Duty", spanish: "Deber", pronunciation: "ˈduːti" },
+            { english: "Legal", spanish: "Legal", pronunciation: "ˈliːɡəl" },
+            { english: "Illegal", spanish: "Ilegal", pronunciation: "ɪˈliːɡəl" },
+            { english: "Justice", spanish: "Justicia", pronunciation: "ˈdʒʌstɪs" },
+            { english: "Crime", spanish: "Crimen", pronunciation: "kraɪm" },
+            { english: "Punishment", spanish: "Castigo", pronunciation: "ˈpʌnɪʃmənt" },
+            { english: "I need legal advice", spanish: "Necesito asesoría legal", pronunciation: "aɪ niːd ˈliːɡəl ədˈvaɪs" },
+            { english: "Where is the courthouse?", spanish: "¿Dónde está el juzgado?", pronunciation: "wɛr ɪz ðə ˈkɔːrthaʊs" }
+        ]
+    },
+    medical: {
+        name: "Médico",
+        description: "Especialidades, síntomas y tratamientos",
+        vocabulary: [
+            { english: "Medicine", spanish: "Medicina", pronunciation: "ˈmɛdɪsɪn" },
+            { english: "Doctor", spanish: "Doctor", pronunciation: "ˈdɑktər" },
+            { english: "Nurse", spanish: "Enfermera", pronunciation: "nɜːrs" },
+            { english: "Hospital", spanish: "Hospital", pronunciation: "ˈhɑːspɪtəl" },
+            { english: "Symptom", spanish: "Síntoma", pronunciation: "ˈsɪmptəm" },
+            { english: "Treatment", spanish: "Tratamiento", pronunciation: "ˈtriːtmənt" },
+            { english: "Surgery", spanish: "Cirugía", pronunciation: "ˈsɜːrdʒəri" },
+            { english: "Prescription", spanish: "Receta", pronunciation: "prɪˈskrɪpʃən" },
+            { english: "Pain", spanish: "Dolor", pronunciation: "peɪn" },
+            { english: "Fever", spanish: "Fiebre", pronunciation: "ˈfiːvər" },
+            { english: "Cough", spanish: "Tos", pronunciation: "kɔːf" },
+            { english: "Headache", spanish: "Dolor de cabeza", pronunciation: "ˈhɛdeɪk" },
+            { english: "Emergency", spanish: "Emergencia", pronunciation: "ɪˈmɜːrdʒənsi" },
+            { english: "Ambulance", spanish: "Ambulancia", pronunciation: "ˈæmbjələns" },
+            { english: "Specialist", spanish: "Especialista", pronunciation: "ˈspɛʃəlɪst" },
+            { english: "Diagnosis", spanish: "Diagnóstico", pronunciation: "ˌdaɪəɡˈnoʊsɪs" },
+            { english: "I have an appointment", spanish: "Tengo una cita", pronunciation: "aɪ hæv æn əˈpɔɪntmənt" },
+            { english: "I'm allergic to penicillin", spanish: "Soy alérgico a la penicilina", pronunciation: "aɪm əˈlɜːrdʒɪk tə ˌpɛnɪˈsɪlɪn" }
+        ]
+    },
+    academic: {
+        name: "Académico",
+        description: "Investigación, tesis y publicaciones",
+        vocabulary: [
+            { english: "Research", spanish: "Investigación", pronunciation: "rɪˈsɜːrtʃ" },
+            { english: "Study", spanish: "Estudio", pronunciation: "ˈstʌdi" },
+            { english: "Analysis", spanish: "Análisis", pronunciation: "əˈnælɪsɪs" },
+            { english: "Methodology", spanish: "Metodología", pronunciation: "ˌmɛθəˈdɑːlədʒi" },
+            { english: "Data", spanish: "Datos", pronunciation: "ˈdeɪtə" },
+            { english: "Results", spanish: "Resultados", pronunciation: "rɪˈzʌlts" },
+            { english: "Conclusion", spanish: "Conclusión", pronunciation: "kənˈkluːʒən" },
+            { english: "Bibliography", spanish: "Bibliografía", pronunciation: "ˌbɪbliˈɑːɡrəfi" },
+            { english: "Citation", spanish: "Cita", pronunciation: "saɪˈteɪʃən" },
+            { english: "Peer review", spanish: "Revisión por pares", pronunciation: "pɪr rɪˈvjuː" },
+            { english: "Journal", spanish: "Revista", pronunciation: "ˈdʒɜːrnəl" },
+            { english: "Conference", spanish: "Conferencia", pronunciation: "ˈkɑːnfərəns" },
+            { english: "Abstract", spanish: "Resumen", pronunciation: "ˈæbstrækt" },
+            { english: "Literature review", spanish: "Revisión de literatura", pronunciation: "ˈlɪtərətʃər rɪˈvjuː" },
+            { english: "Hypothesis", spanish: "Hipótesis", pronunciation: "haɪˈpɑːθəsɪs" },
+            { english: "Variable", spanish: "Variable", pronunciation: "ˈvɛriəbəl" },
+            { english: "I'm conducting research", spanish: "Estoy realizando investigación", pronunciation: "aɪm kənˈdʌktɪŋ rɪˈsɜːrtʃ" },
+            { english: "The results are significant", spanish: "Los resultados son significativos", pronunciation: "ðə rɪˈzʌlts ɑr sɪɡˈnɪfɪkənt" }
+        ]
+    },
+    social_media: {
+        name: "Redes Sociales",
+        description: "Plataformas e interacciones digitales",
+        vocabulary: [
+            { english: "Social media", spanish: "Redes sociales", pronunciation: "ˈsoʊʃəl ˈmiːdiə" },
+            { english: "Profile", spanish: "Perfil", pronunciation: "ˈproʊfaɪl" },
+            { english: "Post", spanish: "Publicación", pronunciation: "poʊst" },
+            { english: "Like", spanish: "Me gusta", pronunciation: "laɪk" },
+            { english: "Comment", spanish: "Comentario", pronunciation: "ˈkɑːmɛnt" },
+            { english: "Share", spanish: "Compartir", pronunciation: "ʃɛr" },
+            { english: "Follow", spanish: "Seguir", pronunciation: "ˈfɑːloʊ" },
+            { english: "Follower", spanish: "Seguidor", pronunciation: "ˈfɑːloʊər" },
+            { english: "Hashtag", spanish: "Hashtag", pronunciation: "ˈhæʃtæɡ" },
+            { english: "Trending", spanish: "Tendencia", pronunciation: "ˈtrɛndɪŋ" },
+            { english: "Viral", spanish: "Viral", pronunciation: "ˈvaɪrəl" },
+            { english: "Influencer", spanish: "Influencer", pronunciation: "ˈɪnfluənsər" },
+            { english: "Story", spanish: "Historia", pronunciation: "ˈstɔːri" },
+            { english: "Live stream", spanish: "Transmisión en vivo", pronunciation: "laɪv striːm" },
+            { english: "Direct message", spanish: "Mensaje directo", pronunciation: "dəˈrɛkt ˈmɛsɪdʒ" },
+            { english: "Block", spanish: "Bloquear", pronunciation: "blɑːk" },
+            { english: "I posted a photo", spanish: "Publiqué una foto", pronunciation: "aɪ poʊstɪd ə ˈfoʊtoʊ" },
+            { english: "Check out my new post", spanish: "Mira mi nueva publicación", pronunciation: "ʧɛk aʊt maɪ nuː poʊst" }
+        ]
+    },
+    weather: {
+        name: "Clima",
+        description: "Estaciones y fenómenos meteorológicos",
+        vocabulary: [
+            { english: "Weather", spanish: "Tiempo", pronunciation: "ˈwɛðər" },
+            { english: "Climate", spanish: "Clima", pronunciation: "ˈklaɪmɪt" },
+            { english: "Temperature", spanish: "Temperatura", pronunciation: "ˈtɛmpərətʃər" },
+            { english: "Sunny", spanish: "Soleado", pronunciation: "ˈsʌni" },
+            { english: "Rainy", spanish: "Lluvioso", pronunciation: "ˈreɪni" },
+            { english: "Cloudy", spanish: "Nublado", pronunciation: "ˈklaʊdi" },
+            { english: "Windy", spanish: "Ventoso", pronunciation: "ˈwɪndi" },
+            { english: "Storm", spanish: "Tormenta", pronunciation: "stɔːrm" },
+            { english: "Thunder", spanish: "Trueno", pronunciation: "ˈθʌndər" },
+            { english: "Lightning", spanish: "Relámpago", pronunciation: "ˈlaɪtnɪŋ" },
+            { english: "Rainbow", spanish: "Arcoíris", pronunciation: "ˈreɪnboʊ" },
+            { english: "Fog", spanish: "Niebla", pronunciation: "fɔːɡ" },
+            { english: "Snow", spanish: "Nieve", pronunciation: "snoʊ" },
+            { english: "Ice", spanish: "Hielo", pronunciation: "aɪs" },
+            { english: "Hurricane", spanish: "Huracán", pronunciation: "ˈhɜːrɪkən" },
+            { english: "Tornado", spanish: "Tornado", pronunciation: "tɔːrˈneɪdoʊ" },
+            { english: "What's the weather like?", spanish: "¿Cómo está el tiempo?", pronunciation: "wʌts ðə ˈwɛðər laɪk" },
+            { english: "It's going to rain", spanish: "Va a llover", pronunciation: "ɪts ˈɡoʊɪŋ tə reɪn" }
+        ]
+    },
+    transportation: {
+        name: "Transporte",
+        description: "Vehículos, infraestructura y viajes",
+        vocabulary: [
+            { english: "Transportation", spanish: "Transporte", pronunciation: "ˌtrænspɔːrˈteɪʃən" },
+            { english: "Car", spanish: "Carro", pronunciation: "kɑːr" },
+            { english: "Bus", spanish: "Autobús", pronunciation: "bʌs" },
+            { english: "Train", spanish: "Tren", pronunciation: "treɪn" },
+            { english: "Airplane", spanish: "Avión", pronunciation: "ˈɛrpleɪn" },
+            { english: "Bicycle", spanish: "Bicicleta", pronunciation: "ˈbaɪsɪkəl" },
+            { english: "Motorcycle", spanish: "Motocicleta", pronunciation: "ˈmoʊtərˌsaɪkəl" },
+            { english: "Subway", spanish: "Metro", pronunciation: "ˈsʌbweɪ" },
+            { english: "Taxi", spanish: "Taxi", pronunciation: "ˈtæksi" },
+            { english: "Boat", spanish: "Barco", pronunciation: "boʊt" },
+            { english: "Helicopter", spanish: "Helicóptero", pronunciation: "ˈhɛlɪkɑptər" },
+            { english: "Traffic", spanish: "Tráfico", pronunciation: "ˈtræfɪk" },
+            { english: "Highway", spanish: "Autopista", pronunciation: "ˈhaɪweɪ" },
+            { english: "Bridge", spanish: "Puente", pronunciation: "brɪdʒ" },
+            { english: "Tunnel", spanish: "Túnel", pronunciation: "ˈtʌnəl" },
+            { english: "Gas station", spanish: "Gasolinera", pronunciation: "ɡæs ˈsteɪʃən" },
+            { english: "How do I get to...?", spanish: "¿Cómo llego a...?", pronunciation: "haʊ duː aɪ ɡɛt tə" },
+            { english: "I need directions", spanish: "Necesito indicaciones", pronunciation: "aɪ niːd dəˈrɛkʃənz" }
         ]
     }
 };
@@ -1090,12 +1868,24 @@ function getVocabularyByCategory(category) {
     if (!categoryData) return [];
     
     let vocabulary = [];
-    categoryData.lessons.forEach(lessonId => {
-        const lesson = LESSONS_DATABASE.level1.find(l => l.id === lessonId);
-        if (lesson) {
-            vocabulary = vocabulary.concat(lesson.vocabulary);
-        }
-    });
+    
+    // Si la categoría tiene vocabulario directo, usarlo
+    if (categoryData.vocabulary) {
+        vocabulary = vocabulary.concat(categoryData.vocabulary);
+    }
+    
+    // Si tiene lecciones asociadas, buscar en todos los niveles
+    if (categoryData.lessons) {
+        categoryData.lessons.forEach(lessonId => {
+            // Buscar en todos los niveles de la base de datos
+            Object.values(LESSONS_DATABASE).forEach(levelLessons => {
+                const lesson = levelLessons.find(l => l.id === lessonId);
+                if (lesson) {
+                    vocabulary = vocabulary.concat(lesson.vocabulary);
+                }
+            });
+        });
+    }
     
     return vocabulary;
 }
@@ -1105,9 +1895,25 @@ function getVocabularyStats() {
     const stats = {};
     Object.keys(VOCABULARY_CATEGORIES).forEach(category => {
         const vocabulary = getVocabularyByCategory(category);
+        const user = getCurrentUser();
+        let learned = 0;
+        
+        // Calcular palabras aprendidas basado en el progreso del usuario
+        if (user && appState.userProgress) {
+            vocabulary.forEach(word => {
+                // Verificar si la palabra está en el progreso del usuario
+                Object.values(appState.userProgress).forEach(lessonProgress => {
+                    if (lessonProgress.vocabulary && lessonProgress.vocabulary.includes(word.english)) {
+                        learned++;
+                    }
+                });
+            });
+        }
+        
         stats[category] = {
             total: vocabulary.length,
-            learned: 0 // Esto se calcularía basado en el progreso del usuario
+            learned: learned,
+            percentage: vocabulary.length > 0 ? Math.round((learned / vocabulary.length) * 100) : 0
         };
     });
     return stats;
@@ -1119,7 +1925,10 @@ function speakText(text, language = 'en-US', rate = 0.8) {
         // Detener cualquier pronunciación anterior
         speechSynthesis.cancel();
         
-        const utterance = new SpeechSynthesisUtterance(text);
+        // Limpiar el texto de caracteres problemáticos para la síntesis de voz
+        const cleanText = cleanTextForSpeech(text);
+        
+        const utterance = new SpeechSynthesisUtterance(cleanText);
         utterance.lang = language;
         utterance.rate = rate;
         utterance.volume = 1;
@@ -1151,6 +1960,179 @@ function speakText(text, language = 'en-US', rate = 0.8) {
         return false;
 }
 
+// Función auxiliar para limpiar texto para síntesis de voz
+function cleanTextForSpeech(text) {
+    if (!text) return '';
+    
+    let cleanText = text;
+    
+    // Reemplazar apóstrofes y caracteres especiales
+    cleanText = cleanText.replace(/'/g, "'");
+    cleanText = cleanText.replace(/"/g, '"');
+    cleanText = cleanText.replace(/"/g, '"');
+    cleanText = cleanText.replace(/…/g, '...');
+    cleanText = cleanText.replace(/–/g, '-');
+    cleanText = cleanText.replace(/—/g, '-');
+    
+    // Manejar contracciones específicas del inglés
+    const contractions = {
+        // Contracciones con 'm (am)
+        "i'm": "i am",
+        // Contracciones con 're (are)
+        "you're": "you are",
+        "we're": "we are",
+        "they're": "they are",
+        "there're": "there are",
+        // Contracciones con 's (is/has)
+        "it's": "it is",
+        "he's": "he is",
+        "she's": "she is",
+        "that's": "that is",
+        "what's": "what is",
+        "where's": "where is",
+        "who's": "who is",
+        "how's": "how is",
+        "when's": "when is",
+        "why's": "why is",
+        "there's": "there is",
+        "here's": "here is",
+        "let's": "let us",
+        // Contracciones con 'll (will)
+        "i'll": "i will",
+        "you'll": "you will",
+        "he'll": "he will",
+        "she'll": "she will",
+        "it'll": "it will",
+        "we'll": "we will",
+        "they'll": "they will",
+        "that'll": "that will",
+        "there'll": "there will",
+        // Contracciones con 'd (would/had)
+        "i'd": "i would",
+        "you'd": "you would",
+        "he'd": "he would",
+        "she'd": "she would",
+        "it'd": "it would",
+        "we'd": "we would",
+        "they'd": "they would",
+        "that'd": "that would",
+        "there'd": "there would",
+        // Contracciones con 've (have)
+        "i've": "i have",
+        "you've": "you have",
+        "we've": "we have",
+        "they've": "they have",
+        "could've": "could have",
+        "should've": "should have",
+        "would've": "would have",
+        "might've": "might have",
+        "must've": "must have",
+        // Contracciones negativas con 't
+        "don't": "do not",
+        "doesn't": "does not",
+        "didn't": "did not",
+        "can't": "can not",
+        "cannot": "can not",
+        "won't": "will not",
+        "wouldn't": "would not",
+        "shouldn't": "should not",
+        "couldn't": "could not",
+        "isn't": "is not",
+        "aren't": "are not",
+        "wasn't": "was not",
+        "weren't": "were not",
+        "hasn't": "has not",
+        "haven't": "have not",
+        "hadn't": "had not",
+        "mustn't": "must not",
+        "mightn't": "might not",
+        "shan't": "shall not",
+        "needn't": "need not",
+        "daren't": "dare not",
+        // Contracciones informales
+        "gonna": "going to",
+        "wanna": "want to",
+        "gotta": "got to",
+        "lemme": "let me",
+        "gimme": "give me",
+        "kinda": "kind of",
+        "sorta": "sort of",
+        "outta": "out of",
+        "lotsa": "lots of",
+        "cuppa": "cup of"
+    };
+    
+    // Reemplazo insensible a mayúsculas y mantiene capitalización inicial
+    Object.entries(contractions).forEach(([contraction, expansion]) => {
+        // Regex insensible a mayúsculas y global
+        const regex = new RegExp(`\\b${contraction}\\b`, 'gi');
+        cleanText = cleanText.replace(regex, (match) => {
+            // Si la palabra original empieza con mayúscula, capitaliza la expansión
+            if (match[0] === match[0].toUpperCase()) {
+                return expansion.charAt(0).toUpperCase() + expansion.slice(1);
+            } else {
+                return expansion;
+            }
+        });
+    });
+    
+    return cleanText;
+}
+
+// Función para probar contracciones (solo para desarrollo)
+function testContractions() {
+    const testWords = [
+        "I'm fine",
+        "How's it going?",
+        "What's up?",
+        "I'll see you later",
+        "You're welcome",
+        "That's great",
+        "Let's go",
+        "I've been busy",
+        "We're friends",
+        "It's raining",
+        "Don't worry",
+        "Can't do it",
+        "Won't work",
+        "Shouldn't be",
+        "Couldn't find",
+        "Wouldn't like",
+        "Isn't it?",
+        "Aren't you?",
+        "Wasn't there",
+        "Weren't they?",
+        "Hasn't arrived",
+        "Haven't seen",
+        "Hadn't known",
+        "It's been",
+        "He's coming",
+        "She's gone",
+        "There's time",
+        "Here's the thing",
+        "I'd like to",
+        "You'd better",
+        "We'd rather",
+        "They'd prefer",
+        "I've got it",
+        "You've done it",
+        "We've finished",
+        "They've left",
+        "Could've been",
+        "Should've known",
+        "Would've helped",
+        "Might've worked",
+        "Must've forgotten"
+    ];
+    
+    console.log("=== PRUEBA DE CONTRACCIONES ===");
+    testWords.forEach(word => {
+        const cleaned = cleanTextForSpeech(word);
+        console.log(`Original: "${word}" → Cleaned: "${cleaned}"`);
+    });
+    console.log("=== FIN DE PRUEBA ===");
+}
+
 // Función para practicar pronunciación con grabación
 async function practicePronunciation(text) {
     const btn = document.querySelector('.practice-btn[title="Grabar tu pronunciación"]');
@@ -1177,7 +2159,7 @@ async function practicePronunciation(text) {
             </div>
             <div class="audio-section">
                 <h5>Pronunciación correcta:</h5>
-                <button class="btn btn-primary" onclick="speakText('${text.replace(/'/g, "\\'")}', 'en-US')">
+                <button class="btn btn-primary" onclick="speakText('${cleanTextForSpeech(text)}', 'en-US')">
                     <i class="fas fa-volume-up"></i> Escuchar
                 </button>
             </div>
@@ -1346,7 +2328,8 @@ function loadSectionContent(section) {
 
 // Sección APRENDER
 function loadCurrentLesson() {
-    const currentLesson = LESSONS_DATABASE.level1[appState.currentLesson];
+    const allowedLessons = getAllowedLessonsByLevel();
+    const currentLesson = allowedLessons[appState.currentLesson];
     if (!currentLesson) return;
 
     document.getElementById('lessonTitle').textContent = currentLesson.title;
@@ -1376,13 +2359,13 @@ function loadCurrentLesson() {
     currentLesson.vocabulary.forEach(item => {
         const vocabItem = document.createElement('div');
         vocabItem.className = 'vocabulary-item';
-        // Escapar comillas simples para el atributo onclick
-        const safeEnglish = item.english.replace(/'/g, "\\'");
+        // Limpiar texto para síntesis de voz
+        const cleanEnglish = cleanTextForSpeech(item.english);
         vocabItem.innerHTML = `
                                 <div class="vocab-header">
                                     <div class="english">${item.english}</div>
                 <div class="pronunciation-buttons">
-                    <button class="speak-btn" onclick="speakText('${safeEnglish}', 'en-US')" title="Escuchar pronunciación">
+                    <button class="speak-btn" onclick="speakText('${cleanEnglish}', 'en-US')" title="Escuchar pronunciación">
                                         <i class="fas fa-volume-up"></i>
                                     </button>
                 </div>
@@ -1473,14 +2456,37 @@ function getUserLevelMCER() {
 
 function getAllowedLessonsByLevel() {
     const mcer = getUserLevelMCER();
-    // Relación MCER -> dificultad
+    // Relación MCER -> dificultad y niveles
     const allowedDifficulties = [];
-    if (mcer === 'A1') allowedDifficulties.push('Principiante');
-    if (mcer === 'A2') allowedDifficulties.push('Principiante', 'Básico');
-    if (mcer === 'B1') allowedDifficulties.push('Principiante', 'Básico', 'Intermedio');
-    if (mcer === 'B2' || mcer === 'C1' || mcer === 'C2') allowedDifficulties.push('Principiante', 'Básico', 'Intermedio', 'Avanzado');
-    // Filtrar lecciones
-    return LESSONS_DATABASE.level1.filter(lesson => allowedDifficulties.includes(lesson.difficulty));
+    const allowedLevels = [];
+    
+    if (mcer === 'A1') {
+        allowedDifficulties.push('Principiante');
+        allowedLevels.push('level1');
+    } else if (mcer === 'A2') {
+        allowedDifficulties.push('Principiante', 'Básico');
+        allowedLevels.push('level1');
+    } else if (mcer === 'B1') {
+        allowedDifficulties.push('Principiante', 'Básico', 'Intermedio');
+        allowedLevels.push('level1', 'level2');
+    } else if (mcer === 'B2') {
+        allowedDifficulties.push('Principiante', 'Básico', 'Intermedio', 'Avanzado');
+        allowedLevels.push('level1', 'level2', 'level3');
+    } else if (mcer === 'C1' || mcer === 'C2') {
+        allowedDifficulties.push('Principiante', 'Básico', 'Intermedio', 'Avanzado', 'Experto');
+        allowedLevels.push('level1', 'level2', 'level3', 'level4');
+    }
+    
+    // Combinar lecciones de todos los niveles permitidos
+    let allLessons = [];
+    allowedLevels.forEach(level => {
+        if (LESSONS_DATABASE[level]) {
+            allLessons = allLessons.concat(LESSONS_DATABASE[level]);
+        }
+    });
+    
+    // Filtrar por dificultad
+    return allLessons.filter(lesson => allowedDifficulties.includes(lesson.difficulty));
 }
 
 // Función para sincronizar la lección de práctica con la lección de aprendizaje
@@ -1753,16 +2759,16 @@ function createListeningExercise(lesson) {
 function createPronunciationPractice(lesson) {
     // Elegir una palabra aleatoria del vocabulario de la lección
     const vocab = lesson.vocabulary[Math.floor(Math.random() * lesson.vocabulary.length)];
-    const safeEnglish = vocab.english.replace(/'/g, "\\'");
+    const cleanEnglish = cleanTextForSpeech(vocab.english);
     return `
         <div class="exercise-container">
             <h4>Practica la pronunciación de:</h4>
             <div class="pronunciation-practice">
                 <div class="english">${vocab.english}</div>
-                <button class="speak-btn" onclick="speakText('${safeEnglish}', 'en-US')" title="Escuchar pronunciación">
+                <button class="speak-btn" onclick="speakText('${cleanEnglish}', 'en-US')" title="Escuchar pronunciación">
                     <i class="fas fa-volume-up"></i>
                     </button>
-                <button class="practice-btn" onclick="practicePronunciation('${safeEnglish}')" title="Grabar tu pronunciación">
+                <button class="practice-btn" onclick="practicePronunciation('${cleanEnglish}')" title="Grabar tu pronunciación">
                         <i class="fas fa-microphone"></i> Grabar
                     </button>
             </div>
@@ -2568,25 +3574,67 @@ function loadVocabularyCategories() {
     
     Object.entries(VOCABULARY_CATEGORIES).forEach(([key, category]) => {
         const vocabulary = getVocabularyByCategory(key);
-        const learnedCount = Math.floor(vocabulary.length * 0.3); // Simular progreso
+        const stats = getVocabularyStats();
+        const categoryStats = stats[key];
         
         const categoryCard = document.createElement('div');
         categoryCard.className = 'category-card';
         categoryCard.onclick = () => loadVocabularyDetail(key);
         
+        // Agregar iconos específicos para cada categoría
+        const categoryIcons = {
+            basic: '📚',
+            business: '💼',
+            technology: '💻',
+            sports: '⚽',
+            travel: '✈️',
+            food: '🍽️',
+            emotions: '😊',
+            home: '🏠',
+            health: '🏥',
+            work: '👔',
+            shopping: '🛍️',
+            education: '🎓',
+            entertainment: '🎬',
+            environment: '🌍',
+            finance: '💰',
+            legal: '⚖️',
+            medical: '🩺',
+            academic: '📖',
+            social_media: '📱',
+            weather: '🌤️',
+            transportation: '🚗'
+        };
+        
+        const icon = categoryIcons[key] || '📝';
+        
         categoryCard.innerHTML = `
-            <h3>${category.name}</h3>
+            <h3>${icon} ${category.name}</h3>
             <p>${category.description}</p>
             <div class="category-stats">
-                <span>${learnedCount}/${vocabulary.length} palabras</span>
-                <span>${Math.round((learnedCount / vocabulary.length) * 100)}%</span>
+                <span>${categoryStats.learned}/${categoryStats.total} palabras</span>
+                <span>${categoryStats.percentage}%</span>
             </div>
             <div class="category-progress">
-                <div class="category-progress-fill" style="width: ${(learnedCount / vocabulary.length) * 100}%"></div>
+                <div class="category-progress-fill" style="width: ${categoryStats.percentage}%"></div>
+            </div>
+            <div class="category-actions">
+                <button class="btn btn-primary practice-category-btn" data-category="${key}">
+                    <i class="fas fa-play"></i> Practicar
+                </button>
             </div>
         `;
         
         categoriesGrid.appendChild(categoryCard);
+    });
+    
+    // Agregar event listeners para los botones de práctica
+    document.querySelectorAll('.practice-category-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const categoryKey = btn.dataset.category;
+            startCategoryPractice(categoryKey);
+        });
     });
 }
 
@@ -2613,7 +3661,7 @@ function loadVocabularyDetail(categoryKey) {
                 <div class="vocabulary-item-detail" data-word-index="${index}">
                     <div class="vocab-header">
                         <div class="english">${item.english}</div>
-                        <button class="speak-btn" onclick="speakText('${item.english}', 'en-US')" title="Escuchar pronunciación">
+                        <button class="speak-btn" onclick="speakText('${cleanTextForSpeech(item.english)}', 'en-US')" title="Escuchar pronunciación">
                             <i class="fas fa-volume-up"></i>
                         </button>
                         <button class="difficult-btn" 
@@ -3015,6 +4063,34 @@ function checkLevelUp() {
 
 // Función para mostrar mensaje de bienvenida elaborado
 function showWelcomeMessage(name, level, mcer) {
+    // Mostrar estadísticas de lecciones disponibles
+    const totalLessons = Object.values(LESSONS_DATABASE).reduce((total, levelLessons) => total + levelLessons.length, 0);
+    const userLevel = getUserLevelMCER();
+    const allowedLessons = getAllowedLessonsByLevel();
+    
+    // Contar lecciones por nivel de dificultad
+    const difficultyCounts = {
+        'Principiante': 0,
+        'Básico': 0,
+        'Intermedio': 0,
+        'Avanzado': 0,
+        'Experto': 0
+    };
+    
+    allowedLessons.forEach(lesson => {
+        difficultyCounts[lesson.difficulty]++;
+    });
+    
+    const difficultyStats = Object.entries(difficultyCounts)
+        .filter(([_, count]) => count > 0)
+        .map(([difficulty, count]) => `${difficulty}: ${count}`)
+        .join(', ');
+    
+    // Contar categorías de vocabulario disponibles
+    const vocabularyCategories = Object.keys(VOCABULARY_CATEGORIES).length;
+    const totalVocabularyWords = Object.values(VOCABULARY_CATEGORIES).reduce((total, category) => {
+        return total + (category.vocabulary ? category.vocabulary.length : 0);
+    }, 0);
     const welcomeDiv = document.createElement('div');
     welcomeDiv.className = 'welcome-message';
     welcomeDiv.innerHTML = `
@@ -3031,7 +4107,13 @@ function showWelcomeMessage(name, level, mcer) {
                 <p class="welcome-level">Tu nivel asignado es:</p>
                 <span class="level-badge">${level} (${mcer})</span>
             </div>
-            <p class="welcome-text">¡Estás listo para comenzar tu viaje de aprendizaje del inglés!</p>
+            <p class="welcome-text">
+                ¡Estás listo para comenzar tu viaje de aprendizaje del inglés!<br><br>
+                <strong>📊 Contenido disponible para tu nivel:</strong><br>
+                • ${allowedLessons.length} lecciones (${difficultyStats})<br>
+                • ${vocabularyCategories} categorías de vocabulario<br>
+                • ${totalVocabularyWords}+ palabras para aprender
+            </p>
             <div class="welcome-features">
                 <div class="feature-item">
                     <i class="fas fa-book"></i>
@@ -3330,7 +4412,7 @@ const LISTENING_SYSTEM = {
                         ${exercise.vocabulary.map(word => `
                             <div class="vocab-item">
                                 <span class="word">${word}</span>
-                                <button class="speak-btn" onclick="speakText('${word}', 'en-US')">
+                                <button class="speak-btn" onclick="speakText('${cleanTextForSpeech(word)}', 'en-US')">
                                     <i class="fas fa-volume-up"></i>
                                 </button>
                             </div>
@@ -4345,7 +5427,7 @@ function loadDifficultWordsSection() {
                 <div class="vocabulary-item-detail">
                     <div class="vocab-header">
                         <div class="english">${item.english}</div>
-                        <button class="speak-btn" onclick="speakText('${item.english}', 'en-US')" title="Escuchar pronunciación">
+                        <button class="speak-btn" onclick="speakText('${cleanTextForSpeech(item.english)}', 'en-US')" title="Escuchar pronunciación">
                             <i class="fas fa-volume-up"></i>
                         </button>
                         <button class="difficult-btn" 
@@ -4867,7 +5949,7 @@ const SPACED_REPETITION_SYSTEM = {
                     </div>
                     
                     <div class="pronunciation-controls">
-                        <button class="btn btn-primary" onclick="speakText('${exercise.word}', 'en-US')">
+                        <button class="btn btn-primary" onclick="speakText('${cleanTextForSpeech(exercise.word)}', 'en-US')">
                             <i class="fas fa-play"></i> Escuchar
                         </button>
                         <button class="btn btn-secondary" onclick="SPACED_REPETITION_SYSTEM.recordPronunciation()">
@@ -5048,3 +6130,590 @@ const SPACED_REPETITION_SYSTEM = {
         showNotification('Función de grabación en desarrollo', 'info');
     }
 };
+
+// ===== NUEVAS FUNCIONES PARA EJERCICIOS POR CATEGORÍA =====
+
+// Función para crear ejercicios específicos por categoría
+function createCategorySpecificExercise(categoryKey) {
+    const category = VOCABULARY_CATEGORIES[categoryKey];
+    if (!category || !category.vocabulary) {
+        return null;
+    }
+    
+    const vocabulary = category.vocabulary;
+    const randomWord = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+    
+    // Crear opciones incorrectas de la misma categoría
+    const otherWords = vocabulary.filter(word => word.english !== randomWord.english);
+    const incorrectOptions = [];
+    
+    for (let i = 0; i < 3; i++) {
+        if (otherWords.length > 0) {
+            const randomIndex = Math.floor(Math.random() * otherWords.length);
+            incorrectOptions.push(otherWords[randomIndex].english);
+            otherWords.splice(randomIndex, 1);
+        }
+    }
+    
+    // Mezclar opciones
+    const allOptions = [randomWord.english, ...incorrectOptions];
+    const shuffledOptions = allOptions.sort(() => Math.random() - 0.5);
+    const correctIndex = shuffledOptions.indexOf(randomWord.english);
+    
+    return {
+        question: `¿Cómo se dice "${randomWord.spanish}" en inglés?`,
+        options: shuffledOptions,
+        correct: correctIndex,
+        word: randomWord,
+        category: categoryKey
+    };
+}
+
+// Función para crear ejercicios de pronunciación por categoría
+function createCategoryPronunciationExercise(categoryKey) {
+    const category = VOCABULARY_CATEGORIES[categoryKey];
+    if (!category || !category.vocabulary) {
+        return null;
+    }
+    
+    const vocabulary = category.vocabulary;
+    const randomWord = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+    
+    return {
+        question: `Pronuncia correctamente: "${randomWord.english}"`,
+        word: randomWord,
+        pronunciation: randomWord.pronunciation,
+        category: categoryKey,
+        type: 'pronunciation'
+    };
+}
+
+// Función para crear ejercicios de completar oraciones por categoría
+function createCategorySentenceExercise(categoryKey) {
+    const category = VOCABULARY_CATEGORIES[categoryKey];
+    if (!category || !category.vocabulary) {
+        return null;
+    }
+    
+    const vocabulary = category.vocabulary;
+    const randomWord = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+    
+    // Crear oraciones contextuales según la categoría
+    const sentences = {
+        basic: [
+            `I need to say "${randomWord.english}" in Spanish.`,
+            `Can you help me with the word "${randomWord.english}"?`,
+            `I don't understand "${randomWord.english}".`
+        ],
+        business: [
+            `In our ${randomWord.english} meeting, we discussed the project.`,
+            `The ${randomWord.english} department needs your report.`,
+            `We have a ${randomWord.english} presentation tomorrow.`
+        ],
+        technology: [
+            `I need to install new ${randomWord.english} on my computer.`,
+            `The ${randomWord.english} is not working properly.`,
+            `Can you help me with this ${randomWord.english} issue?`
+        ],
+        sports: [
+            `I love playing ${randomWord.english} with my friends.`,
+            `The ${randomWord.english} team won the championship.`,
+            `Let's go to the ${randomWord.english} game.`
+        ],
+        food: [
+            `I'm hungry, let's get some ${randomWord.english}.`,
+            `This ${randomWord.english} is delicious!`,
+            `Can I have the ${randomWord.english} menu?`
+        ],
+        travel: [
+            `I need to book my ${randomWord.english} for the trip.`,
+            `Where is the ${randomWord.english} located?`,
+            `I lost my ${randomWord.english} at the airport.`
+        ],
+        emotions: [
+            `I feel ${randomWord.english} today.`,
+            `She looks ${randomWord.english} about the news.`,
+            `Why are you so ${randomWord.english}?`
+        ],
+        home: [
+            `I need to clean the ${randomWord.english}.`,
+            `The ${randomWord.english} is broken.`,
+            `Can you help me move the ${randomWord.english}?`
+        ],
+        health: [
+            `I need to see a ${randomWord.english}.`,
+            `The ${randomWord.english} is closed.`,
+            `I have an appointment with the ${randomWord.english}.`
+        ],
+        work: [
+            `I have a ${randomWord.english} at 3 PM.`,
+            `The ${randomWord.english} is very busy.`,
+            `I need to prepare for the ${randomWord.english}.`
+        ],
+        shopping: [
+            `I want to buy a new ${randomWord.english}.`,
+            `How much is this ${randomWord.english}?`,
+            `I like this ${randomWord.english} color.`
+        ],
+        education: [
+            `I'm studying at the ${randomWord.english}.`,
+            `The ${randomWord.english} is very difficult.`,
+            `I need to finish my ${randomWord.english}.`
+        ],
+        entertainment: [
+            `I love watching ${randomWord.english}.`,
+            `Let's go to the ${randomWord.english}.`,
+            `This ${randomWord.english} is amazing!`
+        ],
+        environment: [
+            `We need to protect the ${randomWord.english}.`,
+            `The ${randomWord.english} is beautiful.`,
+            `I love the ${randomWord.english} here.`
+        ],
+        finance: [
+            `I need to check my ${randomWord.english}.`,
+            `The ${randomWord.english} is very high.`,
+            `I want to open a ${randomWord.english}.`
+        ],
+        legal: [
+            `I need ${randomWord.english} advice.`,
+            `The ${randomWord.english} is very important.`,
+            `I have a ${randomWord.english} appointment.`
+        ],
+        medical: [
+            `I need to see a ${randomWord.english}.`,
+            `The ${randomWord.english} is very expensive.`,
+            `I have a ${randomWord.english} problem.`
+        ],
+        academic: [
+            `I'm doing ${randomWord.english} on this topic.`,
+            `The ${randomWord.english} is very interesting.`,
+            `I need to write a ${randomWord.english}.`
+        ],
+        social_media: [
+            `I posted on ${randomWord.english}.`,
+            `I love using ${randomWord.english}.`,
+            `Check my ${randomWord.english} profile.`
+        ],
+        weather: [
+            `The ${randomWord.english} is terrible today.`,
+            `I love this ${randomWord.english}.`,
+            `The ${randomWord.english} is perfect for a walk.`
+        ],
+        transportation: [
+            `I need to take the ${randomWord.english}.`,
+            `The ${randomWord.english} is late.`,
+            `I love traveling by ${randomWord.english}.`
+        ]
+    };
+    
+    const categorySentences = sentences[categoryKey] || sentences.basic;
+    const randomSentence = categorySentences[Math.floor(Math.random() * categorySentences.length)];
+    
+    return {
+        question: `Completa la oración: "${randomSentence.replace(randomWord.english, '_____')}"`,
+        answer: randomWord.english,
+        word: randomWord,
+        category: categoryKey,
+        type: 'sentence'
+    };
+}
+
+// Función para crear ejercicios de asociación por categoría
+function createCategoryAssociationExercise(categoryKey) {
+    const category = VOCABULARY_CATEGORIES[categoryKey];
+    if (!category || !category.vocabulary) {
+        return null;
+    }
+    
+    const vocabulary = category.vocabulary;
+    const randomWord = vocabulary[Math.floor(Math.random() * vocabulary.length)];
+    
+    // Crear asociaciones contextuales según la categoría
+    const associations = {
+        basic: [
+            { word: "Hello", association: "Greeting" },
+            { word: "Thank you", association: "Politeness" },
+            { word: "Please", association: "Request" }
+        ],
+        business: [
+            { word: "Meeting", association: "Work" },
+            { word: "Client", association: "Customer" },
+            { word: "Project", association: "Task" }
+        ],
+        technology: [
+            { word: "Computer", association: "Device" },
+            { word: "Software", association: "Program" },
+            { word: "Internet", association: "Network" }
+        ],
+        sports: [
+            { word: "Football", association: "Team sport" },
+            { word: "Gym", association: "Exercise" },
+            { word: "Coach", association: "Trainer" }
+        ],
+        food: [
+            { word: "Restaurant", association: "Eating out" },
+            { word: "Menu", association: "Food list" },
+            { word: "Delicious", association: "Taste" }
+        ],
+        travel: [
+            { word: "Airport", association: "Travel" },
+            { word: "Passport", association: "Document" },
+            { word: "Hotel", association: "Accommodation" }
+        ]
+    };
+    
+    const categoryAssociations = associations[categoryKey] || associations.basic;
+    const randomAssociation = categoryAssociations[Math.floor(Math.random() * categoryAssociations.length)];
+    
+    return {
+        question: `¿Qué palabra está relacionada con "${randomAssociation.association}"?`,
+        answer: randomAssociation.word,
+        word: randomAssociation,
+        category: categoryKey,
+        type: 'association'
+    };
+}
+
+// Función para generar ejercicios aleatorios por categoría
+function generateRandomCategoryExercise(categoryKey) {
+    const exerciseTypes = [
+        'vocabulary',
+        'pronunciation', 
+        'sentence',
+        'association'
+    ];
+    
+    const randomType = exerciseTypes[Math.floor(Math.random() * exerciseTypes.length)];
+    
+    switch (randomType) {
+        case 'vocabulary':
+            return createCategorySpecificExercise(categoryKey);
+        case 'pronunciation':
+            return createCategoryPronunciationExercise(categoryKey);
+        case 'sentence':
+            return createCategorySentenceExercise(categoryKey);
+        case 'association':
+            return createCategoryAssociationExercise(categoryKey);
+        default:
+            return createCategorySpecificExercise(categoryKey);
+    }
+}
+
+// Función para iniciar práctica por categoría
+function startCategoryPractice(categoryKey) {
+    const category = VOCABULARY_CATEGORIES[categoryKey];
+    if (!category) return;
+    
+    // Ocultar categorías y mostrar área de práctica
+    const categoriesGrid = document.getElementById('categoriesGrid');
+    const vocabularyDetail = document.getElementById('vocabularyDetail');
+    
+    categoriesGrid.style.display = 'none';
+    vocabularyDetail.style.display = 'block';
+    
+    // Crear interfaz de práctica
+    vocabularyDetail.innerHTML = `
+        <button class="back-button" onclick="loadVocabularyCategories()">
+            <i class="fas fa-arrow-left"></i> Volver a Categorías
+        </button>
+        <div class="category-exercise-container">
+            <div class="category-exercise-header">
+                <h3 class="category-exercise-title">
+                    <i class="fas fa-play-circle"></i>
+                    Practicando: ${category.name}
+                </h3>
+                <span class="category-exercise-counter" id="exerciseCounter">Ejercicio 1</span>
+            </div>
+            <div id="categoryExerciseArea">
+                <!-- Aquí se cargarán los ejercicios -->
+            </div>
+        </div>
+    `;
+    
+    // Inicializar práctica
+    categoryPracticeState = {
+        categoryKey: categoryKey,
+        currentExercise: 0,
+        totalExercises: 10,
+        correctAnswers: 0,
+        exercises: []
+    };
+    
+    // Generar ejercicios
+    for (let i = 0; i < categoryPracticeState.totalExercises; i++) {
+        const exercise = generateRandomCategoryExercise(categoryKey);
+        if (exercise) {
+            categoryPracticeState.exercises.push(exercise);
+        }
+    }
+    
+    // Mostrar primer ejercicio
+    showCategoryExercise();
+}
+
+// Variable global para el estado de práctica por categoría
+let categoryPracticeState = null;
+
+// Función para mostrar ejercicio de categoría
+function showCategoryExercise() {
+    if (!categoryPracticeState || categoryPracticeState.currentExercise >= categoryPracticeState.exercises.length) {
+        showCategoryPracticeResults();
+        return;
+    }
+    
+    const exercise = categoryPracticeState.exercises[categoryPracticeState.currentExercise];
+    const exerciseArea = document.getElementById('categoryExerciseArea');
+    const counter = document.getElementById('exerciseCounter');
+    
+    counter.textContent = `Ejercicio ${categoryPracticeState.currentExercise + 1} de ${categoryPracticeState.totalExercises}`;
+    
+    let exerciseHTML = '';
+    
+    switch (exercise.type) {
+        case 'vocabulary':
+            exerciseHTML = createVocabularyExerciseHTML(exercise);
+            break;
+        case 'pronunciation':
+            exerciseHTML = createPronunciationExerciseHTML(exercise);
+            break;
+        case 'sentence':
+            exerciseHTML = createSentenceExerciseHTML(exercise);
+            break;
+        case 'association':
+            exerciseHTML = createAssociationExerciseHTML(exercise);
+            break;
+        default:
+            exerciseHTML = createVocabularyExerciseHTML(exercise);
+    }
+    
+    exerciseArea.innerHTML = exerciseHTML;
+    
+    // Agregar event listeners
+    attachCategoryExerciseListeners();
+}
+
+// Función para crear HTML de ejercicio de vocabulario
+function createVocabularyExerciseHTML(exercise) {
+    return `
+        <div class="category-exercise-question">
+            <h4>${exercise.question}</h4>
+        </div>
+        <div class="category-exercise-options">
+            ${exercise.options.map((option, index) => `
+                <div class="category-exercise-option" data-index="${index}" data-correct="${index === exercise.correct}">
+                    ${option}
+                </div>
+            `).join('')}
+        </div>
+        <div class="category-exercise-feedback" id="exerciseFeedback"></div>
+        <div class="category-exercise-actions">
+            <button class="category-exercise-btn" id="nextExerciseBtn" style="display: none;">
+                Siguiente Ejercicio <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    `;
+}
+
+// Función para crear HTML de ejercicio de pronunciación
+function createPronunciationExerciseHTML(exercise) {
+    return `
+        <div class="category-exercise-question">
+            <h4>${exercise.question}</h4>
+            <p class="pronunciation">[${exercise.pronunciation}]</p>
+        </div>
+        <div class="category-exercise-actions">
+            <button class="category-exercise-btn" onclick="speakText('${cleanTextForSpeech(exercise.word.english)}', 'en-US')">
+                <i class="fas fa-volume-up"></i> Escuchar Pronunciación
+            </button>
+            <button class="category-exercise-btn" onclick="practicePronunciation('${cleanTextForSpeech(exercise.word.english)}')">
+                <i class="fas fa-microphone"></i> Practicar Pronunciación
+            </button>
+        </div>
+        <div class="category-exercise-feedback" id="exerciseFeedback"></div>
+        <div class="category-exercise-actions">
+            <button class="category-exercise-btn" id="nextExerciseBtn">
+                Siguiente Ejercicio <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    `;
+}
+
+// Función para crear HTML de ejercicio de oración
+function createSentenceExerciseHTML(exercise) {
+    return `
+        <div class="category-exercise-question">
+            <h4>${exercise.question}</h4>
+        </div>
+        <div class="category-exercise-options">
+            <input type="text" class="category-exercise-input" id="sentenceAnswer" placeholder="Escribe tu respuesta...">
+        </div>
+        <div class="category-exercise-actions">
+            <button class="category-exercise-btn" id="checkSentenceBtn">
+                Verificar Respuesta
+            </button>
+        </div>
+        <div class="category-exercise-feedback" id="exerciseFeedback"></div>
+        <div class="category-exercise-actions">
+            <button class="category-exercise-btn" id="nextExerciseBtn" style="display: none;">
+                Siguiente Ejercicio <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    `;
+}
+
+// Función para crear HTML de ejercicio de asociación
+function createAssociationExerciseHTML(exercise) {
+    return `
+        <div class="category-exercise-question">
+            <h4>${exercise.question}</h4>
+        </div>
+        <div class="category-exercise-options">
+            <div class="category-exercise-option" data-answer="${exercise.answer}">
+                ${exercise.answer}
+            </div>
+        </div>
+        <div class="category-exercise-feedback" id="exerciseFeedback"></div>
+        <div class="category-exercise-actions">
+            <button class="category-exercise-btn" id="nextExerciseBtn">
+                Siguiente Ejercicio <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    `;
+}
+
+// Función para agregar event listeners a los ejercicios
+function attachCategoryExerciseListeners() {
+    const exercise = categoryPracticeState.exercises[categoryPracticeState.currentExercise];
+    
+    // Event listeners para opciones de vocabulario
+    document.querySelectorAll('.category-exercise-option').forEach(option => {
+        option.addEventListener('click', () => {
+            if (exercise.type === 'vocabulary') {
+                handleVocabularyOptionClick(option);
+            } else if (exercise.type === 'association') {
+                handleAssociationOptionClick(option);
+            }
+        });
+    });
+    
+    // Event listener para botón de siguiente
+    const nextBtn = document.getElementById('nextExerciseBtn');
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            categoryPracticeState.currentExercise++;
+            showCategoryExercise();
+        });
+    }
+    
+    // Event listener para verificar oración
+    const checkSentenceBtn = document.getElementById('checkSentenceBtn');
+    if (checkSentenceBtn) {
+        checkSentenceBtn.addEventListener('click', handleSentenceCheck);
+    }
+}
+
+// Función para manejar clic en opción de vocabulario
+function handleVocabularyOptionClick(option) {
+    const isCorrect = option.dataset.correct === 'true';
+    const feedback = document.getElementById('exerciseFeedback');
+    
+    // Deshabilitar todas las opciones
+    document.querySelectorAll('.category-exercise-option').forEach(opt => {
+        opt.style.pointerEvents = 'none';
+        if (opt.dataset.correct === 'true') {
+            opt.classList.add('correct');
+        } else if (opt === option && !isCorrect) {
+            opt.classList.add('incorrect');
+        }
+    });
+    
+    // Mostrar feedback
+    feedback.innerHTML = isCorrect ? 
+        '<div class="success"><i class="fas fa-check"></i> ¡Correcto!</div>' :
+        '<div class="error"><i class="fas fa-times"></i> Incorrecto</div>';
+    feedback.classList.add('show');
+    
+    // Actualizar estadísticas
+    if (isCorrect) {
+        categoryPracticeState.correctAnswers++;
+        playSuccessSound();
+    } else {
+        playFailSound();
+    }
+    
+    // Mostrar botón de siguiente
+    document.getElementById('nextExerciseBtn').style.display = 'block';
+}
+
+// Función para manejar clic en opción de asociación
+function handleAssociationOptionClick(option) {
+    const feedback = document.getElementById('exerciseFeedback');
+    
+    option.classList.add('correct');
+    option.style.pointerEvents = 'none';
+    
+    feedback.innerHTML = '<div class="success"><i class="fas fa-check"></i> ¡Correcto!</div>';
+    feedback.classList.add('show');
+    
+    categoryPracticeState.correctAnswers++;
+    playSuccessSound();
+    
+    document.getElementById('nextExerciseBtn').style.display = 'block';
+}
+
+// Función para verificar oración
+function handleSentenceCheck() {
+    const input = document.getElementById('sentenceAnswer');
+    const answer = input.value.trim().toLowerCase();
+    const correctAnswer = categoryPracticeState.exercises[categoryPracticeState.currentExercise].answer.toLowerCase();
+    const feedback = document.getElementById('exerciseFeedback');
+    
+    const isCorrect = answer === correctAnswer;
+    
+    feedback.innerHTML = isCorrect ? 
+        '<div class="success"><i class="fas fa-check"></i> ¡Correcto!</div>' :
+        `<div class="error"><i class="fas fa-times"></i> Incorrecto. La respuesta correcta es: "${correctAnswer}"</div>`;
+    feedback.classList.add('show');
+    
+    if (isCorrect) {
+        categoryPracticeState.correctAnswers++;
+        playSuccessSound();
+    } else {
+        playFailSound();
+    }
+    
+    document.getElementById('nextExerciseBtn').style.display = 'block';
+}
+
+// Función para mostrar resultados de práctica
+function showCategoryPracticeResults() {
+    const exerciseArea = document.getElementById('categoryExerciseArea');
+    const percentage = Math.round((categoryPracticeState.correctAnswers / categoryPracticeState.totalExercises) * 100);
+    
+    exerciseArea.innerHTML = `
+        <div class="category-exercise-question">
+            <h4>¡Práctica Completada!</h4>
+            <div class="results-summary">
+                <p><strong>Respuestas correctas:</strong> ${categoryPracticeState.correctAnswers} de ${categoryPracticeState.totalExercises}</p>
+                <p><strong>Porcentaje de acierto:</strong> ${percentage}%</p>
+            </div>
+        </div>
+        <div class="category-exercise-actions">
+            <button class="category-exercise-btn" onclick="loadVocabularyCategories()">
+                <i class="fas fa-home"></i> Volver a Categorías
+            </button>
+            <button class="category-exercise-btn" onclick="startCategoryPractice('${categoryPracticeState.categoryKey}')">
+                <i class="fas fa-redo"></i> Practicar de Nuevo
+            </button>
+        </div>
+    `;
+    
+    // Sumar XP basado en el rendimiento
+    const xpEarned = Math.round(percentage * 0.5);
+    appState.currentXP += xpEarned;
+    updateUI();
+    saveProgress();
+    
+    showNotification(`¡Práctica completada! Ganaste ${xpEarned} XP`, 'success');
+}

@@ -3647,4 +3647,214 @@ body {
 .question-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
+}
+
+/* Estilos para botones de práctica por categoría */
+.category-actions {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+}
+
+.practice-category-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.practice-category-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.practice-category-btn i {
+    margin-right: 5px;
+}
+
+/* Estilos para ejercicios por categoría */
+.category-exercise-container {
+    background: var(--surface-color);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+    margin-top: 1rem;
+}
+
+.category-exercise-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.category-exercise-title {
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.category-exercise-counter {
+    background: var(--secondary-color);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.9rem;
+}
+
+.category-exercise-question {
+    background: var(--background-color);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--primary-color);
+}
+
+.category-exercise-question h4 {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.category-exercise-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.category-exercise-option {
+    background: var(--surface-color);
+    border: 2px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-weight: 500;
+}
+
+.category-exercise-option:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.category-exercise-option.selected {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.category-exercise-option.correct {
+    background: var(--success-color);
+    color: white;
+    border-color: var(--success-color);
+}
+
+.category-exercise-option.incorrect {
+    background: var(--error-color);
+    color: white;
+    border-color: var(--error-color);
+}
+
+.category-exercise-input {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: var(--surface-color);
+    color: var(--text-primary);
+}
+
+.category-exercise-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.results-summary {
+    background: var(--background-color);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+.results-summary p {
+    margin: 0.5rem 0;
+    color: var(--text-primary);
+}
+
+.category-exercise-feedback {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    display: none;
+}
+
+.category-exercise-feedback.show {
+    display: block;
+}
+
+.category-exercise-feedback.success {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid var(--success-color);
+    color: var(--success-color);
+}
+
+.category-exercise-feedback.error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid var(--error-color);
+    color: var(--error-color);
+}
+
+.category-exercise-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.category-exercise-btn {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 500;
+}
+
+.category-exercise-btn:hover {
+    background: var(--secondary-color);
+    transform: translateY(-1px);
+}
+
+.category-exercise-btn.secondary {
+    background: var(--text-secondary);
+}
+
+.category-exercise-btn.secondary:hover {
+    background: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+    .category-exercise-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .category-exercise-actions {
+        flex-direction: column;
+    }
+    
+    .category-exercise-btn {
+        width: 100%;
+    }
 } 
