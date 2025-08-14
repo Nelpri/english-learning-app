@@ -73,6 +73,30 @@ const LESSONS_DATABASE = {
                     question: "Completa: I ___ a student.",
                     options: ["am", "are", "is", "be"],
                     correct: 0
+                },
+                {
+                    type: "grammar",
+                    question: "Completa: You ___ my friend.",
+                    options: ["am", "are", "is", "be"],
+                    correct: 1
+                },
+                {
+                    type: "grammar",
+                    question: "Completa: She ___ happy.",
+                    options: ["am", "are", "is", "be"],
+                    correct: 2
+                },
+                {
+                    type: "grammar",
+                    question: "Completa: We ___ students.",
+                    options: ["am", "are", "is", "be"],
+                    correct: 1
+                },
+                {
+                    type: "grammar",
+                    question: "Selecciona la oración correcta:",
+                    options: ["He are a teacher.", "He is a teacher.", "He am a teacher.", "He be a teacher."],
+                    correct: 1
                 }
             ]
         },
@@ -110,6 +134,36 @@ const LESSONS_DATABASE = {
                     question: "¿Cuál es el número 'tres' en inglés?",
                     options: ["One", "Two", "Three", "Four"],
                     correct: 2
+                },
+                {
+                    type: "grammar",
+                    question: "Completa: ___ apple is red.",
+                    options: ["A", "An", "The", "Some"],
+                    correct: 1
+                },
+                {
+                    type: "grammar",
+                    question: "Completa: I have ___ car.",
+                    options: ["a", "an", "the", "some"],
+                    correct: 0
+                },
+                {
+                    type: "grammar",
+                    question: "Completa: She is ___ engineer.",
+                    options: ["a", "an", "the", "some"],
+                    correct: 1
+                },
+                {
+                    type: "grammar",
+                    question: "¿Cuál es el artículo correcto para 'orange'?",
+                    options: ["a", "an", "the", "some"],
+                    correct: 1
+                },
+                {
+                    type: "grammar",
+                    question: "Selecciona la oración correcta:",
+                    options: ["He is a doctor.", "He is an doctor.", "He is the doctor.", "He is some doctor."],
+                    correct: 0
                 }
             ]
         },
@@ -155,6 +209,41 @@ const LESSONS_DATABASE = {
                     question: "Completa: ___ mother is a teacher.",
                     options: ["My", "Your", "His", "Her"],
                     correct: 0
+                },
+                {
+                    type: "grammar",
+                    question: "Completa: This is ___ book.",
+                    options: ["my", "me", "mine", "I"],
+                    correct: 0
+                },
+                {
+                    type: "grammar",
+                    question: "Completa: ___ father is a doctor.",
+                    options: ["Your", "You", "Yours", "You're"],
+                    correct: 0
+                },
+                {
+                    type: "grammar",
+                    question: "¿Cuál es el pronombre posesivo para 'ella'?",
+                    options: ["his", "her", "its", "their"],
+                    correct: 1
+                },
+                {
+                    type: "grammar",
+                    question: "Completa: Their house is ___ the corner.",
+                    options: ["in", "on", "at", "to"],
+                    correct: 2
+                },
+                {
+                    type: "grammar",
+                    question: "Selecciona la oración correcta:",
+                    options: [
+                        "My sister is teacher.",
+                        "My sister is a teacher.",
+                        "My sister is teachers.",
+                        "My sister is the teacher."
+                    ],
+                    correct: 1
                 }
             ]
         },
@@ -193,7 +282,44 @@ const LESSONS_DATABASE = {
                     question: "¿Cómo se dice 'agua' en inglés?",
                     options: ["Milk", "Coffee", "Water", "Bread"],
                     correct: 2
+                },
+                {
+                    type: "grammar",
+                    question: "Completa: There ___ a book on the table.",
+                    options: ["is", "are", "am", "be"],
+                    correct: 0
+                },
+                {
+                    type: "grammar",
+                    question: "Completa: There ___ tres apples.",
+                    options: ["is", "are", "am", "be"],
+                    correct: 1
                 }
+            ],
+            practiceExercises: [
+            {
+                type: "grammar",
+                question: "Completa: ___ there any milk?",
+                options: ["Is", "Are", "Am", "Be"],
+                correct: 0
+            },
+            {
+                type: "grammar",
+                question: "Selecciona la oración correcta:",
+                options: [
+                    "There is two apples.",
+                    "There are two apples.",
+                    "There am two apples.",
+                    "There be dos apples."
+                ],
+                correct: 1
+            },
+            {
+                type: "grammar",
+                question: "¿Cuál es la forma correcta para singular?",
+                options: ["There is", "There are", "There am", "There be"],
+                correct: 0
+            }
             ]
         },
         {
@@ -232,6 +358,43 @@ const LESSONS_DATABASE = {
                     options: ["Today", "Yesterday", "Tomorrow", "Week"],
                     correct: 2
                 }
+            ],
+            practiceExercises: [
+            {
+                type: "grammar",
+                question: "Completa: He ___ in an office.",
+                options: ["work", "works", "working", "worked"],
+                correct: 1
+            },
+            {
+                type: "grammar",
+                question: "Completa: She ___ English.",
+                options: ["study", "studies", "studied", "studying"],
+                correct: 1
+            },
+            {
+                type: "grammar",
+                question: "Completa: It ___ a lot in London.",
+                options: ["rain", "rains", "rained", "raining"],
+                correct: 1
+            },
+            {
+                type: "grammar",
+                question: "Selecciona la oración correcta:",
+                options: [
+                    "He work in an office.",
+                    "He works in an office.",
+                    "He working in an office.",
+                    "He worked in an office."
+                ],
+                correct: 1
+            },
+            {
+                type: "grammar",
+                question: "¿Cuál es la forma correcta para tercera persona singular?",
+                options: ["work", "works", "working", "worked"],
+                correct: 1
+            }
             ]
         },
         {
@@ -267,6 +430,46 @@ const LESSONS_DATABASE = {
                     correct: 0
                 }
             ]
+            {
+                type: "grammar",
+                question: "Completa: I ___ working now.",
+                options: ["am", "is", "are", "be"],
+                correct: 0
+            },
+            {
+                type: "grammar",
+                question: "Completa: She ___ sending an email.",
+                options: ["am", "is", "are", "be"],
+                correct: 1
+            },
+            {
+                type: "grammar",
+                question: "Completa: They ___ having a meeting.",
+                options: ["am", "is", "are", "be"],
+                correct: 2
+            },
+            {
+                type: "grammar",
+                question: "Selecciona la oración correcta:",
+                options: [
+                    "I am working now.",
+                    "I is working now.",
+                    "I are working now.",
+                    "I be working now."
+                ],
+                correct: 0
+            },
+            {
+                type: "grammar",
+                question: "¿Cuál es la estructura del presente continuo?",
+                options: [
+                    "Subject + am/is/are + verb-ing",
+                    "Subject + verb + ing",
+                    "Subject + have + verb-ing",
+                    "Subject + will + verb-ing"
+                ],
+                correct: 0
+            }
         },
         {
             id: 7,
@@ -330,38 +533,6 @@ const LESSONS_DATABASE = {
                     type: "vocabulary",
                     question: "¿Cómo se dice 'pasaporte' en inglés?",
                     options: ["Ticket", "Passport", "Luggage", "Destination"],
-                    correct: 1
-                }
-            ]
-        },
-        {
-            id: 9,
-            title: "Emociones y Sentimientos",
-            difficulty: "Básico",
-            vocabulary: [
-                { english: "Happy", spanish: "Feliz", pronunciation: "ˈhæpi" },
-                { english: "Sad", spanish: "Triste", pronunciation: "sæd" },
-                { english: "Angry", spanish: "Enojado", pronunciation: "ˈæŋɡri" },
-                { english: "Excited", spanish: "Emocionado", pronunciation: "ɪkˈsaɪtəd" },
-                { english: "Nervous", spanish: "Nervioso", pronunciation: "ˈnɜrvəs" },
-                { english: "Surprised", spanish: "Sorprendido", pronunciation: "sərˈpraɪzd" },
-                { english: "Tired", spanish: "Cansado", pronunciation: "ˈtaɪrd" },
-                { english: "Worried", spanish: "Preocupado", pronunciation: "ˈwɜrid" }
-            ],
-            grammar: {
-                title: "Adjetivos de Emoción",
-                explanation: "Los adjetivos de emoción describen cómo nos sentimos. Se usan con 'be'.",
-                examples: [
-                    "I am happy today. (Estoy feliz hoy)",
-                    "She is excited about the trip. (Ella está emocionada por el viaje)",
-                    "They are worried about the exam. (Ellos están preocupados por el examen)"
-                ]
-            },
-            practiceExercises: [
-                {
-                    type: "vocabulary",
-                    question: "¿Cómo se dice 'emocionado' en inglés?",
-                    options: ["Happy", "Excited", "Nervous", "Surprised"],
                     correct: 1
                 }
             ]
@@ -681,48 +852,6 @@ const LESSONS_DATABASE = {
             ]
         },
         {
-            id: 20,
-            title: "Reported Speech y Estilo Indirecto",
-            difficulty: "Intermedio",
-            vocabulary: [
-                { english: "Announce", spanish: "Anunciar", pronunciation: "əˈnaʊns" },
-                { english: "Declare", spanish: "Declarar", pronunciation: "dɪˈklɛr" },
-                { english: "Confirm", spanish: "Confirmar", pronunciation: "kənˈfɜrm" },
-                { english: "Deny", spanish: "Negar", pronunciation: "dɪˈnaɪ" },
-                { english: "Admit", spanish: "Admitir", pronunciation: "ədˈmɪt" },
-                { english: "Claim", spanish: "Afirmar", pronunciation: "kleɪm" },
-                { english: "Suggest", spanish: "Sugerir", pronunciation: "səɡˈdʒɛst" },
-                { english: "Insist", spanish: "Insistir", pronunciation: "ɪnˈsɪst" },
-                { english: "Promise", spanish: "Prometer", pronunciation: "ˈprɑmɪs" },
-                { english: "Warn", spanish: "Advertir", pronunciation: "wɔrn" },
-                { english: "He said he was tired", spanish: "Él dijo que estaba cansado", pronunciation: "hi sɛd hi wəz ˈtaɪrd" },
-                { english: "She told me she would come", spanish: "Ella me dijo que vendría", pronunciation: "ʃi toʊld mi ʃi wʊd kʌm" },
-                { english: "They announced that the meeting was cancelled", spanish: "Anunciaron que la reunión fue cancelada", pronunciation: "ðeɪ əˈnaʊnst ðæt ðə ˈmitɪŋ wəz ˈkænsəld" },
-                { english: "I asked if he could help me", spanish: "Le pregunté si podía ayudarme", pronunciation: "aɪ æskt ɪf hi kʊd hɛlp mi" },
-                { english: "She promised to call me", spanish: "Ella prometió llamarme", pronunciation: "ʃi ˈprɑmɪst tu kɔl mi" }
-            ],
-            grammar: {
-                title: "Reported Speech - Cambios de Tiempo",
-                explanation: "En el estilo indirecto, los tiempos verbales cambian hacia el pasado. El presente simple se convierte en pasado simple, el presente continuo en pasado continuo, etc.",
-                examples: [
-                    "Direct: 'I am tired' → Reported: He said he was tired",
-                    "Direct: 'I will come' → Reported: He said he would come",
-                    "Direct: 'I have finished' → Reported: He said he had finished",
-                    "Direct: 'I was working' → Reported: He said he had been working"
-                ]
-            },
-            practiceExercises: [
-                {
-                    type: "grammar",
-                    question: "Completa: She said she ___ the work.",
-                    options: ["finish", "finished", "had finished", "has finished"],
-                    correct: 2
-                }
-            ]
-        }
-    ],
-    level3: [
-        {
             id: 21,
             title: "Gerundios e Infinitivos",
             difficulty: "Avanzado",
@@ -883,7 +1012,7 @@ const LESSONS_DATABASE = {
             ]
         }
     ],
-    level4: [
+    level3: [
         {
             id: 25,
             title: "Lenguaje Académico y Formal",
@@ -1140,231 +1269,7 @@ const CONVERSATION_SCENARIOS = [
     }
 ];
 
-// Sistema de Logros y Gamificación
-const ACHIEVEMENTS_SYSTEM = {
-    achievements: [
-        {
-            id: 'first_lesson',
-            title: 'Primer Paso',
-            description: 'Completa tu primera lección',
-            icon: '🎯',
-            xpReward: 50,
-            unlocked: false
-        },
-        {
-            id: 'streak_7',
-            title: 'Constancia',
-        description: '7 días consecutivos de estudio',
-            icon: '🔥',
-            xpReward: 100,
-            unlocked: false
-        },
-        {
-            id: 'streak_30',
-            title: 'Dedicación',
-        description: '30 días consecutivos de estudio',
-            icon: '💎',
-            xpReward: 300,
-            unlocked: false
-        },
-        {
-            id: 'vocabulary_100',
-            title: 'Palabras Maestro',
-            description: 'Aprende 100 palabras',
-            icon: '📚',
-            xpReward: 150,
-            unlocked: false
-        },
-        {
-            id: 'vocabulary_500',
-            title: 'Léxico Rico',
-            description: 'Aprende 500 palabras',
-            icon: '📖',
-            xpReward: 400,
-            unlocked: false
-        },
-        {
-            id: 'lessons_10',
-            title: 'Estudiante Aplicado',
-            description: 'Completa 10 lecciones',
-            icon: '🎓',
-            xpReward: 200,
-            unlocked: false
-        },
-        {
-            id: 'lessons_50',
-            title: 'Experto en Aprendizaje',
-            description: 'Completa 50 lecciones',
-            icon: '👨‍🎓',
-            xpReward: 500,
-            unlocked: false
-        },
-        {
-            id: 'perfect_score',
-            title: 'Perfección',
-            description: 'Obtén 100% en un ejercicio',
-            icon: '⭐',
-            xpReward: 75,
-            unlocked: false
-        },
-        {
-            id: 'practice_master',
-            title: 'Maestro de la Práctica',
-            description: 'Completa 100 ejercicios de práctica',
-            icon: '🏋️',
-            xpReward: 250,
-            unlocked: false
-        },
-        {
-            id: 'level_up_3',
-            title: 'Ascenso Rápido',
-            description: 'Sube 3 niveles',
-            icon: '🚀',
-            xpReward: 300,
-            unlocked: false
-        }
-    ],
-    
-    // Verificar logros
-    checkAchievements() {
-        const user = getCurrentUser();
-        if (!user) return;
-        
-        const unlockedAchievements = [];
-        
-        this.achievements.forEach(achievement => {
-            if (achievement.unlocked) return; // Ya desbloqueado
-            
-            let shouldUnlock = false;
-            
-            switch(achievement.id) {
-                case 'first_lesson':
-                    shouldUnlock = appState.lessonsCompleted >= 1;
-                    break;
-                case 'streak_7':
-                    shouldUnlock = appState.streakDays >= 7;
-                    break;
-                case 'streak_30':
-                    shouldUnlock = appState.streakDays >= 30;
-                    break;
-                case 'vocabulary_100':
-                    shouldUnlock = appState.vocabularyWordsLearned >= 100;
-                    break;
-                case 'vocabulary_500':
-                    shouldUnlock = appState.vocabularyWordsLearned >= 500;
-                    break;
-                case 'lessons_10':
-                    shouldUnlock = appState.lessonsCompleted >= 10;
-                    break;
-                case 'lessons_50':
-                    shouldUnlock = appState.lessonsCompleted >= 50;
-                    break;
-                case 'perfect_score':
-                    // Se verifica en handleExerciseAnswer
-                    break;
-                case 'practice_master':
-                    shouldUnlock = (appState.grammarExercises || 0) >= 100;
-                    break;
-                case 'level_up_3':
-                    shouldUnlock = appState.currentLevel >= 3;
-                    break;
-            }
-            
-            if (shouldUnlock) {
-                achievement.unlocked = true;
-                unlockedAchievements.push(achievement);
-                appState.currentXP += achievement.xpReward;
-                this.showAchievementNotification(achievement);
-            }
-        });
-        
-        if (unlockedAchievements.length > 0) {
-            updateUI();
-            saveProgress();
-        }
-    },
-    
-    // Mostrar notificación de logro
-    showAchievementNotification(achievement) {
-        const notification = document.createElement('div');
-        notification.className = 'achievement-notification achievement-popup';
-        notification.innerHTML = `
-            <div class="achievement-content">
-                <div class="achievement-icon">${achievement.icon}</div>
-                <div class="achievement-text">
-                    <h4>¡Logro Desbloqueado!</h4>
-                    <p><strong>${achievement.title}</strong></p>
-                    <p>${achievement.description}</p>
-                    <span class="achievement-xp">+${achievement.xpReward} XP</span>
-                </div>
-            </div>
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // Animación de entrada
-        setTimeout(() => {
-            notification.classList.add('show');
-        }, 100);
-        
-        // Remover después de 5 segundos
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => {
-                if (notification.parentElement) {
-                    notification.remove();
-                }
-            }, 300);
-        }, 5000);
-    },
-    
-    // Cargar logros del usuario
-    loadUserAchievements() {
-        const user = getCurrentUser();
-        if (!user) return;
-        
-        const userAchievements = JSON.parse(localStorage.getItem(`achievements_${user.email}`) || '[]');
-        
-        this.achievements.forEach(achievement => {
-            const userAchievement = userAchievements.find(ua => ua.id === achievement.id);
-            if (userAchievement) {
-                achievement.unlocked = userAchievement.unlocked;
-                achievement.unlockedAt = userAchievement.unlockedAt;
-            }
-        });
-    },
-    
-    // Guardar logros del usuario
-    saveUserAchievements() {
-        const user = getCurrentUser();
-        if (!user) return;
-        
-        const achievementsToSave = this.achievements.map(achievement => ({
-            id: achievement.id,
-            unlocked: achievement.unlocked,
-            unlockedAt: achievement.unlockedAt
-        }));
-        
-        localStorage.setItem(`achievements_${user.email}`, JSON.stringify(achievementsToSave));
-    },
-    
-    // Obtener logros desbloqueados
-    getUnlockedAchievements() {
-        return this.achievements.filter(achievement => achievement.unlocked);
-    },
-    
-    // Obtener progreso de logros
-    getAchievementProgress() {
-        const user = getCurrentUser();
-        if (!user) return { unlocked: 0, total: 0, percentage: 0 };
-        
-        const unlocked = this.getUnlockedAchievements().length;
-        const total = this.achievements.length;
-        const percentage = Math.round((unlocked / total) * 100);
-        
-        return { unlocked, total, percentage };
-    }
-};
+// Sistema de Logros y Gamificación (movido a script1.js/achievements.js)
 
 // Funciones de utilidad
 function getTotalVocabularyLearned() {
@@ -1499,7 +1404,7 @@ const VOCABULARY_CATEGORIES = {
             { english: "Tennis", spanish: "Tenis", pronunciation: "ˈtɛnɪs" },
             { english: "Baseball", spanish: "Béisbol", pronunciation: "ˈbeɪsbɔːl" },
             { english: "Soccer", spanish: "Fútbol", pronunciation: "ˈsɑːkər" },
-            { english: "Volleyball", spanish: "Voleibol", pronunciation: "ˈvɑːlibɔːl" },
+            { english: "Volleyball", spanish: "Voleibol", pronunciation: "ˈvɔːlibɔːl" },
             { english: "Swimming", spanish: "Natación", pronunciation: "ˈswɪmɪŋ" },
             { english: "Running", spanish: "Correr", pronunciation: "ˈrʌnɪŋ" },
             { english: "Cycling", spanish: "Ciclismo", pronunciation: "ˈsaɪklɪŋ" },
@@ -1513,7 +1418,7 @@ const VOCABULARY_CATEGORIES = {
             { english: "Wrestling", spanish: "Lucha libre", pronunciation: "ˈrɛslɪŋ" },
             { english: "Martial arts", spanish: "Artes marciales", pronunciation: "ˈmɑːrʃəl ɑːrts" },
             { english: "Yoga", spanish: "Yoga", pronunciation: "ˈjoʊɡə" },
-            { english: "Pilates", spanish: "Pilates", pronunciation: "pɪˈlɑːtiːz" },
+            { english: "Pilates", spanish: "Pilates", pronunciation: "pɪˈlætiːz" },
             { english: "Gym", spanish: "Gimnasio", pronunciation: "dʒɪm" },
             { english: "Team", spanish: "Equipo", pronunciation: "tiːm" },
             { english: "Player", spanish: "Jugador", pronunciation: "ˈpleɪər" },
@@ -1876,14 +1781,14 @@ function getVocabularyByCategory(category) {
     
     // Si tiene lecciones asociadas, buscar en todos los niveles
     if (categoryData.lessons) {
-        categoryData.lessons.forEach(lessonId => {
+    categoryData.lessons.forEach(lessonId => {
             // Buscar en todos los niveles de la base de datos
             Object.values(LESSONS_DATABASE).forEach(levelLessons => {
                 const lesson = levelLessons.find(l => l.id === lessonId);
-                if (lesson) {
-                    vocabulary = vocabulary.concat(lesson.vocabulary);
-                }
-            });
+        if (lesson) {
+            vocabulary = vocabulary.concat(lesson.vocabulary);
+        }
+    });
         });
     }
     
@@ -2192,7 +2097,7 @@ async function recordAudio() {
         const mediaRecorder = new MediaRecorder(stream);
         const audioChunks = [];
         
-        return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         mediaRecorder.ondataavailable = (event) => {
             audioChunks.push(event.data);
         };
@@ -3217,16 +3122,7 @@ function loadAchievementsPanel() {
     `;
 }
 
-// Sistema de logros
-function checkAchievements() {
-    // Verificar logros usando el nuevo sistema
-    ACHIEVEMENTS_SYSTEM.checkAchievements();
-}
-
-function unlockAchievement(achievement) {
-    // Función legacy - ahora usa ACHIEVEMENTS_SYSTEM
-    ACHIEVEMENTS_SYSTEM.showAchievementNotification(achievement);
-}
+// Sistema de logros: gestionado por ACHIEVEMENTS_SYSTEM (script1.js/achievements.js)
 
 // Event listeners para ejercicios (ya manejados en la inicialización principal)
 
@@ -3688,7 +3584,7 @@ function loadVocabularyDetail(categoryKey) {
                 spanish: this.getAttribute('data-spanish'),
                 pronunciation: this.getAttribute('data-pronunciation')
             };
-            toggleDifficultWord(wordObj);
+            toggleDifficultWord(wordObj, this);
         });
     });
     
@@ -4605,9 +4501,9 @@ const LISTENING_SYSTEM = {
         // Verificar que el botón tenga los datos necesarios
         if (!button.dataset.question) {
             console.warn('Botón sin data-question:', button);
-            return;
-        }
-        
+        return;
+    }
+    
         const questionIndex = button.dataset.question;
         console.log('Seleccionando pregunta:', questionIndex, 'opción:', button.dataset.option);
         
@@ -4763,9 +4659,9 @@ const LISTENING_SYSTEM = {
         if (availableExercises.length === 0) {
             showNotification('No hay más ejercicios disponibles para tu nivel', 'info');
             backToPracticeModes();
-            return;
-        }
-        
+        return;
+    }
+    
         // Seleccionar un ejercicio aleatorio diferente al actual
         let currentExerciseId = null;
         const currentExerciseTitle = document.querySelector('.listening-exercise h3')?.textContent;
@@ -5195,7 +5091,7 @@ const STATISTICS_SYSTEM = {
         
         // Event listener para guardar metas
         document.getElementById('goalsForm').addEventListener('submit', (e) => {
-            e.preventDefault();
+    e.preventDefault();
             this.goals.dailyStudyTime = parseInt(document.getElementById('dailyStudyTime').value);
             this.goals.weeklyLessons = parseInt(document.getElementById('weeklyLessons').value);
             this.goals.monthlyXP = parseInt(document.getElementById('monthlyXP').value);
@@ -5355,7 +5251,7 @@ function isWordDifficult(wordObj) {
     return difficult.some(w => w.english === wordObj.english && w.spanish === wordObj.spanish);
 }
 
-function toggleDifficultWord(wordObj) {
+function toggleDifficultWord(wordObj, clickedButtonEl) {
     let difficult = getDifficultWords();
     const wasDifficult = isWordDifficult(wordObj);
     
@@ -5370,7 +5266,7 @@ function toggleDifficultWord(wordObj) {
     saveDifficultWords(difficult);
     
     // Actualizar visualmente el botón que se hizo clic
-    const clickedButton = event.target.closest('.difficult-btn');
+    const clickedButton = clickedButtonEl || document.querySelector(`.difficult-btn[data-english="${wordObj.english}"][data-spanish="${wordObj.spanish}"]`);
     if (clickedButton) {
         if (wasDifficult) {
             clickedButton.innerHTML = '🏳️';
@@ -5454,7 +5350,7 @@ function loadDifficultWordsSection() {
                 spanish: this.getAttribute('data-spanish'),
                 pronunciation: this.getAttribute('data-pronunciation')
             };
-            toggleDifficultWord(wordObj);
+            toggleDifficultWord(wordObj, this);
         });
     });
 }
