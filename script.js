@@ -429,7 +429,7 @@ const LESSONS_DATABASE = {
                     options: ["Meeting", "Project", "Client", "Business"],
                     correct: 0
                 }
-            ]
+            ,
             {
                 type: "grammar",
                 question: "Completa: I ___ working now.",
@@ -470,6 +470,7 @@ const LESSONS_DATABASE = {
                 ],
                 correct: 0
             }
+            ]
         },
         {
             id: 7,
@@ -2524,16 +2525,117 @@ function createVocabularyExercise(lesson) {
     `;
 }
 
+// Pools de gramática por nivel MCER para ampliar ejercicios en todas las lecciones
+const GRAMMAR_POOLS = {
+    A1: [
+        { question: "I ___ a student.", options: ["am", "are", "is", "be"], correct: 0 },
+        { question: "You ___ my friend.", options: ["am", "are", "is", "be"], correct: 1 },
+        { question: "She ___ happy.", options: ["am", "are", "is", "be"], correct: 2 },
+        { question: "We ___ from Mexico.", options: ["am", "are", "is", "be"], correct: 1 },
+        { question: "___ this your book?", options: ["Is", "Are", "Am", "Be"], correct: 0 },
+        { question: "There ___ a cat under the table.", options: ["is", "are", "am", "be"], correct: 0 },
+        { question: "There ___ two apples on the desk.", options: ["is", "are", "am", "be"], correct: 1 },
+        { question: "I have ___ apple.", options: ["a", "an", "the", "some"], correct: 1 }
+    ],
+    A2: [
+        { question: "She ___ to work every day.", options: ["go", "goes", "going", "gone"], correct: 1 },
+        { question: "They ___ English on Mondays.", options: ["study", "studies", "studied", "studying"], correct: 0 },
+        { question: "There ___ any milk in the fridge.", options: ["isn't", "aren't", "don't", "hasn't"], correct: 0 },
+        { question: "I ___ like coffee.", options: ["don't", "doesn't", "am not", "didn't"], correct: 0 },
+        { question: "He ___ TV now.", options: ["watch", "watches", "is watching", "watched"], correct: 2 },
+        { question: "We ___ dinner at 8 yesterday.", options: ["have", "had", "are having", "will have"], correct: 1 },
+        { question: "Which sentence is correct?", options: ["She don't like tea.", "She doesn't like tea.", "She isn't like tea.", "She not like tea."], correct: 1 },
+        { question: "Choose the correct article: ___ umbrella.", options: ["a", "an", "the", "some"], correct: 1 }
+    ],
+    B1: [
+        { question: "If it ___ tomorrow, we'll stay at home.", options: ["rains", "rained", "is raining", "rain"], correct: 0 },
+        { question: "I ___ my keys. I can't find them.", options: ["lost", "have lost", "had lost", "lose"], correct: 1 },
+        { question: "While I ___, she called me.", options: ["worked", "was working", "have worked", "work"], correct: 1 },
+        { question: "It's the ___ movie I've ever seen.", options: ["more interesting", "most interesting", "interestinger", "much interesting"], correct: 1 },
+        { question: "He said that he ___ the report.", options: ["finished", "had finished", "has finished", "finishes"], correct: 1 },
+        { question: "We have to ___ the deadline.", options: ["meet", "do", "make", "arrive"], correct: 0 },
+        { question: "Choose the correct preposition: interested ___ science.", options: ["on", "in", "at", "for"], correct: 1 },
+        { question: "By the time we arrived, the show ___.", options: ["started", "had started", "has started", "was starting"], correct: 1 }
+    ],
+    B2: [
+        { question: "If I ___ more time, I would learn Italian.", options: ["have", "had", "will have", "would have"], correct: 1 },
+        { question: "The meeting was ___ by the CEO.", options: ["lead", "led", "leading", "lead by"], correct: 1 },
+        { question: "He denied ___ the money.", options: ["take", "to take", "taking", "taken"], correct: 2 },
+        { question: "Hardly ___ we arrived when it started to rain.", options: ["had", "have", "did", "were"], correct: 0 },
+        { question: "I'd rather you ___ earlier next time.", options: ["come", "came", "will come", "had come"], correct: 1 },
+        { question: "Not only ___ brilliant, but also humble.", options: ["she is", "is she", "she was", "was she"], correct: 1 },
+        { question: "We look forward to ___ from you.", options: ["hear", "hearing", "to hear", "heard"], correct: 1 },
+        { question: "She insisted ___ paying the bill.", options: ["to", "on", "for", "at"], correct: 1 }
+    ],
+    C1: [
+        { question: "Only after the speech ___ to ask questions.", options: ["we begin", "did we begin", "we did begin", "we had begun"], correct: 1 },
+        { question: "Had I known, I ___ earlier.", options: ["would leave", "would have left", "left", "had left"], correct: 1 },
+        { question: "It's high time we ___ home.", options: ["go", "went", "had gone", "would go"], correct: 1 },
+        { question: "No sooner ___ the news than she called me.", options: ["she heard", "had she heard", "she had heard", "has she heard"], correct: 1 },
+        { question: "He suggested that she ___ present.", options: ["be", "is", "was", "will be"], correct: 0 },
+        { question: "Were it not for his help, we ___ failed.", options: ["would", "will have", "would have", "have"], correct: 2 }
+    ],
+    C2: [
+        { question: "Scarcely ___ the plane taken off when the engine failed.", options: ["had", "has", "did", "was"], correct: 0 },
+        { question: "Little ___ he know about the consequences.", options: ["does", "did", "has", "had"], correct: 1 },
+        { question: "Were she to arrive now, we ___ ready.", options: ["are", "would be", "were", "will be"], correct: 1 },
+        { question: "Seldom ___ such an eloquent speech.", options: ["we hear", "do we hear", "we heard", "we have heard"], correct: 1 },
+        { question: "At no time ___ the suspect leave the room.", options: ["was", "did", "has", "had"], correct: 1 },
+        { question: "Only when I looked again ___ the error.", options: ["I noticed", "did I notice", "had I noticed", "I had noticed"], correct: 1 }
+    ]
+};
+
+function getLessonMCERFromDifficulty(difficulty) {
+    if (!difficulty) return 'A1';
+    const d = String(difficulty).toLowerCase();
+    if (d.includes('principiante')) return 'A1';
+    if (d.includes('básico')) return 'A2';
+    if (d.includes('intermedio')) return 'B1';
+    if (d.includes('avanzado')) return 'B2';
+    return 'A1';
+}
+
 function createGrammarExercise(lesson) {
+    const lessonGrammar = Array.isArray(lesson.practiceExercises)
+        ? lesson.practiceExercises.filter(e => e.type === 'grammar')
+        : [];
+    const mcer = getLessonMCERFromDifficulty(lesson.difficulty);
+    const pool = GRAMMAR_POOLS[mcer] || [];
+    const grammarExercises = [...lessonGrammar, ...pool];
+    
+    if (grammarExercises.length === 0) {
+        return `
+            <div class="exercise-container">
+                <h4>Completa la oración:</h4>
+                <div class="grammar-exercise">
+                    <p>I ___ a student.</p>
+                    <div class="options-grid">
+                        <button class="btn btn-secondary option-btn" data-correct="true">am</button>
+                        <button class="btn btn-secondary option-btn" data-correct="false">are</button>
+                        <button class="btn btn-secondary option-btn" data-correct="false">is</button>
+                    </div>
+                </div>
+                <div id="exerciseResult" class="exercise-result"></div>
+            </div>
+        `;
+    }
+    
+    const exercise = grammarExercises[Math.floor(Math.random() * grammarExercises.length)];
+    const allOptions = (exercise.options || []).map((opt, idx) => ({
+        text: opt,
+        isCorrect: idx === exercise.correct
+    }));
+    allOptions.sort(() => Math.random() - 0.5);
+    
     return `
         <div class="exercise-container">
             <h4>Completa la oración:</h4>
             <div class="grammar-exercise">
-                <p>I ___ a student.</p>
+                <p>${exercise.question}</p>
                 <div class="options-grid">
-                    <button class="btn btn-secondary option-btn" data-correct="true">am</button>
-                    <button class="btn btn-secondary option-btn" data-correct="false">are</button>
-                    <button class="btn btn-secondary option-btn" data-correct="false">is</button>
+                    ${allOptions.map(o => `
+                        <button class="btn btn-secondary option-btn" data-correct="${o.isCorrect}">${o.text}</button>
+                    `).join('')}
                 </div>
             </div>
             <div id="exerciseResult" class="exercise-result"></div>
