@@ -135,36 +135,36 @@ const LESSONS_DATABASE = {
                     options: ["One", "Two", "Three", "Four"],
                     correct: 2
                 },
-                {
-                    type: "grammar",
-                    question: "Completa: ___ apple is red.",
-                    options: ["A", "An", "The", "Some"],
-                    correct: 1
-                },
-                {
-                    type: "grammar",
-                    question: "Completa: I have ___ car.",
-                    options: ["a", "an", "the", "some"],
-                    correct: 0
-                },
-                {
-                    type: "grammar",
-                    question: "Completa: She is ___ engineer.",
-                    options: ["a", "an", "the", "some"],
-                    correct: 1
-                },
-                {
-                    type: "grammar",
-                    question: "¿Cuál es el artículo correcto para 'orange'?",
-                    options: ["a", "an", "the", "some"],
-                    correct: 1
-                },
-                {
-                    type: "grammar",
-                    question: "Selecciona la oración correcta:",
-                    options: ["He is a doctor.", "He is an doctor.", "He is the doctor.", "He is some doctor."],
-                    correct: 0
-                }
+            {
+                type: "grammar",
+                question: "Completa: ___ apple is red.",
+                options: ["A", "An", "The", "Some"],
+                correct: 1
+            },
+            {
+                type: "grammar",
+                question: "Completa: I have ___ car.",
+                options: ["a", "an", "the", "some"],
+                correct: 0
+            },
+            {
+                type: "grammar",
+                question: "Completa: She is ___ engineer.",
+                options: ["a", "an", "the", "some"],
+                correct: 1
+            },
+            {
+                type: "grammar",
+                question: "¿Cuál es el artículo correcto para 'orange'?",
+                options: ["a", "an", "the", "some"],
+                correct: 1
+            },
+            {
+                type: "grammar",
+                question: "Selecciona la oración correcta:",
+                options: ["He is a doctor.", "He is an doctor.", "He is the doctor.", "He is some doctor."],
+                correct: 0
+            }
             ]
         },
         {
@@ -210,41 +210,41 @@ const LESSONS_DATABASE = {
                     options: ["My", "Your", "His", "Her"],
                     correct: 0
                 },
-                {
-                    type: "grammar",
-                    question: "Completa: This is ___ book.",
-                    options: ["my", "me", "mine", "I"],
-                    correct: 0
-                },
-                {
-                    type: "grammar",
-                    question: "Completa: ___ father is a doctor.",
-                    options: ["Your", "You", "Yours", "You're"],
-                    correct: 0
-                },
-                {
-                    type: "grammar",
-                    question: "¿Cuál es el pronombre posesivo para 'ella'?",
-                    options: ["his", "her", "its", "their"],
-                    correct: 1
-                },
-                {
-                    type: "grammar",
-                    question: "Completa: Their house is ___ the corner.",
-                    options: ["in", "on", "at", "to"],
-                    correct: 2
-                },
-                {
-                    type: "grammar",
-                    question: "Selecciona la oración correcta:",
-                    options: [
-                        "My sister is teacher.",
-                        "My sister is a teacher.",
-                        "My sister is teachers.",
-                        "My sister is the teacher."
-                    ],
-                    correct: 1
-                }
+            {
+                type: "grammar",
+                question: "Completa: This is ___ book.",
+                options: ["my", "me", "mine", "I"],
+                correct: 0
+            },
+            {
+                type: "grammar",
+                question: "Completa: ___ father is a doctor.",
+                options: ["Your", "You", "Yours", "You're"],
+                correct: 0
+            },
+            {
+                type: "grammar",
+                question: "¿Cuál es el pronombre posesivo para 'ella'?",
+                options: ["his", "her", "its", "their"],
+                correct: 1
+            },
+            {
+                type: "grammar",
+                question: "Completa: Their house is ___ the corner.",
+                options: ["in", "on", "at", "to"],
+                correct: 2
+            },
+            {
+                type: "grammar",
+                question: "Selecciona la oración correcta:",
+                options: [
+                    "My sister is teacher.",
+                    "My sister is a teacher.",
+                    "My sister is teachers.",
+                    "My sister is the teacher."
+                ],
+                correct: 1
+            }
             ]
         },
         {
@@ -283,17 +283,17 @@ const LESSONS_DATABASE = {
                     options: ["Milk", "Coffee", "Water", "Bread"],
                     correct: 2
                 },
-                {
-                    type: "grammar",
-                    question: "Completa: There ___ a book on the table.",
-                    options: ["is", "are", "am", "be"],
-                    correct: 0
-                },
-                {
-                    type: "grammar",
-                    question: "Completa: There ___ tres apples.",
-                    options: ["is", "are", "am", "be"],
-                    correct: 1
+            {
+                type: "grammar",
+                question: "Completa: There ___ a book on the table.",
+                options: ["is", "are", "am", "be"],
+                correct: 0
+            },
+            {
+                type: "grammar",
+                question: "Completa: There ___ tres apples.",
+                options: ["is", "are", "am", "be"],
+                correct: 1
                 }
             ],
             practiceExercises: [
@@ -1269,7 +1269,6 @@ const CONVERSATION_SCENARIOS = [
         vocabulary: ["presentation", "project", "goal", "website", "clients", "excited"]
     }
 ];
-
 // Sistema de Logros y Gamificación (movido a script1.js/achievements.js)
 
 // Funciones de utilidad
@@ -1767,7 +1766,6 @@ const VOCABULARY_CATEGORIES = {
         ]
     }
 };
-
 // Función para obtener vocabulario por categoría
 function getVocabularyByCategory(category) {
     const categoryData = VOCABULARY_CATEGORIES[category];
@@ -1825,165 +1823,9 @@ function getVocabularyStats() {
     return stats;
 }
 
-// Sistema de pronunciación mejorado
-function speakText(text, language = 'en-US', rate = 0.8) {
-    if ('speechSynthesis' in window) {
-        // Detener cualquier pronunciación anterior
-        speechSynthesis.cancel();
-        
-        // Limpiar el texto de caracteres problemáticos para la síntesis de voz
-        const cleanText = cleanTextForSpeech(text);
-        
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-        utterance.lang = language;
-        utterance.rate = rate;
-        utterance.volume = 1;
-        
-        // Esperar a que las voces estén disponibles
-        const speakWithVoice = () => {
-        const voices = speechSynthesis.getVoices();
-            const englishVoice = voices.find(voice => 
-                voice.lang.startsWith('en') && (voice.name.includes('US') || voice.name.includes('en-US'))
-            ) || voices.find(voice => voice.lang.startsWith('en'));
-            
-        if (englishVoice) {
-            utterance.voice = englishVoice;
-        }
-        
-        speechSynthesis.speak(utterance);
-        };
-        
-        // Si las voces ya están disponibles, usar directamente
-        if (speechSynthesis.getVoices().length > 0) {
-            speakWithVoice();
-        } else {
-            // Esperar a que las voces se carguen
-            speechSynthesis.onvoiceschanged = speakWithVoice;
-        }
-        
-        return true;
-    }
-        return false;
-}
+// Función speakText migrada a script1.js/utils.js
 
-// Función auxiliar para limpiar texto para síntesis de voz
-function cleanTextForSpeech(text) {
-    if (!text) return '';
-    
-    let cleanText = text;
-    
-    // Reemplazar apóstrofes y caracteres especiales
-    cleanText = cleanText.replace(/'/g, "'");
-    cleanText = cleanText.replace(/"/g, '"');
-    cleanText = cleanText.replace(/"/g, '"');
-    cleanText = cleanText.replace(/…/g, '...');
-    cleanText = cleanText.replace(/–/g, '-');
-    cleanText = cleanText.replace(/—/g, '-');
-    
-    // Manejar contracciones específicas del inglés
-    const contractions = {
-        // Contracciones con 'm (am)
-        "i'm": "i am",
-        // Contracciones con 're (are)
-        "you're": "you are",
-        "we're": "we are",
-        "they're": "they are",
-        "there're": "there are",
-        // Contracciones con 's (is/has)
-        "it's": "it is",
-        "he's": "he is",
-        "she's": "she is",
-        "that's": "that is",
-        "what's": "what is",
-        "where's": "where is",
-        "who's": "who is",
-        "how's": "how is",
-        "when's": "when is",
-        "why's": "why is",
-        "there's": "there is",
-        "here's": "here is",
-        "let's": "let us",
-        // Contracciones con 'll (will)
-        "i'll": "i will",
-        "you'll": "you will",
-        "he'll": "he will",
-        "she'll": "she will",
-        "it'll": "it will",
-        "we'll": "we will",
-        "they'll": "they will",
-        "that'll": "that will",
-        "there'll": "there will",
-        // Contracciones con 'd (would/had)
-        "i'd": "i would",
-        "you'd": "you would",
-        "he'd": "he would",
-        "she'd": "she would",
-        "it'd": "it would",
-        "we'd": "we would",
-        "they'd": "they would",
-        "that'd": "that would",
-        "there'd": "there would",
-        // Contracciones con 've (have)
-        "i've": "i have",
-        "you've": "you have",
-        "we've": "we have",
-        "they've": "they have",
-        "could've": "could have",
-        "should've": "should have",
-        "would've": "would have",
-        "might've": "might have",
-        "must've": "must have",
-        // Contracciones negativas con 't
-        "don't": "do not",
-        "doesn't": "does not",
-        "didn't": "did not",
-        "can't": "can not",
-        "cannot": "can not",
-        "won't": "will not",
-        "wouldn't": "would not",
-        "shouldn't": "should not",
-        "couldn't": "could not",
-        "isn't": "is not",
-        "aren't": "are not",
-        "wasn't": "was not",
-        "weren't": "were not",
-        "hasn't": "has not",
-        "haven't": "have not",
-        "hadn't": "had not",
-        "mustn't": "must not",
-        "mightn't": "might not",
-        "shan't": "shall not",
-        "needn't": "need not",
-        "daren't": "dare not",
-        // Contracciones informales
-        "gonna": "going to",
-        "wanna": "want to",
-        "gotta": "got to",
-        "lemme": "let me",
-        "gimme": "give me",
-        "kinda": "kind of",
-        "sorta": "sort of",
-        "outta": "out of",
-        "lotsa": "lots of",
-        "cuppa": "cup of"
-    };
-    
-    // Reemplazo insensible a mayúsculas y mantiene capitalización inicial
-    Object.entries(contractions).forEach(([contraction, expansion]) => {
-        // Regex insensible a mayúsculas y global
-        const regex = new RegExp(`\\b${contraction}\\b`, 'gi');
-        cleanText = cleanText.replace(regex, (match) => {
-            // Si la palabra original empieza con mayúscula, capitaliza la expansión
-            if (match[0] === match[0].toUpperCase()) {
-                return expansion.charAt(0).toUpperCase() + expansion.slice(1);
-            } else {
-                return expansion;
-            }
-        });
-    });
-    
-    return cleanText;
-}
+// Función cleanTextForSpeech migrada a script1.js/utils.js
 
 // Función para probar contracciones (solo para desarrollo)
 function testContractions() {
@@ -2091,147 +1933,11 @@ async function practicePronunciation(text) {
     btn.disabled = false;
 }
 
-// Función para grabar audio del usuario
-async function recordAudio() {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const mediaRecorder = new MediaRecorder(stream);
-        const audioChunks = [];
-        
-    return new Promise((resolve, reject) => {
-        mediaRecorder.ondataavailable = (event) => {
-            audioChunks.push(event.data);
-        };
-        
-        mediaRecorder.onstop = () => {
-                const audioBlob = new Blob(audioChunks);
-            const audioUrl = URL.createObjectURL(audioBlob);
-                resolve(audioUrl);
-            };
-            
-            mediaRecorder.onerror = reject;
-        mediaRecorder.start();
-            
-            // Detener grabación después de 5 segundos
-        setTimeout(() => {
-                mediaRecorder.stop();
-                stream.getTracks().forEach(track => track.stop());
-        }, 5000);
-    });
-    } catch (error) {
-        console.error('Error al grabar audio:', error);
-        throw error;
-    }
-}
+// Función recordAudio migrada a script1.js/utils.js
 
-function saveProgress() {
-    localStorage.setItem('englishLearningProgress', JSON.stringify({
-        ...appState,
-        lastSaved: new Date().toISOString()
-    }));
-    
-    // Guardar logros del usuario
-    ACHIEVEMENTS_SYSTEM.saveUserAchievements();
-}
+// Funciones de progreso migradas a script1.js/progress.js
 
-function loadProgress() {
-    const saved = localStorage.getItem('englishLearningProgress');
-    if (saved) {
-        const progress = JSON.parse(saved);
-        Object.assign(appState, progress);
-    }
-    
-    // Cargar logros del usuario
-    ACHIEVEMENTS_SYSTEM.loadUserAchievements();
-    
-        updateUI();
-}
-
-function updateUI() {
-    document.getElementById('currentLevel').textContent = appState.currentLevel;
-    document.getElementById('currentXP').textContent = appState.currentXP;
-    document.getElementById('streakDays').textContent = appState.streakDays;
-    document.getElementById('lessonsCompleted').textContent = appState.lessonsCompleted;
-    // Actualizar contador de logros usando el nuevo sistema
-    const achievementProgress = ACHIEVEMENTS_SYSTEM.getAchievementProgress();
-    document.getElementById('achievementsEarned').textContent = achievementProgress.unlocked;
-    
-    // Actualizar barra de progreso del nivel
-    const xpForNextLevel = getXPForNextLevel(appState.currentLevel);
-    const xpInCurrentLevel = appState.currentXP % LEVEL_SYSTEM.xpPerLevel;
-    const progressPercentage = (xpInCurrentLevel / LEVEL_SYSTEM.xpPerLevel) * 100;
-    
-    // Actualizar elementos visuales de la barra de progreso
-    const progressFill = document.getElementById('levelProgressFill');
-    const progressText = document.getElementById('levelProgressText');
-    
-    if (progressFill && progressText) {
-        progressFill.style.width = `${progressPercentage}%`;
-        progressText.textContent = `${Math.round(progressPercentage)}%`;
-    }
-    
-    // Actualizar información del usuario en el header
-    updateUserDisplay();
-    
-    // Mostrar nivel MCER en el header si hay usuario
-    const user = getCurrentUser();
-    if (user && user.mcer) {
-        const levelElement = document.getElementById('currentLevel');
-        if (levelElement) {
-            levelElement.textContent = `${appState.currentLevel} (${user.mcer})`;
-        }
-    }
-}
-
-// Navegación entre secciones
-function initializeNavigation() {
-    const navTabs = document.querySelectorAll('.nav-tab');
-    const contentSections = document.querySelectorAll('.content-section');
-
-    navTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const targetTab = tab.dataset.tab;
-            
-            // Actualizar navegación
-            navTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-            
-            // Mostrar sección correspondiente
-            contentSections.forEach(section => {
-                section.classList.remove('active');
-                if (section.id === targetTab) {
-                    section.classList.add('active');
-                }
-            });
-            
-            // Cargar contenido específico
-            loadSectionContent(targetTab);
-        });
-    });
-}
-
-function loadSectionContent(section) {
-    switch(section) {
-        case 'learn':
-            loadCurrentLesson();
-            break;
-        case 'practice':
-            loadPracticeModes();
-            // Sincronizar práctica con la lección actual de aprendizaje
-            practiceLessonIndex = syncPracticeWithLearning();
-            break;
-        case 'apply':
-            loadConversationScenario();
-            break;
-        case 'progress':
-            loadProgressChart();
-            break;
-        case 'vocabulary':
-            loadVocabularyCategories();
-            break;
-    }
-}
-
+// Funciones de navegación migradas a script1.js/navigation.js
 // Sección APRENDER
 function loadCurrentLesson() {
     const allowedLessons = getAllowedLessonsByLevel();
@@ -2413,117 +2119,9 @@ function syncPracticeWithLearning() {
     }
 }
 
-// --- Cambios en práctica ---
-function loadPracticeExercise(mode) {
-    const practiceArea = document.getElementById('practiceArea');
-    const allowedLessons = getAllowedLessonsByLevel();
-    if (allowedLessons.length === 0) {
-        practiceArea.innerHTML = '<div class="error">No hay lecciones disponibles para tu nivel actual.</div>';
-        return;
-    }
+// Función loadPracticeExercise migrada a script1.js/practice.js
 
-    // Sincronizar con la lección de aprendizaje
-    practiceLessonIndex = syncPracticeWithLearning();
-    
-    // Asegurar que el índice esté dentro de rango
-    if (practiceLessonIndex >= allowedLessons.length) practiceLessonIndex = 0;
-    const currentLesson = allowedLessons[practiceLessonIndex];
-    
-    let exerciseHTML = '';
-    switch(mode) {
-        case 'vocabulary':
-            exerciseHTML = createVocabularyExercise(currentLesson);
-            break;
-        case 'grammar':
-            exerciseHTML = createGrammarExercise(currentLesson);
-            break;
-        case 'listening':
-            // Usar el nuevo sistema de listening mejorado
-            const userLevel = getUserLevelMCER();
-            const availableExercises = LISTENING_SYSTEM.exercises.filter(ex => {
-                const levelOrder = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
-                const userLevelIndex = levelOrder.indexOf(userLevel);
-                const exerciseLevelIndex = levelOrder.indexOf(ex.difficulty);
-                return exerciseLevelIndex <= userLevelIndex;
-            });
-            
-            if (availableExercises.length > 0) {
-                const exerciseIndex = practiceLessonIndex % availableExercises.length;
-                LISTENING_SYSTEM.createListeningExercise(availableExercises[exerciseIndex]);
-                return; // Salir temprano ya que createListeningExercise maneja el HTML
-            } else {
-                exerciseHTML = createListeningExercise(currentLesson); // Fallback al sistema anterior
-            }
-            break;
-        case 'pronunciation':
-            exerciseHTML = createPronunciationPractice(currentLesson);
-            break;
-        case 'spaced-repetition':
-            // Inicializar sistema de repaso espaciado si no está inicializado
-            if (!SPACED_REPETITION_SYSTEM.reviewItems.length) {
-                SPACED_REPETITION_SYSTEM.init();
-            }
-            SPACED_REPETITION_SYSTEM.loadSpacedRepetitionInterface();
-            return; // Salir temprano ya que loadSpacedRepetitionInterface maneja el HTML
-    }
-    
-    // Mostrar el nombre de la lección actual en la cabecera
-    const lessonTitle = currentLesson.title || '';
-    const currentLessonNumber = practiceLessonIndex + 1;
-    const totalLessons = allowedLessons.length;
-    
-    practiceArea.innerHTML = `
-        <div class="practice-header">
-            <div class="practice-nav-buttons">
-                <button class="btn btn-secondary" onclick="backToPracticeModes()">
-                    <i class="fas fa-arrow-left"></i> Volver
-                </button>
-                <button class="btn btn-primary" onclick="nextPracticeLesson('${mode}')" id="nextPracticeBtn">
-                    <i class="fas fa-arrow-right"></i> Siguiente Lección
-                </button>
-            </div>
-            <div class="practice-info">
-                <h3>${mode.charAt(0).toUpperCase() + mode.slice(1)}</h3>
-                <div class="practice-lesson-info">
-                    <span class="practice-lesson-title">Lección: <strong>${lessonTitle}</strong></span>
-                    <span class="practice-lesson-counter">${currentLessonNumber} de ${totalLessons}</span>
-                </div>
-            </div>
-        </div>
-        ${exerciseHTML}
-    `;
-    
-    // Reasignar event listeners inmediatamente
-    setTimeout(() => {
-        reattachOptionBtnListeners();
-    }, 50);
-}
-
-function createVocabularyExercise(lesson) {
-    const vocab = lesson.vocabulary[Math.floor(Math.random() * lesson.vocabulary.length)];
-    const options = lesson.vocabulary
-        .filter(item => item.english !== vocab.english)
-        .sort(() => Math.random() - 0.5)
-        .slice(0, 3)
-        .map(item => item.english);
-    
-    options.push(vocab.english);
-    options.sort(() => Math.random() - 0.5);
-    
-    return `
-        <div class="exercise-container">
-            <h4>¿Cómo se dice "${vocab.spanish}" en inglés?</h4>
-            <div class="options-grid">
-                ${options.map((option, index) => `
-                    <button class="btn btn-secondary option-btn" data-correct="${option === vocab.english}" data-index="${index}">
-                        ${option}
-                    </button>
-                `).join('')}
-            </div>
-            <div id="exerciseResult" class="exercise-result"></div>
-        </div>
-    `;
-}
+// Función createVocabularyExercise migrada a script1.js/practice.js
 
 // Pools de gramática por nivel MCER para ampliar ejercicios en todas las lecciones
 const GRAMMAR_POOLS = {
@@ -2595,778 +2193,34 @@ function getLessonMCERFromDifficulty(difficulty) {
     return 'A1';
 }
 
-function createGrammarExercise(lesson) {
-    const lessonGrammar = Array.isArray(lesson.practiceExercises)
-        ? lesson.practiceExercises.filter(e => e.type === 'grammar')
-        : [];
-    const mcer = getLessonMCERFromDifficulty(lesson.difficulty);
-    const pool = GRAMMAR_POOLS[mcer] || [];
-    const grammarExercises = [...lessonGrammar, ...pool];
-    
-    if (grammarExercises.length === 0) {
-        return `
-            <div class="exercise-container">
-                <h4>Completa la oración:</h4>
-                <div class="grammar-exercise">
-                    <p>I ___ a student.</p>
-                    <div class="options-grid">
-                        <button class="btn btn-secondary option-btn" data-correct="true">am</button>
-                        <button class="btn btn-secondary option-btn" data-correct="false">are</button>
-                        <button class="btn btn-secondary option-btn" data-correct="false">is</button>
-                    </div>
-                </div>
-                <div id="exerciseResult" class="exercise-result"></div>
-            </div>
-        `;
-    }
-    
-    const exercise = grammarExercises[Math.floor(Math.random() * grammarExercises.length)];
-    const allOptions = (exercise.options || []).map((opt, idx) => ({
-        text: opt,
-        isCorrect: idx === exercise.correct
-    }));
-    allOptions.sort(() => Math.random() - 0.5);
-    
-    return `
-        <div class="exercise-container">
-            <h4>Completa la oración:</h4>
-            <div class="grammar-exercise">
-                <p>${exercise.question}</p>
-                <div class="options-grid">
-                    ${allOptions.map(o => `
-                        <button class="btn btn-secondary option-btn" data-correct="${o.isCorrect}">${o.text}</button>
-                    `).join('')}
-                </div>
-            </div>
-            <div id="exerciseResult" class="exercise-result"></div>
-        </div>
-    `;
-}
+// Función createGrammarExercise migrada a script1.js/practice.js
+// Función createListeningExercise migrada a script1.js/practice.js
 
-function createListeningExercise(lesson) {
-    // Seleccionar una frase o palabra del vocabulario de la lección
-    const vocab = lesson.vocabulary[Math.floor(Math.random() * lesson.vocabulary.length)];
-    const safeEnglish = vocab.english.replace(/'/g, "\\'");
-    
-    // Crear ejercicios de comprensión auditiva
-    const listeningExercises = [
-        {
-            type: 'word',
-            text: vocab.english,
-            question: `¿Qué palabra escuchaste?`,
-            options: [
-                vocab.english,
-                vocab.spanish,
-                vocab.english.split('').reverse().join(''), // Opción incorrecta
-                vocab.english.toUpperCase()
-            ]
-        },
-        {
-            type: 'phrase',
-            text: `Hello, how are you?`,
-            question: `¿Qué frase escuchaste?`,
-            options: [
-                'Hello, how are you?',
-                'Hi, how are you?',
-                'Hello, how do you do?',
-                'Hi, how do you do?'
-            ]
-        },
-        {
-            type: 'question',
-            text: `What is your name?`,
-            question: `¿Qué pregunta escuchaste?`,
-            options: [
-                'What is your name?',
-                'What is your age?',
-                'Where are you from?',
-                'How old are you?'
-            ]
-        }
-    ];
-    
-    const exercise = listeningExercises[Math.floor(Math.random() * listeningExercises.length)];
-    
-    return `
-        <div class="exercise-container">
-            <h4><i class="fas fa-headphones"></i> Ejercicio de Comprensión Auditiva</h4>
-            <div class="listening-exercise">
-                <div class="audio-player">
-                    <div class="audio-controls">
-                        <button class="play-btn" data-text="${exercise.text.replace(/"/g, '&quot;')}" title="Reproducir audio">
-                            <i class="fas fa-play"></i>
-                </button>
-                        <button class="pause-btn" title="Pausar" style="display: none;">
-                            <i class="fas fa-pause"></i>
-                        </button>
-                </div>
-                    <div class="speed-controls">
-                        <label>Velocidad:</label>
-                        <select onchange="changeListeningSpeed(this.value)">
-                            <option value="0.7">Lento</option>
-                            <option value="1.0" selected>Normal</option>
-                            <option value="1.3">Rápido</option>
-                        </select>
-            </div>
-                    <div class="audio-progress">
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: 0%"></div>
-        </div>
-                        <div class="time-display">
-                            <span class="current-time">0:00</span> / <span class="total-time">0:00</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="transcript-section">
-                    <button class="show-transcript-btn" onclick="toggleTranscript()" title="Mostrar/ocultar transcripción">
-                        <i class="fas fa-eye"></i> Mostrar Transcripción
-            </button>
-                    <div class="transcript-container" style="display: none;">
-                        <div class="transcript-text">${exercise.text}</div>
-        </div>
-                </div>
-                
-                <div class="questions-section">
-                    <h4><i class="fas fa-question-circle"></i> ${exercise.question}</h4>
-                    <div class="questions-container">
-                        <div class="question-card">
-                            <div class="options-grid">
-                                ${exercise.options.map((option, index) => `
-                                    <button class="option-btn" data-correct="${option === exercise.text}" onclick="handleListeningAnswer(this)">
-                                        ${String.fromCharCode(65 + index)}. ${option}
-                    </button>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                    
-                <div class="exercise-actions">
-                    <button class="btn btn-secondary" onclick="resetListeningExercise()">
-                        <i class="fas fa-redo"></i> Repetir
-                    </button>
-                    <button class="btn btn-primary" onclick="checkListeningAnswers()">
-                        <i class="fas fa-check"></i> Verificar Respuesta
-                    </button>
-                </div>
-                
-                <div class="exercise-result" style="display: none;">
-                    <h4>Resultado</h4>
-                    <p class="result-message"></p>
-                    <button class="btn btn-primary" onclick="nextListeningExercise()">
-                        <i class="fas fa-arrow-right"></i> Siguiente Ejercicio
-                    </button>
-                </div>
-                </div>
-        </div>
-    `;
-}
+// Función createPronunciationPractice migrada a script1.js/practice.js
 
-function createPronunciationPractice(lesson) {
-    // Elegir una palabra aleatoria del vocabulario de la lección
-    const vocab = lesson.vocabulary[Math.floor(Math.random() * lesson.vocabulary.length)];
-    const cleanEnglish = cleanTextForSpeech(vocab.english);
-    return `
-        <div class="exercise-container">
-            <h4>Practica la pronunciación de:</h4>
-            <div class="pronunciation-practice">
-                <div class="english">${vocab.english}</div>
-                <button class="speak-btn" onclick="speakText('${cleanEnglish}', 'en-US')" title="Escuchar pronunciación">
-                    <i class="fas fa-volume-up"></i>
-                    </button>
-                <button class="practice-btn" onclick="practicePronunciation('${cleanEnglish}')" title="Grabar tu pronunciación">
-                        <i class="fas fa-microphone"></i> Grabar
-                    </button>
-            </div>
-        </div>
-    `;
-}
+// Funciones de listening migradas a script1.js/practice.js
 
-// Variables globales para el ejercicio de listening
-let currentListeningAudio = null;
-let listeningAudioSpeed = 1.0;
-let selectedListeningAnswer = null;
+// Funciones de utilidad migradas a script1.js/utils.js
 
-// Función para reproducir audio del ejercicio de listening
-function playListeningAudio(text) {
-    // Verificar si Web Speech API está disponible
-    if (!window.speechSynthesis) {
-        showNotification('Tu navegador no soporta audio. Intenta con Chrome o Edge.', 'error');
-        return;
-    }
-    
-    // Cancelar audio anterior si existe
-    if (currentListeningAudio) {
-        speechSynthesis.cancel();
-    }
-    
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = listeningAudioSpeed;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-    
-    // Mostrar botón de pausa
-    const playBtn = document.querySelector('.play-btn');
-    const pauseBtn = document.querySelector('.pause-btn');
-    if (playBtn && pauseBtn) {
-        playBtn.style.display = 'none';
-        pauseBtn.style.display = 'inline-block';
-    }
-    
-    // Simular progreso del audio
-    let progress = 0;
-    const progressFill = document.querySelector('.audio-progress .progress-fill');
-    const currentTimeSpan = document.querySelector('.current-time');
-    const totalTimeSpan = document.querySelector('.total-time');
-    
-    const progressInterval = setInterval(() => {
-        progress += 2;
-        if (progressFill) progressFill.style.width = `${progress}%`;
-        if (currentTimeSpan) currentTimeSpan.textContent = formatTime(Math.floor(progress / 2));
-        if (totalTimeSpan) totalTimeSpan.textContent = formatTime(Math.floor(100 / 2));
-        
-        if (progress >= 100) {
-            clearInterval(progressInterval);
-            if (playBtn && pauseBtn) {
-                playBtn.style.display = 'inline-block';
-                pauseBtn.style.display = 'none';
-            }
-            if (progressFill) progressFill.style.width = '0%';
-            if (currentTimeSpan) currentTimeSpan.textContent = '0:00';
-        }
-    }, 100);
-    
-    utterance.onend = () => {
-        clearInterval(progressInterval);
-        if (playBtn && pauseBtn) {
-            playBtn.style.display = 'inline-block';
-            pauseBtn.style.display = 'none';
-        }
-        if (progressFill) progressFill.style.width = '0%';
-        if (currentTimeSpan) currentTimeSpan.textContent = '0:00';
-    };
-    
-    utterance.onerror = (event) => {
-        console.error('Error en audio:', event);
-        clearInterval(progressInterval);
-        if (playBtn && pauseBtn) {
-            playBtn.style.display = 'inline-block';
-            pauseBtn.style.display = 'none';
-        }
-        if (progressFill) progressFill.style.width = '0%';
-        if (currentTimeSpan) currentTimeSpan.textContent = '0:00';
-        showNotification('Error al reproducir audio. Intenta nuevamente.', 'error');
-    };
-    
-    currentListeningAudio = utterance;
-    
-    try {
-        speechSynthesis.speak(utterance);
-        console.log('Reproduciendo audio:', text);
-    } catch (error) {
-        console.error('Error al iniciar audio:', error);
-        showNotification('Error al reproducir audio. Intenta con otro navegador.', 'error');
-    }
-}
+// Función backToPracticeModes migrada a script1.js/practice.js
 
-// Función para pausar audio del ejercicio de listening
-function pauseListeningAudio() {
-    if (currentListeningAudio) {
-        speechSynthesis.cancel();
-        currentListeningAudio = null;
-    }
-    
-    const playBtn = document.querySelector('.play-btn');
-    const pauseBtn = document.querySelector('.pause-btn');
-    if (playBtn && pauseBtn) {
-        playBtn.style.display = 'inline-block';
-        pauseBtn.style.display = 'none';
-    }
-    
-    const progressFill = document.querySelector('.audio-progress .progress-fill');
-    const currentTimeSpan = document.querySelector('.current-time');
-    if (progressFill) progressFill.style.width = '0%';
-    if (currentTimeSpan) currentTimeSpan.textContent = '0:00';
-}
+// Función nextPracticeLesson migrada a script1.js/practice.js
 
-// Función para cambiar velocidad del audio
-function changeListeningSpeed(speed) {
-    listeningAudioSpeed = parseFloat(speed);
-    if (currentListeningAudio) {
-        currentListeningAudio.rate = listeningAudioSpeed;
-    }
-}
+// Funciones de conversación y progreso migradas a sus respectivos módulos
 
-// Función para mostrar/ocultar transcripción
-function toggleTranscript() {
-    const transcriptContainer = document.querySelector('.transcript-container');
-    const showBtn = document.querySelector('.show-transcript-btn');
-    
-    if (transcriptContainer && showBtn) {
-        if (transcriptContainer.style.display === 'none') {
-            transcriptContainer.style.display = 'block';
-            showBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Ocultar Transcripción';
-        } else {
-            transcriptContainer.style.display = 'none';
-            showBtn.innerHTML = '<i class="fas fa-eye"></i> Mostrar Transcripción';
-        }
-    }
-}
-
-// Función para manejar selección de respuesta
-function handleListeningAnswer(button) {
-    // Remover selección anterior
-    const allButtons = document.querySelectorAll('.option-btn');
-    allButtons.forEach(btn => btn.classList.remove('selected'));
-    
-    // Seleccionar nueva respuesta
-    button.classList.add('selected');
-    selectedListeningAnswer = button;
-}
-
-// Función para verificar respuestas
-function checkListeningAnswers() {
-    if (!selectedListeningAnswer) {
-        showNotification('Por favor selecciona una respuesta', 'warning');
-        return;
-    }
-    
-    const isCorrect = selectedListeningAnswer.getAttribute('data-correct') === 'true';
-    const resultDiv = document.querySelector('.exercise-result');
-    const resultMessage = resultDiv.querySelector('.result-message');
-    
-    if (isCorrect) {
-        resultMessage.innerHTML = '<span style="color: var(--success-color);">✅ ¡Correcto! Has identificado bien el audio.</span>';
-        playSuccessSound();
-        addXP(15);
-        showNotification('¡Excelente comprensión auditiva! +15 XP', 'success');
-    } else {
-        resultMessage.innerHTML = '<span style="color: var(--error-color);">❌ Incorrecto. Intenta escuchar el audio nuevamente.</span>';
-        playFailSound();
-        showNotification('Sigue practicando tu comprensión auditiva', 'info');
-    }
-    
-    resultDiv.style.display = 'block';
-    
-    // Deshabilitar botones de opciones
-    const allButtons = document.querySelectorAll('.option-btn');
-    allButtons.forEach(btn => {
-        btn.disabled = true;
-        if (btn.getAttribute('data-correct') === 'true') {
-            btn.style.background = 'var(--success-color)';
-            btn.style.color = 'white';
-        }
-    });
-}
-
-// Función para resetear ejercicio
-function resetListeningExercise() {
-    selectedListeningAnswer = null;
-    
-    // Resetear botones
-    const allButtons = document.querySelectorAll('.option-btn');
-    allButtons.forEach(btn => {
-        btn.classList.remove('selected');
-        btn.disabled = false;
-        btn.style.background = '';
-        btn.style.color = '';
-    });
-    
-    // Ocultar resultado
-    const resultDiv = document.querySelector('.exercise-result');
-    if (resultDiv) resultDiv.style.display = 'none';
-    
-    // Resetear audio
-    pauseListeningAudio();
-    
-    // Ocultar transcripción
-    const transcriptContainer = document.querySelector('.transcript-container');
-    const showBtn = document.querySelector('.show-transcript-btn');
-    if (transcriptContainer) transcriptContainer.style.display = 'none';
-    if (showBtn) showBtn.innerHTML = '<i class="fas fa-eye"></i> Mostrar Transcripción';
-}
-
-// Función para siguiente ejercicio
-function nextListeningExercise() {
-    // Cargar nuevo ejercicio de listening
-    const allowedLessons = getAllowedLessonsByLevel();
-    const currentLesson = allowedLessons[practiceLessonIndex];
-    const practiceArea = document.getElementById('practiceArea');
-    
-    if (practiceArea) {
-        practiceArea.innerHTML = createListeningExercise(currentLesson);
-        resetListeningExercise();
-    }
-}
-
-// Función auxiliar para formatear tiempo
-function formatTime(seconds) {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-}
-
-// Función para probar el audio (para debugging)
-function testAudio() {
-    if (!window.speechSynthesis) {
-        console.error('Web Speech API no disponible');
-        showNotification('Web Speech API no disponible en este navegador', 'error');
-        return;
-    }
-    
-    const testText = 'Hello, this is a test of the audio system.';
-    console.log('Probando audio con:', testText);
-    
-    const utterance = new SpeechSynthesisUtterance(testText);
-    utterance.lang = 'en-US';
-    utterance.rate = 1.0;
-    utterance.volume = 1;
-    
-    utterance.onstart = () => console.log('Audio iniciado');
-    utterance.onend = () => console.log('Audio terminado');
-    utterance.onerror = (event) => console.error('Error en audio:', event);
-    
-    speechSynthesis.speak(utterance);
-    showNotification('Probando audio... Deberías escuchar "Hello, this is a test"', 'info');
-}
-
-// Función para probar el ejercicio de listening específicamente
-function testListeningExercise() {
-    console.log('Probando ejercicio de listening...');
-    playListeningAudio('Hello, how are you?');
-}
-
-function backToPracticeModes() {
-    document.querySelector('.practice-modes').style.display = 'grid';
-    document.getElementById('practiceArea').style.display = 'none';
-}
-
-// Función para avanzar a la siguiente lección de práctica
-function nextPracticeLesson(mode) {
-    const allowedLessons = getAllowedLessonsByLevel();
-    
-    // Avanzar al siguiente índice
-    practiceLessonIndex++;
-    
-    // Si llegamos al final, volver al inicio
-    if (practiceLessonIndex >= allowedLessons.length) {
-        practiceLessonIndex = 0;
-        showNotification('¡Has completado todas las lecciones de práctica! Volviendo al inicio. 🔄', 'info');
-    } else {
-        showNotification('Avanzando a la siguiente lección de práctica... 🚀', 'success');
-    }
-    
-    // Cargar el ejercicio con la nueva lección
-    loadPracticeExercise(mode);
-    
-    // Reasignar event listeners
-    setTimeout(() => {
-        reattachOptionBtnListeners();
-    }, 50);
-}
-
-// Sección APLICAR
-function loadConversationScenario() {
-    const scenario = CONVERSATION_SCENARIOS[0]; // Por ahora usamos el primero
-    const chatMessages = document.getElementById('chatMessages');
-    
-    document.getElementById('scenarioTitle').textContent = scenario.title;
-    document.getElementById('scenarioDescription').textContent = scenario.description;
-    
-    // Limpiar mensajes anteriores
-    chatMessages.innerHTML = '';
-    
-    // Agregar mensajes iniciales
-    scenario.messages.forEach(message => {
-        addMessageToChat(message.text, message.type);
-    });
-}
-
-function addMessageToChat(text, type) {
-    const chatMessages = document.getElementById('chatMessages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${type}`;
-    messageDiv.textContent = text;
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-// Sección PROGRESO
-function loadProgressChart() {
-    const chartContainer = document.getElementById('weeklyChart');
-    if (!chartContainer || chartContainer.nodeName !== 'CANVAS') {
-        console.warn('No se encontró el canvas para el gráfico de progreso.');
-        return;
-    }
-    const weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-    // Simular datos de progreso semanal
-    const weeklyData = [
-        appState.currentXP * 0.1,
-        appState.currentXP * 0.15,
-        appState.currentXP * 0.12,
-        appState.currentXP * 0.18,
-        appState.currentXP * 0.14,
-        appState.currentXP * 0.20,
-        appState.currentXP * 0.22
-    ];
-    // Crear gráfico con Chart.js
-    const ctx = chartContainer.getContext('2d');
-    // Destruir gráfico anterior si existe
-    if (window.weeklyChart) {
-        window.weeklyChart.destroy();
-    }
-        window.weeklyChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: weekDays,
-                datasets: [{
-                    label: 'XP Ganados',
-                    data: weeklyData,
-                    backgroundColor: 'rgba(79, 70, 229, 0.8)',
-                    borderColor: 'rgba(79, 70, 229, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
-    
-    // Cargar panel de logros
-    loadAchievementsPanel();
-    
-    // Cargar panel de estadísticas detalladas
-    loadDetailedStatsPanel();
-}
-
-function loadDetailedStatsPanel() {
-    const progressContainer = document.querySelector('.progress-container');
-    if (!progressContainer) return;
-    
-    // Verificar si ya existe el panel de estadísticas
-    let statsPanel = progressContainer.querySelector('.stats-dashboard');
-    if (!statsPanel) {
-        statsPanel = document.createElement('div');
-        statsPanel.className = 'stats-dashboard';
-        progressContainer.appendChild(statsPanel);
-    }
-    
-
-    
-    statsPanel.innerHTML = STATISTICS_SYSTEM.createDetailedStatsPanel();
-}
-
-function loadAchievementsPanel() {
-    const progressContainer = document.querySelector('.progress-container');
-    if (!progressContainer) return;
-    
-    // Verificar si ya existe el panel de logros
-    let achievementsPanel = progressContainer.querySelector('.achievements-panel');
-    if (!achievementsPanel) {
-        achievementsPanel = document.createElement('div');
-        achievementsPanel.className = 'achievements-panel';
-        progressContainer.appendChild(achievementsPanel);
-    }
-    
-    const achievementProgress = ACHIEVEMENTS_SYSTEM.getAchievementProgress();
-    
-    achievementsPanel.innerHTML = `
-        <div class="achievements-header">
-            <h3 class="achievements-title">
-                <i class="fas fa-trophy"></i> Logros y Recompensas
-            </h3>
-            <div class="achievements-progress">
-                <span>${achievementProgress.unlocked}/${achievementProgress.total}</span>
-                <span>(${achievementProgress.percentage}%)</span>
-            </div>
-        </div>
-        <div class="achievements-grid">
-            ${ACHIEVEMENTS_SYSTEM.achievements.map(achievement => `
-                <div class="achievement-card ${achievement.unlocked ? 'unlocked' : 'locked'}">
-                    <div class="achievement-card-header">
-                        <div class="achievement-card-icon">
-                            ${achievement.icon}
-                        </div>
-                        <h4 class="achievement-card-title">${achievement.title}</h4>
-                    </div>
-                    <p class="achievement-card-description">${achievement.description}</p>
-                    <div class="achievement-card-reward">
-                        <span class="achievement-xp-reward">+${achievement.xpReward} XP</span>
-                        ${achievement.unlocked && achievement.unlockedAt ? 
-                            `<span class="achievement-unlock-date">Desbloqueado: ${new Date(achievement.unlockedAt).toLocaleDateString()}</span>` : 
-                            '<span class="achievement-unlock-date">No desbloqueado</span>'
-                        }
-                    </div>
-                </div>
-            `).join('')}
-        </div>
-    `;
-}
+// Funciones de progreso migradas a script1.js/progress.js
 
 // Sistema de logros: gestionado por ACHIEVEMENTS_SYSTEM (script1.js/achievements.js)
 
 // Event listeners para ejercicios (ya manejados en la inicialización principal)
 
-// --- Sonidos de feedback ---
-// Función para crear sonidos usando Web Audio API
-function createSound(frequency, duration, type = 'sine') {
-    try {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.value = frequency;
-        oscillator.type = type;
-        
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + duration);
-    } catch (e) {
-        console.log('Audio no disponible:', e);
-    }
-}
+// Función createSound migrada a script1.js/utils.js
 
-// Sonidos de feedback usando Web Audio API
-function playSuccessSound() {
-    createSound(800, 0.3, 'sine'); // Sonido agudo para éxito
-}
+// Funciones de sonido migradas a script1.js/utils.js
 
-function playFailSound() {
-    createSound(200, 0.5, 'sawtooth'); // Sonido grave para fallo
-}
+// Función handleExerciseAnswer migrada a script1.js/practice.js
 
-function handleExerciseAnswer(button) {
-    const isCorrect = button.dataset.correct === 'true';
-    const resultDiv = document.getElementById('exerciseResult');
-    
-    // Deshabilitar todos los botones
-    document.querySelectorAll('.option-btn').forEach(btn => {
-        btn.disabled = true;
-        if (btn.dataset.correct === 'true') {
-            btn.style.background = 'var(--success-color)';
-            btn.style.color = 'white';
-        } else if (btn === button && !isCorrect) {
-            btn.style.background = 'var(--error-color)';
-            btn.style.color = 'white';
-        }
-    });
-    
-    // Emojis motivadores
-    const emojis = ['🎉', '🚀', '👏', '💪', '🌟', '🔥', '😃', '🥳', '🏆', '😎'];
-    const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-    
-    if (isCorrect) {
-        if (resultDiv) {
-            resultDiv.innerHTML = `<div class="success exercise-success-animate">¡Correcto! ${randomEmoji} ¡Sigue así!</div>`;
-        }
-        appState.currentXP += 10;
-        playSuccessSound();
-        practiceStreak++;
-        
-        // Verificar logro de puntuación perfecta (si es el primer ejercicio correcto de la sesión)
-        if (practiceStreak === 1) {
-            // Verificar si ya tiene el logro de puntuación perfecta
-            const perfectScoreAchievement = ACHIEVEMENTS_SYSTEM.achievements.find(a => a.id === 'perfect_score');
-            if (perfectScoreAchievement && !perfectScoreAchievement.unlocked) {
-                perfectScoreAchievement.unlocked = true;
-                perfectScoreAchievement.unlockedAt = new Date().toISOString();
-                appState.currentXP += perfectScoreAchievement.xpReward;
-                ACHIEVEMENTS_SYSTEM.showAchievementNotification(perfectScoreAchievement);
-            }
-        }
-    } else {
-        if (resultDiv) {
-        resultDiv.innerHTML = '<div class="error">Incorrecto. Intenta de nuevo.</div>';
-        }
-        playFailSound();
-        practiceStreak = 0;
-    }
-    
-    updateUI();
-    saveProgress();
-    
-    // Registrar actividad en estadísticas
-    STATISTICS_SYSTEM.recordActivity('exercise_completed', {
-        type: 'vocabulary',
-        success: isCorrect,
-        xpEarned: isCorrect ? 10 : 0
-    });
-    
-    setTimeout(() => {
-        // Si estamos en la sección de práctica y modo vocabulario, gramática o listening, avanzar a la siguiente pregunta
-        const practiceArea = document.getElementById('practiceArea');
-        if (practiceArea && practiceArea.offsetParent !== null) {
-            // Buscar el título de la sección para saber el modo
-            const header = practiceArea.querySelector('.practice-header h3');
-            if (header) {
-                const modo = header.textContent.trim().toLowerCase();
-                if (['vocabulario', 'gramática', 'comprensión'].includes(modo)) {
-                    // Avance automático de lección tras 5 aciertos
-                    const allowedLessons = getAllowedLessonsByLevel();
-                    if (isCorrect && practiceStreak >= 5) {
-                        practiceStreak = 0;
-                        practiceLessonIndex++;
-                        if (practiceLessonIndex >= allowedLessons.length) {
-                            practiceLessonIndex = 0;
-                            showNotification('¡Felicidades! Has completado todas las lecciones de tu nivel. ¡Sigue practicando para subir de nivel! 🎓', 'success');
-                        } else {
-                            showNotification('¡Avanzas a la siguiente lección de tu nivel! 🚀', 'success');
-                        }
-                        loadPracticeExercise(modo === 'vocabulario' ? 'vocabulary' : modo === 'gramática' ? 'grammar' : 'listening');
-                        return;
-                    }
-                    if (isCorrect) {
-                        loadPracticeExercise(modo === 'vocabulario' ? 'vocabulary' : modo === 'gramática' ? 'grammar' : 'listening');
-                        return;
-                    }
-                }
-            }
-        }
-        
-        // Volver a habilitar botones para siguiente ejercicio
-        document.querySelectorAll('.option-btn').forEach(btn => {
-            btn.disabled = false;
-            btn.style.background = '';
-            btn.style.color = '';
-        });
-        if (resultDiv) {
-        resultDiv.innerHTML = '';
-        }
-    }, 1200);
-}
-
-// Reasignar event listeners a los botones de opción tras recargar pregunta
-function reattachOptionBtnListeners() {
-    document.querySelectorAll('.option-btn').forEach(btn => {
-        btn.onclick = function() { handleExerciseAnswer(btn); };
-    });
-}
+// Función reattachOptionBtnListeners migrada a script1.js/practice.js
 
 // Delegación de eventos global (por si acaso)
 document.addEventListener('click', function(e) {
@@ -3375,27 +2229,7 @@ document.addEventListener('click', function(e) {
     }
 });
 
-function sendChatMessage() {
-    const chatInput = document.getElementById('chatInput');
-    const message = chatInput.value.trim();
-    
-    if (message) {
-        addMessageToChat(message, 'user');
-        chatInput.value = '';
-        
-        // Simular respuesta del bot
-        setTimeout(() => {
-            const responses = [
-                "That's great! Can you tell me more?",
-                "I understand. What else would you like to practice?",
-                "Excellent! You're doing very well.",
-                "That's correct! Keep practicing."
-            ];
-            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-            addMessageToChat(randomResponse, 'bot');
-        }, 1000);
-    }
-}
+// Función sendChatMessage migrada a script1.js/practice.js
 
 function completeLesson() {
     const currentLessonId = appState.currentLesson;
@@ -3483,231 +2317,12 @@ function reviewLesson() {
     showNotification('Repasando lección actual...', 'info');
 }
 
-function showNotification(message, type) {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    
-    // Para mensajes largos, usar un diseño diferente
-    if (message.length > 100) {
-        notification.style.maxWidth = '400px';
-        notification.style.padding = '1.5m';
-    }
-    
-    notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
-        <span>${message}</span>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Para mensajes largos, mostrar por más tiempo
-    const duration = message.length >10? 5000 : 3000;
-    setTimeout(() => {
-        notification.remove();
-    }, duration);
-}
+// Función showNotification migrada a script1.js/utils.js
 
-// Verificar racha diaria
-function checkDailyStreak() {
-    const today = new Date().toDateString();
-    const lastLogin = appState.lastLoginDate ? new Date(appState.lastLoginDate).toDateString() : null;
-    
-    if (lastLogin !== today) {
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayString = yesterday.toDateString();
-        
-        if (lastLogin === yesterdayString) {
-            appState.streakDays++;
-        } else {
-            appState.streakDays = 1;
-        }
-        
-        appState.lastLoginDate = new Date().toISOString();
-        saveProgress();
-        
-        // Verificar logros de racha después de actualizar
-        ACHIEVEMENTS_SYSTEM.checkAchievements();
-        
-        // Registrar actividad de racha
-        STATISTICS_SYSTEM.recordActivity('streak_updated', {
-            streakDays: appState.streakDays,
-            xpEarned: 0
-        });
-    }
-}
+// Función checkDailyStreak migrada a script1.js/progress.js
+// Funciones para la sección de vocabulario (migradas a script1.js/vocabulary.js)
 
-// Funciones para la sección de vocabulario
-function loadVocabularyCategories() {
-    const categoriesGrid = document.getElementById('categoriesGrid');
-    const vocabularyDetail = document.getElementById('vocabularyDetail');
-    
-    // Ocultar detalle y mostrar categorías
-    vocabularyDetail.style.display = 'none';
-    categoriesGrid.style.display = 'grid';
-    
-    categoriesGrid.innerHTML = '';
-    
-    // Agregar sección de palabras difíciles al inicio
-    const difficultWords = getDifficultWords();
-    if (difficultWords.length > 0) {
-        const difficultCard = document.createElement('div');
-        difficultCard.className = 'category-card difficult-words-card';
-        difficultCard.onclick = () => loadDifficultWordsSection();
-        
-        difficultCard.innerHTML = `
-            <h3><span style="font-size:1.2em">🚩</span> Palabras Difíciles</h3>
-            <p>Repasa las palabras que has marcado como difíciles</p>
-            <div class="category-stats">
-                <span>${difficultWords.length} palabras</span>
-                <span>Para repasar</span>
-            </div>
-            <div class="category-progress">
-                <div class="category-progress-fill" style="width: 100%; background: linear-gradient(90deg, #ff6b6b, #ee5a24);"></div>
-            </div>
-        `;
-        
-        categoriesGrid.appendChild(difficultCard);
-    }
-    
-    Object.entries(VOCABULARY_CATEGORIES).forEach(([key, category]) => {
-        const vocabulary = getVocabularyByCategory(key);
-        const stats = getVocabularyStats();
-        const categoryStats = stats[key];
-        
-        const categoryCard = document.createElement('div');
-        categoryCard.className = 'category-card';
-        categoryCard.onclick = () => loadVocabularyDetail(key);
-        
-        // Agregar iconos específicos para cada categoría
-        const categoryIcons = {
-            basic: '📚',
-            business: '💼',
-            technology: '💻',
-            sports: '⚽',
-            travel: '✈️',
-            food: '🍽️',
-            emotions: '😊',
-            home: '🏠',
-            health: '🏥',
-            work: '👔',
-            shopping: '🛍️',
-            education: '🎓',
-            entertainment: '🎬',
-            environment: '🌍',
-            finance: '💰',
-            legal: '⚖️',
-            medical: '🩺',
-            academic: '📖',
-            social_media: '📱',
-            weather: '🌤️',
-            transportation: '🚗'
-        };
-        
-        const icon = categoryIcons[key] || '📝';
-        
-        categoryCard.innerHTML = `
-            <h3>${icon} ${category.name}</h3>
-            <p>${category.description}</p>
-            <div class="category-stats">
-                <span>${categoryStats.learned}/${categoryStats.total} palabras</span>
-                <span>${categoryStats.percentage}%</span>
-            </div>
-            <div class="category-progress">
-                <div class="category-progress-fill" style="width: ${categoryStats.percentage}%"></div>
-            </div>
-            <div class="category-actions">
-                <button class="btn btn-primary practice-category-btn" data-category="${key}">
-                    <i class="fas fa-play"></i> Practicar
-                </button>
-            </div>
-        `;
-        
-        categoriesGrid.appendChild(categoryCard);
-    });
-    
-    // Agregar event listeners para los botones de práctica
-    document.querySelectorAll('.practice-category-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const categoryKey = btn.dataset.category;
-            startCategoryPractice(categoryKey);
-        });
-    });
-}
-
-function loadVocabularyDetail(categoryKey) {
-    const categoriesGrid = document.getElementById('categoriesGrid');
-    const vocabularyDetail = document.getElementById('vocabularyDetail');
-    const category = VOCABULARY_CATEGORIES[categoryKey];
-    const vocabulary = getVocabularyByCategory(categoryKey);
-    
-    // Ocultar categorías y mostrar detalle
-    categoriesGrid.style.display = 'none';
-    vocabularyDetail.style.display = 'block';
-    
-    vocabularyDetail.innerHTML = `
-        <button class="back-button" onclick="loadVocabularyCategories()">
-            <i class="fas fa-arrow-left"></i> Volver a Categorías
-        </button>
-        <h3>
-            <i class="fas fa-book"></i>
-            ${category.name} - ${vocabulary.length} palabras
-        </h3>
-        <div class="vocabulary-list">
-            ${vocabulary.map((item, index) => `
-                <div class="vocabulary-item-detail" data-word-index="${index}">
-                    <div class="vocab-header">
-                        <div class="english">${item.english}</div>
-                        <button class="speak-btn" onclick="speakText('${cleanTextForSpeech(item.english)}', 'en-US')" title="Escuchar pronunciación">
-                            <i class="fas fa-volume-up"></i>
-                        </button>
-                        <button class="difficult-btn" 
-                                data-english="${item.english}"
-                                data-spanish="${item.spanish}"
-                                data-pronunciation="${item.pronunciation}"
-                                title="${isWordDifficult(item) ? 'Quitar de difíciles' : 'Marcar como difícil'}">
-                            ${isWordDifficult(item) ? '🚩' : '🏳️'}
-                        </button>
-                    </div>
-                    <div class="spanish">${item.spanish}</div>
-                    <div class="pronunciation">[${item.pronunciation}]</div>
-                </div>
-            `).join('')}
-        </div>
-    `;
-    
-    // Agregar event listeners para los botones de palabras difíciles
-    const difficultButtons = vocabularyDetail.querySelectorAll('.difficult-btn');
-    difficultButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const wordObj = {
-                english: this.getAttribute('data-english'),
-                spanish: this.getAttribute('data-spanish'),
-                pronunciation: this.getAttribute('data-pronunciation')
-            };
-            toggleDifficultWord(wordObj, this);
-        });
-    });
-    
-    // Agregar event listeners para los botones de audio del ejercicio de listening
-    const playBtn = vocabularyDetail.querySelector('.play-btn');
-    const pauseBtn = vocabularyDetail.querySelector('.pause-btn');
-    
-    if (playBtn) {
-        playBtn.addEventListener('click', function() {
-            const text = this.getAttribute('data-text');
-            console.log('Reproduciendo audio:', text);
-            playListeningAudio(text);
-        });
-    }
-    
-    if (pauseBtn) {
-        pauseBtn.addEventListener('click', function() {
-            pauseListeningAudio();
-        });
-    }
-}
+// Función loadVocabularyDetail migrada a script1.js/vocabulary.js
 
 // --- Autenticación básica (modal) ---
 
@@ -3735,99 +2350,6 @@ function hideAuthModal() {
     document.getElementById('authOverlay').style.display = 'none';
     document.getElementById('authModal').style.display = 'none';
     document.getElementById('mainApp').style.filter = 'none';
-}
-
-// Mostrar modal de diagnóstico
-function showDiagnosticModal(onFinish) {
-    document.getElementById('diagnosticModal').style.display = 'block';
-    document.getElementById('authOverlay').style.display = 'block';
-    document.getElementById('mainApp').style.filter = 'blur(2px)';
-    // Reset formulario y resultado
-    document.getElementById('diagnosticForm').reset();
-    document.getElementById('diagnosticResult').style.display = 'none';
-    document.getElementById('diagnosticForm').style.display = 'block';
-    // Guardar callback para finalizar
-    window._diagnosticOnFinish = onFinish;
-}
-// Ocultar modal de diagnóstico
-function hideDiagnosticModal() {
-    document.getElementById('diagnosticModal').style.display = 'none';
-    document.getElementById('authOverlay').style.display = 'none';
-    document.getElementById('mainApp').style.filter = 'none';
-}
-// Evaluar respuestas y sugerir nivel MCER
-function evaluateDiagnostic(formData) {
-    // Respuestas correctas: q1=a, q2=c, q3=b, q4=a, q5=b, q6=b, q7=b, q8=c, q9=c, q10=a, q11=c, q12=b
-    let score = 0;
-    if (formData.get('q1') === 'a') score++;
-    if (formData.get('q2') === 'c') score++;
-    if (formData.get('q3') === 'b') score++;
-    if (formData.get('q4') === 'a') score++;
-    if (formData.get('q5') === 'b') score++;
-    if (formData.get('q6') === 'b') score++;
-    if (formData.get('q7') === 'b') score++;
-    if (formData.get('q8') === 'c') score++;
-    if (formData.get('q9') === 'c') score++;
-    if (formData.get('q10') === 'a') score++;
-    if (formData.get('q11') === 'c') score++;
-    if (formData.get('q12') === 'b') score++;
-    // Asignar nivel según score
-    let level = '', mcer = '';
-    if (score <= 3) { level = 'Principiante'; mcer = 'A1'; }
-    else if (score <= 6) { level = 'Básico'; mcer = 'A2'; }
-    else if (score <= 9) { level = 'Intermedio'; mcer = 'B1'; }
-    else { level = 'Avanzado'; mcer = 'B2'; }
-    return { level, mcer, score };
-}
-// Mostrar resultado y permitir ajuste
-function showDiagnosticResult(result) {
-    const resultDiv = document.getElementById('diagnosticResult');
-    
-    // Obtener el nombre del usuario del formulario de registro
-    const userName = document.getElementById('registerName') ? document.getElementById('registerName').value.trim() : '';
-    
-    let niveles = [
-        { label: 'Principiante', mcer: 'A1', mensaje: '¡Perfecto para comenzar desde cero! Te guiaremos paso a paso.' },
-        { label: 'Básico', mcer: 'A2', mensaje: '¡Buen trabajo! Ya tienes bases, sigamos avanzando.' },
-        { label: 'Intermedio', mcer: 'B1', mensaje: '¡Muy bien! Puedes desenvolverte en situaciones cotidianas.' },
-        { label: 'Avanzado', mcer: 'B2', mensaje: '¡Excelente! Tienes un dominio sólido del inglés.' }
-    ];
-    let nivelActual = niveles.find(n => n.label === result.level) || niveles[0];
-    let nivelOptions = niveles.map(n =>
-        `<option value="${n.label}|${n.mcer}" ${n.label === result.level ? 'selected' : ''}>${n.label} (${n.mcer})</option>`
-    ).join('');
-    
-    const saludo = userName ? `¡Hola ${userName}!` : '¡Hola!';
-    
-    resultDiv.innerHTML = `
-        <h3>Resultado del Diagnóstico</h3>
-        <p>${saludo}</p>
-        <p>Tu nivel sugerido es: <strong>${result.level} (${result.mcer})</strong></p>
-        <p>${nivelActual.mensaje}</p>
-        <label>Ajustar nivel si lo consideras necesario:</label><br>
-        <select id="diagnosticLevelSelect">${nivelOptions}</select>
-        <br><br>
-        <button class="btn btn-violet" id="acceptDiagnosticBtn">Aceptar y Continuar</button>
-    `;
-    resultDiv.style.display = 'block';
-    document.getElementById('diagnosticForm').style.display = 'none';
-    // Evento aceptar
-    document.getElementById('acceptDiagnosticBtn').onclick = function() {
-        const val = document.getElementById('diagnosticLevelSelect').value;
-        const [level, mcer] = val.split('|');
-        if (window._diagnosticOnFinish) window._diagnosticOnFinish({ level, mcer });
-        hideDiagnosticModal();
-    };
-}
-// Interceptar envío del diagnóstico
-const diagnosticForm = document.getElementById('diagnosticForm');
-if (diagnosticForm) {
-    diagnosticForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(diagnosticForm);
-        const result = evaluateDiagnostic(formData);
-        showDiagnosticResult(result);
-    });
 }
 
 // Alternar entre formularios
@@ -4034,7 +2556,6 @@ function calculateLevel(xp) {
 function getXPForNextLevel(currentLevel) {
     return currentLevel * LEVEL_SYSTEM.xpPerLevel;
 }
-
 // Función para verificar si una lección ya fue completada
 function isLessonCompleted(lessonId) {
     return appState.userProgress[lessonId] && appState.userProgress[lessonId].completed;
@@ -4525,7 +3046,6 @@ const LISTENING_SYSTEM = {
         }
         // Nota: La velocidad no se puede cambiar para Web Speech API
     },
-    
     // Actualizar progreso del audio
     updateProgress() {
         if (this.audio) {
@@ -5007,7 +3527,6 @@ const STATISTICS_SYSTEM = {
             }
         };
     },
-    
     // Crear panel de estadísticas detalladas
     createDetailedStatsPanel() {
         const stats = this.getGeneralStats();
@@ -5353,44 +3872,7 @@ function isWordDifficult(wordObj) {
     return difficult.some(w => w.english === wordObj.english && w.spanish === wordObj.spanish);
 }
 
-function toggleDifficultWord(wordObj, clickedButtonEl) {
-    let difficult = getDifficultWords();
-    const wasDifficult = isWordDifficult(wordObj);
-    
-    if (wasDifficult) {
-        difficult = difficult.filter(w => !(w.english === wordObj.english && w.spanish === wordObj.spanish));
-        showNotification(`"${wordObj.english}" removida de palabras difíciles`, 'info');
-    } else {
-        difficult.push(wordObj);
-        showNotification(`"${wordObj.english}" marcada como difícil`, 'success');
-    }
-    
-    saveDifficultWords(difficult);
-    
-    // Actualizar visualmente el botón que se hizo clic
-    const clickedButton = clickedButtonEl || document.querySelector(`.difficult-btn[data-english="${wordObj.english}"][data-spanish="${wordObj.spanish}"]`);
-    if (clickedButton) {
-        if (wasDifficult) {
-            clickedButton.innerHTML = '🏳️';
-            clickedButton.title = 'Marcar como difícil';
-        } else {
-            clickedButton.innerHTML = '🚩';
-            clickedButton.title = 'Quitar de difíciles';
-        }
-    }
-    
-    // Refrescar vista si estamos en detalle
-    if (document.getElementById('vocabularyDetail').style.display === 'block') {
-        // Recargar detalle actual
-        const currentCategory = document.getElementById('vocabularyDetail').getAttribute('data-category');
-        if (currentCategory) loadVocabularyDetail(currentCategory);
-    }
-    
-    // Refrescar sección de difíciles si está visible
-    if (document.getElementById('difficultWordsSection')) {
-        loadDifficultWordsSection();
-    }
-}
+// Función toggleDifficultWord migrada a script1.js/vocabulary.js
 
 function loadDifficultWordsSection() {
     const difficult = getDifficultWords();
@@ -5456,7 +3938,6 @@ function loadDifficultWordsSection() {
         });
     });
 }
-
 // Sistema de Repaso Espaciado
 const SPACED_REPETITION_SYSTEM = {
     // Configuración del algoritmo
@@ -5924,7 +4405,6 @@ const SPACED_REPETITION_SYSTEM = {
         this.currentMode = mode;
         this.loadExerciseInterface();
     },
-
     // Cargar interfaz del ejercicio
     loadExerciseInterface() {
         const practiceArea = document.getElementById('practiceArea');
@@ -6397,7 +4877,6 @@ function generateRandomCategoryExercise(categoryKey) {
             return createCategorySpecificExercise(categoryKey);
     }
 }
-
 // Función para iniciar práctica por categoría
 function startCategoryPractice(categoryKey) {
     const category = VOCABULARY_CATEGORIES[categoryKey];

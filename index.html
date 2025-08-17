@@ -24,7 +24,7 @@
             </div>
             <div class="auth-forms-center">
                 <!-- Formulario de Login -->
-                <form id="loginForm" class="auth-form active">
+                <form id="loginForm" class="auth-form active" data-tab="login">
                     <div class="form-group">
                         <label for="loginEmail">Email</label>
                         <input type="email" id="loginEmail" required>
@@ -36,7 +36,7 @@
                     <button type="submit" class="btn btn-violet">Iniciar Sesión</button>
                 </form>
                 <!-- Formulario de Registro -->
-                <form id="registerForm" class="auth-form">
+                <form id="registerForm" class="auth-form" data-tab="register">
                     <div class="form-group">
                         <label for="registerName">Nombre Completo</label>
                         <input type="text" id="registerName" required>
@@ -339,6 +339,15 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script1.js/utils.js"></script>
+    <script src="script1.js/storage.js"></script>
+    <script src="script1.js/auth.js"></script>
+    <script src="script1.js/diagnostic.js"></script>
+    <script src="script1.js/navigation.js"></script>
+    <script src="script1.js/lesson.js"></script>
+    <script src="script1.js/vocabulary.js"></script>
+    <script src="script1.js/practice.js"></script>
+    <script src="script1.js/progress.js"></script>
     <script src="script1.js/achievements.js"></script>
     <script src="script.js"></script>
 </body>
