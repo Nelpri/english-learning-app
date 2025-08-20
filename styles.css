@@ -1938,7 +1938,32 @@ body {
     height: auto;
     overflow-y: auto;
     padding-bottom: 1rem;
+    /* Asegurar que no se salga del viewport */
+    box-sizing: border-box;
 }
+
+/* Asegurar que el modal sea responsive */
+@media (max-width: 600px) {
+    .auth-modal {
+        width: 95vw;
+        max-width: none;
+        left: 2.5vw;
+        transform: translate(0, -50%);
+        margin: 0;
+    }
+}
+
+@media (max-width: 500px) {
+    .auth-modal {
+        width: 98vw;
+        left: 1vw;
+        transform: translate(0, -50%);
+        max-height: 98vh;
+        top: 1vh;
+        transform: none;
+    }
+}
+
 .auth-container {
     max-height: 100%;
     overflow-y: auto;
@@ -3858,3 +3883,87 @@ body {
         width: 100%;
     }
 } 
+
+.vocabulary-stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    justify-content: center;
+}
+
+.stat-item {
+    background: var(--background-color);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stat-item i {
+    color: var(--primary-color);
+}
+
+.vocab-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.vocab-actions .speak-btn,
+.vocab-actions .difficult-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: var(--transition);
+    font-size: 1rem;
+}
+
+.vocab-actions .speak-btn {
+    color: var(--pronunciation-color);
+}
+
+.vocab-actions .speak-btn:hover {
+    background: rgba(56, 189, 248, 0.1);
+    transform: scale(1.1);
+}
+
+.vocab-actions .difficult-btn {
+    color: #ff6b6b;
+    font-size: 1.2rem;
+}
+
+.vocab-actions .difficult-btn:hover {
+    background: rgba(255, 107, 107, 0.1);
+    transform: scale(1.1);
+}
+
+.category-actions {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.practice-category-btn {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 25px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.practice-category-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.practice-category-btn i {
+    margin-right: 0.5rem;
+}

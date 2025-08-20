@@ -215,4 +215,32 @@ function unlockAchievement(achievement) {
     ACHIEVEMENTS_SYSTEM.showAchievementNotification(achievement);
 }
 
+// Función de inicialización para el módulo de logros
+function initAchievements() {
+    console.log("🚀 Módulo de logros inicializado");
+    try {
+        // Verificar que las funciones estén disponibles
+        console.log("🏆 checkAchievements disponible:", typeof checkAchievements === 'function');
+        console.log("🔓 unlockAchievement disponible:", typeof unlockAchievement === 'function');
+        console.log("📊 getAchievementProgress disponible:", typeof getAchievementProgress === 'function');
+        console.log("💾 saveUserAchievements disponible:", typeof saveUserAchievements === 'function');
+        
+        // Cargar logros del usuario si es posible
+        if (typeof loadUserAchievements === 'function') {
+            loadUserAchievements();
+            console.log("✅ Logros del usuario cargados");
+        }
+        
+        console.log("✅ Módulo de logros inicializado correctamente");
+    } catch (error) {
+        console.error("❌ Error en inicialización del módulo de logros:", error);
+    }
+}
+
+// Exportar funciones globalmente
+window.ACHIEVEMENTS_SYSTEM = ACHIEVEMENTS_SYSTEM;
+window.checkAchievements = checkAchievements;
+window.unlockAchievement = unlockAchievement;
+window.initAchievements = initAchievements;
+
 

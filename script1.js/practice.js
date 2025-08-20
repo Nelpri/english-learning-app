@@ -44,9 +44,94 @@ function loadPracticeModes() {
     });
 }
 
-function loadPracticeExercise(mode) {
-    // Lógica para cargar ejercicio de práctica
+function loadPracticeExercise(mode, categoryKey = null) {
+    console.log("🎯 Cargando ejercicio de práctica:", mode, "categoría:", categoryKey);
+    try {
+        const practiceArea = document.getElementById('practiceArea');
+        if (!practiceArea) {
+            console.error("❌ Área de práctica no encontrada");
+            return;
+        }
+        
+        // Mostrar área de práctica
+        practiceArea.style.display = 'block';
+        
+        // Crear header de práctica
+        const practiceHeader = document.createElement('div');
+        practiceHeader.className = 'practice-header';
+        
+        const backBtn = document.createElement('button');
+        backBtn.className = 'btn btn-secondary';
+        backBtn.innerHTML = '<i class="fas fa-arrow-left"></i> Volver a Modos';
+        backBtn.onclick = () => {
+            document.querySelector('.practice-modes').style.display = 'grid';
+            practiceArea.style.display = 'none';
+        };
+        
+        const modeTitle = document.createElement('h3');
+        modeTitle.textContent = getModeTitle(mode);
+        
+        practiceHeader.appendChild(backBtn);
+        practiceHeader.appendChild(modeTitle);
+        
+        // Limpiar área de práctica
+        practiceArea.innerHTML = '';
+        practiceArea.appendChild(practiceHeader);
+        
+        // Cargar ejercicio según el modo
+        let exerciseContent;
+        
+        switch (mode) {
+            case 'vocabulary':
+                exerciseContent = createVocabularyExerciseContent(categoryKey);
+                break;
+            case 'grammar':
+                exerciseContent = createGrammarExerciseContent();
+                break;
+            case 'listening':
+                exerciseContent = createListeningExerciseContent();
+                break;
+            case 'pronunciation':
+                exerciseContent = createPronunciationExerciseContent();
+                break;
+            case 'spaced-repetition':
+                exerciseContent = createSpacedRepetitionExerciseContent();
+                break;
+            default:
+                exerciseContent = createDefaultExerciseContent(mode);
+        }
+        
+        if (exerciseContent) {
+            practiceArea.appendChild(exerciseContent);
+            console.log("✅ Ejercicio de práctica cargado:", mode);
+        } else {
+            practiceArea.innerHTML = `
+                <div class="practice-header">
+                    <button class="btn btn-secondary" onclick="document.querySelector('.practice-modes').style.display='grid';document.getElementById('practiceArea').style.display='none'">
+                        <i class="fas fa-arrow-left"></i> Volver a Modos
+                    </button>
+                    <h3>${getModeTitle(mode)}</h3>
+                </div>
+                <div class="exercise-container">
+                    <p>Ejercicios de ${getModeTitle(mode)} no disponibles aún.</p>
+                </div>
+            `;
+        }
+        
+    } catch (error) {
+        console.error("❌ Error al cargar ejercicio de práctica:", error);
+    }
+}
 
+function getModeTitle(mode) {
+    const titles = {
+        'vocabulary': 'Ejercicios de Vocabulario',
+        'grammar': 'Ejercicios de Gramática',
+        'listening': 'Ejercicios de Comprensión Auditiva',
+        'pronunciation': 'Ejercicios de Pronunciación',
+        'spaced-repetition': 'Repaso Espaciado'
+    };
+    return titles[mode] || mode;
 }
 
 function createVocabularyExercise(lesson) {
@@ -76,65 +161,7 @@ function createVocabularyExercise(lesson) {
     `;
 }
 
-// Pools de gramática por nivel MCER para ampliar ejercicios en todas las lecciones
-const GRAMMAR_POOLS = {
-    A1: [
-        { question: "I ___ a student.", options: ["am", "are", "is", "be"], correct: 0 },
-        { question: "You ___ my friend.", options: ["am", "are", "is", "be"], correct: 1 },
-        { question: "She ___ happy.", options: ["am", "are", "is", "be"], correct: 2 },
-        { question: "We ___ from Mexico.", options: ["am", "are", "is", "be"], correct: 1 },
-        { question: "___ this your book?", options: ["Is", "Are", "Am", "Be"], correct: 0 },
-        { question: "There ___ a cat under the table.", options: ["is", "are", "am", "be"], correct: 0 },
-        { question: "There ___ two apples on the desk.", options: ["is", "are", "am", "be"], correct: 1 },
-        { question: "I have ___ apple.", options: ["a", "an", "the", "some"], correct: 1 }
-    ],
-    A2: [
-        { question: "She ___ to work every day.", options: ["go", "goes", "going", "gone"], correct: 1 },
-        { question: "They ___ English on Mondays.", options: ["study", "studies", "studied", "studying"], correct: 0 },
-        { question: "There ___ any milk in the fridge.", options: ["isn't", "aren't", "don't", "hasn't"], correct: 0 },
-        { question: "I ___ like coffee.", options: ["don't", "doesn't", "am not", "didn't"], correct: 0 },
-        { question: "He ___ TV now.", options: ["watch", "watches", "is watching", "watched"], correct: 2 },
-        { question: "We ___ dinner at 8 yesterday.", options: ["have", "had", "are having", "will have"], correct: 1 },
-        { question: "Which sentence is correct?", options: ["She don't like tea.", "She doesn't like tea.", "She isn't like tea.", "She not like tea."], correct: 1 },
-        { question: "Choose the correct article: ___ umbrella.", options: ["a", "an", "the", "some"], correct: 1 }
-    ],
-    B1: [
-        { question: "If it ___ tomorrow, we'll stay at home.", options: ["rains", "rained", "is raining", "rain"], correct: 0 },
-        { question: "I ___ my keys. I can't find them.", options: ["lost", "have lost", "had lost", "lose"], correct: 1 },
-        { question: "While I ___, she called me.", options: ["worked", "was working", "have worked", "work"], correct: 1 },
-        { question: "It's the ___ movie I've ever seen.", options: ["more interesting", "most interesting", "interestinger", "much interesting"], correct: 1 },
-        { question: "He said that he ___ the report.", options: ["finished", "had finished", "has finished", "finishes"], correct: 1 },
-        { question: "We have to ___ the deadline.", options: ["meet", "do", "make", "arrive"], correct: 0 },
-        { question: "Choose the correct preposition: interested ___ science.", options: ["on", "in", "at", "for"], correct: 1 },
-        { question: "By the time we arrived, the show ___.", options: ["started", "had started", "has started", "was starting"], correct: 1 }
-    ],
-    B2: [
-        { question: "If I ___ more time, I would learn Italian.", options: ["have", "had", "will have", "would have"], correct: 1 },
-        { question: "The meeting was ___ by the CEO.", options: ["lead", "led", "leading", "lead by"], correct: 1 },
-        { question: "He denied ___ the money.", options: ["take", "to take", "taking", "taken"], correct: 2 },
-        { question: "Hardly ___ we arrived when it started to rain.", options: ["had", "have", "did", "were"], correct: 0 },
-        { question: "I'd rather you ___ earlier next time.", options: ["come", "came", "will come", "had come"], correct: 1 },
-        { question: "Not only ___ brilliant, but also humble.", options: ["she is", "is she", "she was", "was she"], correct: 1 },
-        { question: "We look forward to ___ from you.", options: ["hear", "hearing", "to hear", "heard"], correct: 1 },
-        { question: "She insisted ___ paying the bill.", options: ["to", "on", "for", "at"], correct: 1 }
-    ],
-    C1: [
-        { question: "Only after the speech ___ to ask questions.", options: ["we begin", "did we begin", "we did begin", "we had begun"], correct: 1 },
-        { question: "Had I known, I ___ earlier.", options: ["would leave", "would have left", "left", "had left"], correct: 1 },
-        { question: "It's high time we ___ home.", options: ["go", "went", "had gone", "would go"], correct: 1 },
-        { question: "No sooner ___ the news than she called me.", options: ["she heard", "had she heard", "she had heard", "has she heard"], correct: 1 },
-        { question: "He suggested that she ___ present.", options: ["be", "is", "was", "will be"], correct: 0 },
-        { question: "Were it not for his help, we ___ failed.", options: ["would", "will have", "would have", "have"], correct: 2 }
-    ],
-    C2: [
-        { question: "Scarcely ___ the plane taken off when the engine failed.", options: ["had", "has", "did", "was"], correct: 0 },
-        { question: "Little ___ he know about the consequences.", options: ["does", "did", "has", "had"], correct: 1 },
-        { question: "Were she to arrive now, we ___ ready.", options: ["are", "would be", "were", "will be"], correct: 1 },
-        { question: "Seldom ___ such an eloquent speech.", options: ["we hear", "do we hear", "we heard", "we have heard"], correct: 1 },
-        { question: "At no time ___ the suspect leave the room.", options: ["was", "did", "has", "had"], correct: 1 },
-        { question: "Only when I looked again ___ the error.", options: ["I noticed", "did I notice", "had I noticed", "I had noticed"], correct: 1 }
-    ]
-}
+// Los pools de gramática están definidos globalmente en data.js
 
 function createGrammarExercise(lesson) {
     // Lógica para crear ejercicio de gramática
@@ -327,10 +354,7 @@ function createPronunciationPractice(lesson) {
       `;
   }
   
-  // Variables globales para el ejercicio de listening
-  let currentListeningAudio = null;
-  let listeningAudioSpeed = 1.0;
-  let selectedListeningAnswer = null;
+  // Las variables de listening están definidas globalmente en data.js
 
 
 function handleExerciseAnswer(button) {
@@ -464,11 +488,6 @@ function nextPracticeLesson(mode) {
         reattachOptionBtnListeners();
     }, 50);
 }
-
-// Variables globales para el ejercicio de listening
-let currentListeningAudio = null;
-let listeningAudioSpeed = 1.0;
-let selectedListeningAnswer = null;
 
 // Función para reproducir audio del ejercicio de listening
 function playListeningAudio(text) {
@@ -683,11 +702,27 @@ function nextListeningExercise() {
     }
 }
 
+// Función de inicialización para el módulo de práctica
+function initPractice() {
+    console.log("🚀 Módulo de práctica inicializado");
+    try {
+        // Verificar que las funciones principales estén disponibles
+        console.log("🎯 loadPracticeModes disponible:", typeof loadPracticeModes === 'function');
+        console.log("📝 loadPracticeExercise disponible:", typeof loadPracticeExercise === 'function');
+        console.log("💬 sendChatMessage disponible:", typeof sendChatMessage === 'function');
+        console.log("🎵 createListeningExercise disponible:", typeof createListeningExercise === 'function');
+        
+        console.log("✅ Módulo de práctica inicializado correctamente");
+    } catch (error) {
+        console.error("❌ Error en inicialización del módulo de práctica:", error);
+    }
+}
+
 // Exportar funciones globalmente
-window.sendChatMessage = typeof sendChatMessage !== 'undefined' ? sendChatMessage : function(){};
-window.handleExerciseAnswer = typeof handleExerciseAnswer !== 'undefined' ? handleExerciseAnswer : function(){};
-window.completeLesson = typeof completeLesson !== 'undefined' ? completeLesson : function(){};
-window.reviewLesson = typeof reviewLesson !== 'undefined' ? reviewLesson : function(){};
+window.sendChatMessage = sendChatMessage;
+window.handleExerciseAnswer = handleExerciseAnswer;
+window.completeLesson = completeLesson;
+window.reviewLesson = reviewLesson;
 window.playListeningAudio = playListeningAudio;
 window.pauseListeningAudio = pauseListeningAudio;
 window.changeListeningSpeed = changeListeningSpeed;
@@ -696,6 +731,23 @@ window.handleListeningAnswer = handleListeningAnswer;
 window.checkListeningAnswers = checkListeningAnswers;
 window.resetListeningExercise = resetListeningExercise;
 window.nextListeningExercise = nextListeningExercise;
+window.loadConversationScenario = loadConversationScenario;
+window.addMessageToChat = addMessageToChat;
+window.backToPracticeModes = backToPracticeModes;
+window.initPractice = initPractice;
+window.loadPracticeExercise = loadPracticeExercise;
+window.createVocabularyExerciseContent = createVocabularyExerciseContent;
+window.createSingleVocabularyExercise = createSingleVocabularyExercise;
+window.selectVocabularyOption = selectVocabularyOption;
+window.createNoVocabularyMessage = createNoVocabularyMessage;
+window.createErrorMessage = createErrorMessage;
+window.showVocabularyResults = showVocabularyResults;
+window.createGrammarExerciseContent = createGrammarExerciseContent;
+window.createListeningExerciseContent = createListeningExerciseContent;
+window.createPronunciationExerciseContent = createPronunciationExerciseContent;
+window.createSpacedRepetitionExerciseContent = createSpacedRepetitionExerciseContent;
+window.createDefaultExerciseContent = createDefaultExerciseContent;
+window.getModeTitle = getModeTitle;
 
 // Funciones de conversación
 function loadConversationScenario() {
@@ -733,4 +785,386 @@ function backToPracticeModes() {
     document.getElementById('practiceArea').style.display = 'none';
 }
 
+// Función para enviar mensajes de chat
+function sendChatMessage() {
+    const chatInput = document.getElementById('chatInput');
+    const message = chatInput.value.trim();
+    
+    if (message) {
+        // Agregar mensaje del usuario
+        addMessageToChat(message, 'user');
+        
+        // Limpiar input
+        chatInput.value = '';
+        
+        // Simular respuesta del bot (aquí se puede implementar IA más adelante)
+        setTimeout(() => {
+            const responses = [
+                "That's interesting! Tell me more.",
+                "I understand. Can you give me an example?",
+                "Great point! How would you say that in a different way?",
+                "I see what you mean. Let's practice that together.",
+                "Excellent! You're making great progress."
+            ];
+            
+            const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+            addMessageToChat(randomResponse, 'bot');
+        }, 1000);
+    }
+}
+
 window.backToPracticeModes = backToPracticeModes;
+window.sendChatMessage = sendChatMessage;
+
+function createVocabularyExerciseContent(categoryKey) {
+    console.log("📚 Creando ejercicio de vocabulario para categoría:", categoryKey);
+    try {
+        // Obtener vocabulario de la categoría
+        let vocabulary = [];
+        if (categoryKey && window.VOCABULARY_DATABASE && window.VOCABULARY_DATABASE[categoryKey]) {
+            vocabulary = window.VOCABULARY_DATABASE[categoryKey];
+        } else {
+            // Si no hay categoría específica, usar vocabulario de la lección actual
+            if (window.appState && window.appState.currentLesson) {
+                const currentLesson = window.appState.currentLesson;
+                if (currentLesson.vocabulary) {
+                    vocabulary = currentLesson.vocabulary;
+                }
+            }
+        }
+        
+        if (vocabulary.length === 0) {
+            console.warn("⚠️ No hay vocabulario disponible para ejercicios");
+            return createNoVocabularyMessage();
+        }
+        
+        console.log("📝 Vocabulario disponible para ejercicios:", vocabulary.length, "palabras");
+        
+        // Crear contenedor de ejercicios
+        const exerciseContainer = document.createElement('div');
+        exerciseContainer.className = 'exercise-container';
+        
+        // Crear múltiples ejercicios
+        const exercises = [];
+        const numExercises = Math.min(5, vocabulary.length); // Máximo 5 ejercicios
+        
+        for (let i = 0; i < numExercises; i++) {
+            const exercise = createSingleVocabularyExercise(vocabulary, i);
+            if (exercise) {
+                exercises.push(exercise);
+            }
+        }
+        
+        // Agregar ejercicios al contenedor
+        exercises.forEach(exercise => {
+            exerciseContainer.appendChild(exercise);
+        });
+        
+        // Agregar botón de resultados
+        const resultsBtn = document.createElement('button');
+        resultsBtn.className = 'btn btn-primary';
+        resultsBtn.innerHTML = '<i class="fas fa-check"></i> Ver Resultados';
+        resultsBtn.onclick = () => showVocabularyResults(exercises);
+        resultsBtn.style.marginTop = '2rem';
+        resultsBtn.style.width = '100%';
+        
+        exerciseContainer.appendChild(resultsBtn);
+        
+        console.log("✅ Ejercicios de vocabulario creados:", exercises.length);
+        return exerciseContainer;
+        
+    } catch (error) {
+        console.error("❌ Error al crear ejercicios de vocabulario:", error);
+        return createErrorMessage("Error al crear ejercicios de vocabulario");
+    }
+}
+
+function createSingleVocabularyExercise(vocabulary, exerciseIndex) {
+    try {
+        // Seleccionar palabra para este ejercicio
+        const wordIndex = exerciseIndex % vocabulary.length;
+        const word = vocabulary[wordIndex];
+        
+        // Crear opciones incorrectas
+        const incorrectOptions = vocabulary
+            .filter((_, index) => index !== wordIndex)
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 3)
+            .map(w => w.english);
+        
+        // Agregar opción correcta y mezclar
+        const allOptions = [...incorrectOptions, word.english];
+        allOptions.sort(() => Math.random() - 0.5);
+        
+        // Crear contenedor del ejercicio
+        const exerciseDiv = document.createElement('div');
+        exerciseDiv.className = 'vocabulary-exercise';
+        exerciseDiv.style.marginBottom = '2rem';
+        exerciseDiv.style.padding = '1.5rem';
+        exerciseDiv.style.border = '2px solid var(--border-color)';
+        exerciseDiv.style.borderRadius = '12px';
+        exerciseDiv.style.backgroundColor = 'var(--surface-color)';
+        
+        // Título del ejercicio
+        const title = document.createElement('h4');
+        title.innerHTML = `<i class="fas fa-question-circle"></i> Ejercicio ${exerciseIndex + 1}`;
+        title.style.marginBottom = '1rem';
+        title.style.color = 'var(--primary-color)';
+        
+        // Pregunta
+        const question = document.createElement('p');
+        question.innerHTML = `¿Cómo se dice <strong>"${word.spanish}"</strong> en inglés?`;
+        question.style.fontSize = '1.1rem';
+        question.style.marginBottom = '1.5rem';
+        
+        // Opciones
+        const optionsGrid = document.createElement('div');
+        optionsGrid.className = 'options-grid';
+        optionsGrid.style.display = 'grid';
+        optionsGrid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(200px, 1fr))';
+        optionsGrid.style.gap = '1rem';
+        optionsGrid.style.marginBottom = '1rem';
+        
+        allOptions.forEach((option, index) => {
+            const optionBtn = document.createElement('button');
+            optionBtn.className = 'btn btn-secondary option-btn';
+            optionBtn.textContent = option;
+            optionBtn.style.width = '100%';
+            optionBtn.style.padding = '1rem';
+            optionBtn.style.fontSize = '1rem';
+            
+            // Marcar la opción correcta
+            optionBtn.dataset.correct = (option === word.english).toString();
+            optionBtn.dataset.exerciseIndex = exerciseIndex.toString();
+            
+            // Event listener para seleccionar opción
+            optionBtn.onclick = function() {
+                selectVocabularyOption(this, exerciseIndex);
+            };
+            
+            optionsGrid.appendChild(optionBtn);
+        });
+        
+        // Resultado del ejercicio
+        const resultDiv = document.createElement('div');
+        resultDiv.className = 'exercise-result';
+        resultDiv.id = `exerciseResult${exerciseIndex}`;
+        resultDiv.style.display = 'none';
+        resultDiv.style.padding = '1rem';
+        resultDiv.style.borderRadius = '8px';
+        resultDiv.style.marginTop = '1rem';
+        resultDiv.style.textAlign = 'center';
+        resultDiv.style.fontWeight = '600';
+        
+        // Ensamblar ejercicio
+        exerciseDiv.appendChild(title);
+        exerciseDiv.appendChild(question);
+        exerciseDiv.appendChild(optionsGrid);
+        exerciseDiv.appendChild(resultDiv);
+        
+        return exerciseDiv;
+        
+    } catch (error) {
+        console.error("❌ Error al crear ejercicio individual:", error);
+        return null;
+    }
+}
+
+function selectVocabularyOption(selectedButton, exerciseIndex) {
+    try {
+        const isCorrect = selectedButton.dataset.correct === 'true';
+        const resultDiv = document.getElementById(`exerciseResult${exerciseIndex}`);
+        
+        // Deshabilitar todos los botones de este ejercicio
+        const exerciseDiv = selectedButton.closest('.vocabulary-exercise');
+        const allButtons = exerciseDiv.querySelectorAll('.option-btn');
+        allButtons.forEach(btn => {
+            btn.disabled = true;
+            btn.style.opacity = '0.6';
+        });
+        
+        // Marcar botón seleccionado
+        if (isCorrect) {
+            selectedButton.style.background = 'var(--success-color)';
+            selectedButton.style.color = 'white';
+            selectedButton.style.borderColor = 'var(--success-color)';
+        } else {
+            selectedButton.style.background = 'var(--error-color)';
+            selectedButton.style.color = 'white';
+            selectedButton.style.borderColor = 'var(--error-color)';
+            
+            // Marcar la opción correcta
+            const correctButton = exerciseDiv.querySelector('[data-correct="true"]');
+            if (correctButton) {
+                correctButton.style.background = 'var(--success-color)';
+                correctButton.style.color = 'white';
+                correctButton.style.borderColor = 'var(--success-color)';
+            }
+        }
+        
+        // Mostrar resultado
+        resultDiv.style.display = 'block';
+        if (isCorrect) {
+            resultDiv.style.background = 'rgba(16, 185, 129, 0.1)';
+            resultDiv.style.color = 'var(--success-color)';
+            resultDiv.style.border = '1px solid var(--success-color)';
+            resultDiv.innerHTML = '<i class="fas fa-check-circle"></i> ¡Correcto!';
+        } else {
+            resultDiv.style.background = 'rgba(239, 68, 68, 0.1)';
+            resultDiv.style.color = 'var(--error-color)';
+            resultDiv.style.border = '1px solid var(--error-color)';
+            resultDiv.innerHTML = '<i class="fas fa-times-circle"></i> Incorrecto';
+        }
+        
+        console.log("✅ Opción seleccionada para ejercicio", exerciseIndex, "Correcta:", isCorrect);
+        
+    } catch (error) {
+        console.error("❌ Error al seleccionar opción:", error);
+    }
+}
+
+function createNoVocabularyMessage() {
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'exercise-container';
+    messageDiv.style.textAlign = 'center';
+    messageDiv.style.padding = '3rem';
+    
+    messageDiv.innerHTML = `
+        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--warning-color); margin-bottom: 1rem;"></i>
+        <h3>No hay vocabulario disponible</h3>
+        <p>Completa algunas lecciones primero para tener vocabulario para practicar.</p>
+        <button class="btn btn-primary" onclick="document.querySelector('.nav-tab[data-tab=\"learn\"]').click()">
+            <i class="fas fa-book"></i> Ir a Aprender
+        </button>
+    `;
+    
+    return messageDiv;
+}
+
+function createErrorMessage(message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'exercise-container';
+    errorDiv.style.textAlign = 'center';
+    errorDiv.style.padding = '3rem';
+    
+    errorDiv.innerHTML = `
+        <i class="fas fa-times-circle" style="font-size: 3rem; color: var(--error-color); margin-bottom: 1rem;"></i>
+        <h3>Error</h3>
+        <p>${message}</p>
+        <button class="btn btn-secondary" onclick="document.querySelector('.practice-modes').style.display='grid';document.getElementById('practiceArea').style.display='none'">
+            <i class="fas fa-arrow-left"></i> Volver
+        </button>
+    `;
+    
+    return errorDiv;
+}
+
+function showVocabularyResults(exercises) {
+    try {
+        // Calcular resultados
+        let correct = 0;
+        let total = 0;
+        
+        exercises.forEach((exercise, index) => {
+            const resultDiv = document.getElementById(`exerciseResult${index}`);
+            if (resultDiv && resultDiv.style.display !== 'none') {
+                total++;
+                if (resultDiv.innerHTML.includes('Correcto')) {
+                    correct++;
+                }
+            }
+        });
+        
+        const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
+        
+        // Crear modal de resultados
+        const resultsModal = document.createElement('div');
+        resultsModal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        `;
+        
+        const resultsContent = document.createElement('div');
+        resultsContent.style.cssText = `
+            background: var(--surface-color);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        `;
+        
+        let resultMessage = '';
+        let resultIcon = '';
+        let resultColor = '';
+        
+        if (percentage >= 80) {
+            resultMessage = '¡Excelente trabajo!';
+            resultIcon = '🎉';
+            resultColor = 'var(--success-color)';
+        } else if (percentage >= 60) {
+            resultMessage = '¡Buen trabajo!';
+            resultIcon = '👍';
+            resultColor = 'var(--warning-color)';
+        } else {
+            resultMessage = '¡Sigue practicando!';
+            resultIcon = '💪';
+            resultColor = 'var(--error-color)';
+        }
+        
+        resultsContent.innerHTML = `
+            <div style="font-size: 3rem; margin-bottom: 1rem;">${resultIcon}</div>
+            <h3 style="color: ${resultColor}; margin-bottom: 1rem;">${resultMessage}</h3>
+            <div style="font-size: 2rem; font-weight: bold; color: var(--primary-color); margin-bottom: 1rem;">
+                ${correct}/${total} correctas
+            </div>
+            <div style="font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 2rem;">
+                ${percentage}% de acierto
+            </div>
+            <button class="btn btn-primary" onclick="this.closest('.results-modal').remove()" style="margin-right: 1rem;">
+                <i class="fas fa-check"></i> Continuar
+            </button>
+            <button class="btn btn-secondary" onclick="document.querySelector('.practice-modes').style.display='grid';document.getElementById('practiceArea').style.display='none';this.closest('.results-modal').remove()">
+                <i class="fas fa-home"></i> Volver
+            </button>
+        `;
+        
+        resultsModal.appendChild(resultsContent);
+        resultsModal.className = 'results-modal';
+        document.body.appendChild(resultsModal);
+        
+        console.log("✅ Resultados mostrados:", correct, "de", total, "correctas (", percentage, "%)");
+        
+    } catch (error) {
+        console.error("❌ Error al mostrar resultados:", error);
+    }
+}
+
+// Funciones placeholder para otros tipos de ejercicios
+function createGrammarExerciseContent() {
+    return createErrorMessage("Ejercicios de gramática no implementados aún");
+}
+
+function createListeningExerciseContent() {
+    return createErrorMessage("Ejercicios de listening no implementados aún");
+}
+
+function createPronunciationExerciseContent() {
+    return createErrorMessage("Ejercicios de pronunciación no implementados aún");
+}
+
+function createSpacedRepetitionExerciseContent() {
+    return createErrorMessage("Ejercicios de repaso espaciado no implementados aún");
+}
+
+function createDefaultExerciseContent(mode) {
+    return createErrorMessage(`Ejercicios de ${mode} no implementados aún`);
+}

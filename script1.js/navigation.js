@@ -16,3 +16,24 @@ function loadSectionContent(section) {
     sections.forEach(s => s.classList.remove('active'));
     document.getElementById(section)?.classList.add('active');
 }
+
+// Función de inicialización para el módulo de navegación
+function initNavigation() {
+    console.log("🚀 Módulo de navegación inicializado");
+    try {
+        // Verificar que las funciones estén disponibles
+        console.log("🧭 initializeNavigation disponible:", typeof initializeNavigation === 'function');
+        console.log("📄 loadSectionContent disponible:", typeof loadSectionContent === 'function');
+        
+        // Inicializar navegación
+        initializeNavigation();
+        console.log("✅ Navegación inicializada correctamente");
+    } catch (error) {
+        console.error("❌ Error en inicialización del módulo de navegación:", error);
+    }
+}
+
+// Exportar funciones globalmente
+window.initializeNavigation = initializeNavigation;
+window.loadSectionContent = loadSectionContent;
+window.initNavigation = initNavigation;

@@ -11,6 +11,8 @@
 <body>
     <!-- Overlay para modal de autenticación -->
     <div id="authOverlay" class="auth-overlay" style="display: none;"></div>
+    <!-- Overlay para modal de diagnóstico -->
+    <div id="diagnosticOverlay" class="auth-overlay" style="display: none; z-index: 999;"></div>
     <!-- Modal de Registro/Login -->
     <div id="authModal" class="auth-modal" style="display: none;">
         <div class="auth-container">
@@ -56,92 +58,113 @@
     </div>
 
     <!-- Modal de Diagnóstico de Nivel (oculto por defecto) -->
-    <div id="diagnosticModal" class="auth-modal" style="display: none;">
+    <div id="diagnosticModal" class="auth-modal" style="display: none; z-index: 1000;">
         <div class="auth-container">
             <div class="auth-header">
                 <h1><i class="fas fa-user-graduate"></i> Diagnóstico de Nivel</h1>
                 <p>Responde estas preguntas para ubicarte en el nivel adecuado.</p>
             </div>
+            
+            <!-- Barra de progreso del diagnóstico -->
+            <div class="diagnostic-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <span class="progress-text">0/12</span>
+            </div>
+            
             <form id="diagnosticForm" class="auth-forms-center">
                 <div class="form-group">
-                    <p>1. ¿Cuál es la traducción de “cat”?</p>
+                    <p class="question-number">Pregunta 1 de 12</p>
+                    <p>¿Cuál es la traducción de "cat"?</p>
                     <label><input type="radio" name="q1" value="a" required> a) Gato</label><br>
                     <label><input type="radio" name="q1" value="b"> b) Perro</label><br>
                     <label><input type="radio" name="q1" value="c"> c) Casa</label><br>
                     <label><input type="radio" name="q1" value="d"> d) Mesa</label>
                 </div>
                 <div class="form-group">
-                    <p>2. ¿Cómo se dice “gracias” en inglés?</p>
+                    <p class="question-number">Pregunta 2 de 12</p>
+                    <p>¿Cómo se dice "gracias" en inglés?</p>
                     <label><input type="radio" name="q2" value="a" required> a) Hello</label><br>
                     <label><input type="radio" name="q2" value="b"> b) Please</label><br>
                     <label><input type="radio" name="q2" value="c"> c) Thanks</label><br>
                     <label><input type="radio" name="q2" value="d"> d) Sorry</label>
                 </div>
                 <div class="form-group">
-                    <p>3. ¿Cuál es la forma correcta?: “She ___ a book.”</p>
+                    <p class="question-number">Pregunta 3 de 12</p>
+                    <p>¿Cuál es la forma correcta?: "She ___ a book."</p>
                     <label><input type="radio" name="q3" value="a" required> a) read</label><br>
                     <label><input type="radio" name="q3" value="b"> b) reads</label><br>
                     <label><input type="radio" name="q3" value="c"> c) reading</label><br>
                     <label><input type="radio" name="q3" value="d"> d) is read</label>
                 </div>
                 <div class="form-group">
-                    <p>4. ¿Cómo se pregunta la hora?: “___ the time?”</p>
-                    <label><input type="radio" name="q4" value="a" required> a) What’s</label><br>
-                    <label><input type="radio" name="q4" value="b"> b) How’s</label><br>
-                    <label><input type="radio" name="q4" value="c"> c) Where’s</label><br>
-                    <label><input type="radio" name="q4" value="d"> d) Who’s</label>
+                    <p class="question-number">Pregunta 4 de 12</p>
+                    <p>¿Cómo se pregunta la hora?: "___ the time?"</p>
+                    <label><input type="radio" name="q4" value="a" required> a) What's</label><br>
+                    <label><input type="radio" name="q4" value="b"> b) How's</label><br>
+                    <label><input type="radio" name="q4" value="c"> c) Where's</label><br>
+                    <label><input type="radio" name="q4" value="d"> d) Who's</label>
                 </div>
                 <div class="form-group">
-                    <p>5. ¿Cuál es el plural de “child”?</p>
+                    <p class="question-number">Pregunta 5 de 12</p>
+                    <p>¿Cuál es el plural de "child"?</p>
                     <label><input type="radio" name="q5" value="a" required> a) childs</label><br>
                     <label><input type="radio" name="q5" value="b"> b) children</label><br>
                     <label><input type="radio" name="q5" value="c"> c) childes</label><br>
                     <label><input type="radio" name="q5" value="d"> d) child's</label>
                 </div>
                 <div class="form-group">
-                    <p>6. ¿Cuál es la forma correcta del pasado?: “Yesterday I ___ to the store.”</p>
+                    <p class="question-number">Pregunta 6 de 12</p>
+                    <p>¿Cuál es la forma correcta del pasado?: "Yesterday I ___ to the store."</p>
                     <label><input type="radio" name="q6" value="a" required> a) go</label><br>
                     <label><input type="radio" name="q6" value="b"> b) went</label><br>
                     <label><input type="radio" name="q6" value="c"> c) going</label><br>
                     <label><input type="radio" name="q6" value="d"> d) goes</label>
                 </div>
                 <div class="form-group">
-                    <p>7. ¿Cuál es la forma correcta?: “I have ___ studying for two hours.”</p>
+                    <p class="question-number">Pregunta 7 de 12</p>
+                    <p>¿Cuál es la forma correcta?: "I have ___ studying for two hours."</p>
                     <label><input type="radio" name="q7" value="a" required> a) be</label><br>
                     <label><input type="radio" name="q7" value="b"> b) been</label><br>
                     <label><input type="radio" name="q7" value="c"> c) being</label><br>
                     <label><input type="radio" name="q7" value="d"> d) am</label>
                 </div>
                 <div class="form-group">
-                    <p>8. ¿Cuál es la forma correcta?: “If I ___ rich, I would travel the world.”</p>
+                    <p class="question-number">Pregunta 8 de 12</p>
+                    <p>¿Cuál es la forma correcta?: "If I ___ rich, I would travel the world."</p>
                     <label><input type="radio" name="q8" value="a" required> a) am</label><br>
                     <label><input type="radio" name="q8" value="b"> b) was</label><br>
                     <label><input type="radio" name="q8" value="c"> c) were</label><br>
                     <label><input type="radio" name="q8" value="d"> d) be</label>
                 </div>
                 <div class="form-group">
-                    <p>9. ¿Cuál es la forma correcta?: “The book ___ on the table is mine.”</p>
+                    <p class="question-number">Pregunta 9 de 12</p>
+                    <p>¿Cuál es la forma correcta?: "The book ___ on the table is mine."</p>
                     <label><input type="radio" name="q9" value="a" required> a) lay</label><br>
                     <label><input type="radio" name="q9" value="b"> b) laying</label><br>
                     <label><input type="radio" name="q9" value="c"> c) lying</label><br>
                     <label><input type="radio" name="q9" value="d"> d) lies</label>
                 </div>
                 <div class="form-group">
-                    <p>10. ¿Cuál es la forma correcta?: “She suggested that he ___ the meeting.”</p>
+                    <p class="question-number">Pregunta 10 de 12</p>
+                    <p>¿Cuál es la forma correcta?: "She suggested that he ___ the meeting."</p>
                     <label><input type="radio" name="q10" value="a" required> a) attend</label><br>
                     <label><input type="radio" name="q10" value="b"> b) attends</label><br>
                     <label><input type="radio" name="q10" value="c"> c) attended</label><br>
                     <label><input type="radio" name="q10" value="d"> d) attending</label>
                 </div>
                 <div class="form-group">
-                    <p>11. ¿Cuál es la forma correcta?: “The project ___ by the team last month.”</p>
+                    <p class="question-number">Pregunta 11 de 12</p>
+                    <p>¿Cuál es la forma correcta?: "The project ___ by the team last month."</p>
                     <label><input type="radio" name="q11" value="a" required> a) complete</label><br>
                     <label><input type="radio" name="q11" value="b"> b) completed</label><br>
                     <label><input type="radio" name="q11" value="c"> c) was completed</label><br>
                     <label><input type="radio" name="q11" value="d"> d) has completed</label>
                 </div>
                 <div class="form-group">
-                    <p>12. ¿Cuál es la forma correcta?: “Not only ___ she speak English, but also French.”</p>
+                    <p class="question-number">Pregunta 12 de 12</p>
+                    <p>¿Cuál es la forma correcta?: "Not only ___ she speak English, but also French."</p>
                     <label><input type="radio" name="q12" value="a" required> a) do</label><br>
                     <label><input type="radio" name="q12" value="b"> b) does</label><br>
                     <label><input type="radio" name="q12" value="c"> c) did</label><br>
@@ -339,6 +362,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script1.js/data.js"></script>
     <script src="script1.js/utils.js"></script>
     <script src="script1.js/storage.js"></script>
     <script src="script1.js/auth.js"></script>

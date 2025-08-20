@@ -1,110 +1,131 @@
+// script1.js/utils.js
 // Módulo de utilidades generales: helpers, shuffle, sonidos, etc.
 
+/* Mezcla (Fisher-Yates) */
 function shuffleArray(array) {
-    // Lógica para mezclar un array
-
+    if (!Array.isArray(array)) return array;
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 
-function showNotification(message, type) {
-    // Lógica para mostrar notificaciones
+/* Notificaciones simples */
+function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
-    
+
     // Para mensajes largos, usar un diseño diferente
-    if (message.length > 100) {
+    if (typeof message === 'string' && message.length > 100) {
         notification.style.maxWidth = '400px';
-        notification.style.padding = '1.5m';
+        notification.style.padding = '1.5rem';
     }
-    
+
+    const icon = type === 'success' ? 'check-circle' :
+                 type === 'error' ? 'exclamation-circle' :
+                 type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+
     notification.innerHTML = `
-        <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+        <i class="fas fa-${icon}"></i>
         <span>${message}</span>
     `;
-    
+
     document.body.appendChild(notification);
-    
-    // Para mensajes largos, mostrar por más tiempo
-    const duration = message.length >10? 5000 : 3000;
+
+    // Auto-remover con pequeña animación (si se desea, se puede mejorar)
+    const duration = (typeof message === 'string' && message.length > 10) ? 5000 : 3000;
     setTimeout(() => {
-        notification.remove();
+        try {
+            notification.remove();
+        } catch(e) {}
     }, duration);
 }
 
+/* Sonidos simples usando Web Audio API */
+function createSound(frequency, duration = 0.3, type = 'sine') {
+    try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const audioContext = new AudioCtx();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.frequency.value = frequency;
+        oscillator.type = type;
+
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + duration);
+
+        // Cerrar contexto pasados unos segundos para liberar recursos
+        setTimeout(() => {
+            try { audioContext.close(); } catch (e) {}
+        }, (duration + 0.5) * 1000);
+    } catch (e) {
+        console.log('Audio no disponible:', e);
+    }
+}
+
 function playSuccessSound() {
-    // Lógica para reproducir sonido de éxito
-    createSound(800, 0.3, 'sine');
+    createSound(800, 0.25, 'sine');
 }
 
 function playFailSound() {
-    // Lógica para reproducir sonido de fallo
-    createSound(200, 0.5, 'sawtooth');
+    createSound(200, 0.35, 'sawtooth');
 }
 
-function speakText(text, language = 'en-US', rate = 0.8) {
-    // Lógica para síntesis de voz
-    if ('speechSynthesis' in window) {
-        // Detener cualquier pronunciación anterior
-        speechSynthesis.cancel();
-        
-        // Limpiar el texto de caracteres problemáticos para la síntesis de voz
-        const cleanText = cleanTextForSpeech(text);
-        
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-        utterance.lang = language;
-        utterance.rate = rate;
-        utterance.volume = 1;
-        
-        // Esperar a que las voces estén disponibles
-        const speakWithVoice = () => {
-        const voices = speechSynthesis.getVoices();
-            const englishVoice = voices.find(voice => 
-                voice.lang.startsWith('en') && (voice.name.includes('US') || voice.name.includes('en-US'))
-            ) || voices.find(voice => voice.lang.startsWith('en'));
-            
-        if (englishVoice) {
-            utterance.voice = englishVoice;
-        }
-        
-        speechSynthesis.speak(utterance);
-        };
-        
-        // Si las voces ya están disponibles, usar directamente
-        if (speechSynthesis.getVoices().length > 0) {
-            speakWithVoice();
-        } else {
-            // Esperar a que las voces se carguen
-            speechSynthesis.onvoiceschanged = speakWithVoice;
-        }
-        
-        return true;
+/* Síntesis de voz (Text-to-Speech) */
+function speakText(text, language = 'en-US', rate = 0.9) {
+    if (!text) return false;
+    if (!('speechSynthesis' in window)) return false;
+
+    // Detener cualquier pronunciación anterior
+    try { speechSynthesis.cancel(); } catch (e) {}
+
+    const cleanText = cleanTextForSpeech(text);
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = language;
+    utterance.rate = rate;
+    utterance.volume = 1;
+
+    const speakWithVoice = () => {
+        const voices = speechSynthesis.getVoices() || [];
+        const englishVoice = voices.find(v => v.lang && v.lang.startsWith('en') && (v.name.includes('US') || v.name.includes('en-US')))
+                          || voices.find(v => v.lang && v.lang.startsWith('en'));
+        if (englishVoice) utterance.voice = englishVoice;
+        try { speechSynthesis.speak(utterance); } catch (e) {}
+    };
+
+    if (speechSynthesis.getVoices().length > 0) {
+        speakWithVoice();
+    } else {
+        speechSynthesis.onvoiceschanged = speakWithVoice;
     }
-        return false;
+    return true;
 }
 
+/* Limpieza de texto para TTS y manejo de contracciones */
 function cleanTextForSpeech(text) {
-    // Lógica para limpiar texto para voz
     if (!text) return '';
-    
-    let cleanText = text;
-    
-    // Reemplazar apóstrofes y caracteres especiales
-    cleanText = cleanText.replace(/'/g, "'");
-    cleanText = cleanText.replace(/"/g, '"');
-    cleanText = cleanText.replace(/"/g, '"');
+    let cleanText = String(text);
+
+    // Normalizaciones básicas
     cleanText = cleanText.replace(/…/g, '...');
-    cleanText = cleanText.replace(/–/g, '-');
-    cleanText = cleanText.replace(/—/g, '-');
-    
-    // Manejar contracciones específicas del inglés
+    cleanText = cleanText.replace(/[–—]/g, '-');
+
+    // Contracciones comunes -> expansión
     const contractions = {
-        // Contracciones con 'm (am)
         "i'm": "i am",
-        // Contracciones con 're (are)
         "you're": "you are",
         "we're": "we are",
         "they're": "they are",
         "there're": "there are",
-        // Contracciones con 's (is/has)
         "it's": "it is",
         "he's": "he is",
         "she's": "she is",
@@ -118,7 +139,6 @@ function cleanTextForSpeech(text) {
         "there's": "there is",
         "here's": "here is",
         "let's": "let us",
-        // Contracciones con 'll (will)
         "i'll": "i will",
         "you'll": "you will",
         "he'll": "he will",
@@ -126,29 +146,10 @@ function cleanTextForSpeech(text) {
         "it'll": "it will",
         "we'll": "we will",
         "they'll": "they will",
-        "that'll": "that will",
-        "there'll": "there will",
-        // Contracciones con 'd (would/had)
         "i'd": "i would",
         "you'd": "you would",
-        "he'd": "he would",
-        "she'd": "she would",
-        "it'd": "it would",
-        "we'd": "we would",
-        "they'd": "they would",
-        "that'd": "that would",
-        "there'd": "there would",
-        // Contracciones con 've (have)
         "i've": "i have",
         "you've": "you have",
-        "we've": "we have",
-        "they've": "they have",
-        "could've": "could have",
-        "should've": "should have",
-        "would've": "would have",
-        "might've": "might have",
-        "must've": "must have",
-        // Contracciones negativas con 't
         "don't": "do not",
         "doesn't": "does not",
         "didn't": "did not",
@@ -165,12 +166,6 @@ function cleanTextForSpeech(text) {
         "hasn't": "has not",
         "haven't": "have not",
         "hadn't": "had not",
-        "mustn't": "must not",
-        "mightn't": "might not",
-        "shan't": "shall not",
-        "needn't": "need not",
-        "daren't": "dare not",
-        // Contracciones informales
         "gonna": "going to",
         "wanna": "want to",
         "gotta": "got to",
@@ -182,48 +177,110 @@ function cleanTextForSpeech(text) {
         "lotsa": "lots of",
         "cuppa": "cup of"
     };
-    
-    // Reemplazo insensible a mayúsculas y mantiene capitalización inicial
+
+    // Escapar caracteres especiales al armar regex
+    const escapeRegex = (s) => s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+
     Object.entries(contractions).forEach(([contraction, expansion]) => {
-        // Regex insensible a mayúsculas y global
-        const regex = new RegExp(`\\b${contraction}\\b`, 'gi');
+        const regex = new RegExp(`\\b${escapeRegex(contraction)}\\b`, 'gi');
         cleanText = cleanText.replace(regex, (match) => {
-            // Si la palabra original empieza con mayúscula, capitaliza la expansión
+            // Mantener mayúscula inicial si aplica
             if (match[0] === match[0].toUpperCase()) {
                 return expansion.charAt(0).toUpperCase() + expansion.slice(1);
-            } else {
-                return expansion;
             }
+            return expansion;
         });
     });
-    
+
     return cleanText;
 }
 
-// Función para crear sonidos usando Web Audio API
-function createSound(frequency, duration, type = 'sine') {
+/* --- Función que faltaba: testContractions --- 
+   Devuelve un array con muestras originales y cómo quedan tras cleanTextForSpeech.
+*/
+function testContractions(samples) {
+    const defaultSamples = [
+        "I'm going to school. Don't worry.",
+        "You're right — it's complicated.",
+        "They've been there, and they'd told us."
+    ];
+    const input = Array.isArray(samples) && samples.length ? samples : defaultSamples;
+    return input.map(s => ({ original: s, cleaned: cleanTextForSpeech(s) }));
+}
+
+/* Helpers de tiempo */
+function formatTime(totalSeconds) {
+    totalSeconds = Number(totalSeconds) || 0;
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = Math.floor(totalSeconds % 60);
+    return `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+}
+
+/* Pruebas de audio (simples) */
+function testAudio() {
     try {
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.value = frequency;
-        oscillator.type = type;
-        
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + duration);
+        createSound(440, 0.2, 'sine');
+        return true;
     } catch (e) {
-        console.log('Audio no disponible:', e);
+        console.warn('testAudio falló:', e);
+        return false;
     }
 }
 
-// Exportar funciones globalmente
+/* Stub / helper para test de listening (placeholder) */
+function testListeningExercise() {
+    console.log('testListeningExercise: placeholder — verifica integración con practice.createListeningExercise si lo deseas.');
+    return true;
+}
+
+/* Grabación básica con MediaRecorder (retorna Promise<Blob|null>) */
+function recordAudio(duration = 3000) {
+    return new Promise(async (resolve) => {
+        if (!navigator.mediaDevices || !window.MediaRecorder) {
+            console.warn('recordAudio: MediaRecorder no disponible en este navegador.');
+            resolve(null);
+            return;
+        }
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const recorder = new MediaRecorder(stream);
+            const chunks = [];
+            recorder.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+            recorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                // Detener micrófono
+                stream.getTracks().forEach(t => t.stop());
+                resolve(blob);
+            };
+            recorder.start();
+            setTimeout(() => {
+                if (recorder.state !== 'inactive') recorder.stop();
+            }, duration);
+        } catch (err) {
+            console.error('recordAudio error:', err);
+            resolve(null);
+        }
+    });
+}
+
+// Función de inicialización para el módulo de utilidades
+function initUtils() {
+    console.log("🚀 Módulo de utilidades inicializado");
+    try {
+        // Verificar que las funciones principales estén disponibles
+        console.log("🔔 showNotification disponible:", typeof showNotification === 'function');
+        console.log("🔊 speakText disponible:", typeof speakText === 'function');
+        console.log("🎵 playSuccessSound disponible:", typeof playSuccessSound === 'function');
+        console.log("🎵 playFailSound disponible:", typeof playFailSound === 'function');
+        console.log("🔀 shuffleArray disponible:", typeof shuffleArray === 'function');
+        
+        console.log("✅ Módulo de utilidades inicializado correctamente");
+    } catch (error) {
+        console.error("❌ Error en inicialización del módulo de utilidades:", error);
+    }
+}
+
+/* Exportar funciones globalmente para uso desde script.js y otros módulos */
 window.shuffleArray = shuffleArray;
 window.showNotification = showNotification;
 window.playSuccessSound = playSuccessSound;
@@ -236,3 +293,4 @@ window.formatTime = formatTime;
 window.testAudio = testAudio;
 window.testListeningExercise = testListeningExercise;
 window.createSound = createSound;
+window.initUtils = initUtils;
