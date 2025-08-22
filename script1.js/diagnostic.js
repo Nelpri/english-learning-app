@@ -4,6 +4,70 @@ let currentQuestion = 0;
 let diagnosticAnswers = [];
 let diagnosticScore = 0;
 
+// Base de datos de preguntas del diagnóstico
+const DIAGNOSTIC_QUESTIONS = [
+    {
+        question: "¿Cuál es la traducción de 'cat'?",
+        options: ["Gato", "Perro", "Casa", "Mesa"],
+        correct: 0
+    },
+    {
+        question: "¿Cómo se dice 'gracias' en inglés?",
+        options: ["Hello", "Please", "Thanks", "Sorry"],
+        correct: 2
+    },
+    {
+        question: "¿Cuál es la forma correcta?: 'She ___ a book.'",
+        options: ["read", "reads", "reading", "is read"],
+        correct: 1
+    },
+    {
+        question: "¿Cómo se pregunta la hora?: '___ the time?'",
+        options: ["What's", "How's", "Where's", "Who's"],
+        correct: 0
+    },
+    {
+        question: "¿Cuál es el plural de 'child'?",
+        options: ["childs", "children", "childes", "child's"],
+        correct: 1
+    },
+    {
+        question: "¿Cuál es la forma correcta del pasado?: 'Yesterday I ___ to the store.'",
+        options: ["go", "went", "going", "goes"],
+        correct: 1
+    },
+    {
+        question: "¿Cuál es la forma correcta?: 'I have ___ studying for two hours.'",
+        options: ["be", "been", "being", "am"],
+        correct: 1
+    },
+    {
+        question: "¿Cuál es la forma correcta?: 'If I ___ rich, I would travel the world.'",
+        options: ["am", "was", "were", "be"],
+        correct: 2
+    },
+    {
+        question: "¿Cuál es la forma correcta?: 'The book ___ on the table is mine.'",
+        options: ["lay", "laying", "lying", "lies"],
+        correct: 2
+    },
+    {
+        question: "¿Cuál es la forma correcta?: 'She suggested that he ___ the meeting.'",
+        options: ["attend", "attends", "attended", "attending"],
+        correct: 0
+    },
+    {
+        question: "¿Cuál es la forma correcta?: 'The project ___ by the team last month.'",
+        options: ["complete", "completed", "was completed", "has completed"],
+        correct: 2
+    },
+    {
+        question: "¿Cuál es la forma correcta?: 'Not only ___ she speak English, but also French.'",
+        options: ["do", "does", "did", "done"],
+        correct: 1
+    }
+];
+
 function showDiagnosticModal() {
     console.log("🎯 Mostrando modal de diagnóstico...");
     try {
@@ -65,15 +129,38 @@ function hideDiagnosticModal() {
 function showQuestion() {
     console.log("❓ Mostrando pregunta:", currentQuestion + 1);
     try {
+        const questionContainer = document.getElementById('questionContainer');
         const diagnosticForm = document.getElementById('diagnosticForm');
         const diagnosticResult = document.getElementById('diagnosticResult');
+        const submitButton = diagnosticForm.querySelector('button[type="submit"]');
         
-        if (diagnosticForm && diagnosticResult) {
+        if (questionContainer && diagnosticForm && diagnosticResult) {
             // Ocultar resultado anterior si existe
             diagnosticResult.style.display = 'none';
             
             // Mostrar formulario
             diagnosticForm.style.display = 'block';
+            
+            // Obtener la pregunta actual
+            const question = DIAGNOSTIC_QUESTIONS[currentQuestion];
+            
+            // Crear el HTML de la pregunta
+            questionContainer.innerHTML = `
+                <div class="form-group">
+                    <p class="question-number">Pregunta ${currentQuestion + 1} de ${DIAGNOSTIC_QUESTIONS.length}</p>
+                    <p>${question.question}</p>
+                    ${question.options.map((option, index) => `
+                        <label><input type="radio" name="q${currentQuestion + 1}" value="${index}" required> ${String.fromCharCode(97 + index)}) ${option}</label><br>
+                    `).join('')}
+                </div>
+            `;
+            
+            // Actualizar el texto del botón
+            if (currentQuestion === DIAGNOSTIC_QUESTIONS.length - 1) {
+                submitButton.textContent = 'Finalizar Diagnóstico';
+            } else {
+                submitButton.textContent = 'Siguiente Pregunta';
+            }
             
             // Actualizar progreso
             updateDiagnosticProgress();
@@ -94,10 +181,12 @@ function updateDiagnosticProgress() {
         const progressText = document.querySelector('.diagnostic-progress .progress-text');
         
         if (progressFill && progressText) {
-            const progress = ((currentQuestion + 1) / 12) * 100;
+            const progress = ((currentQuestion + 1) / DIAGNOSTIC_QUESTIONS.length) * 100;
             progressFill.style.width = progress + '%';
-            progressText.textContent = `${currentQuestion + 1}/12`;
+            progressText.textContent = `${currentQuestion + 1}/${DIAGNOSTIC_QUESTIONS.length}`;
             console.log("✅ Progreso actualizado:", progress + '%');
+        } else {
+            console.warn("⚠️ Elementos de progreso no encontrados");
         }
     } catch (error) {
         console.error("❌ Error al actualizar progreso:", error);
@@ -105,83 +194,70 @@ function updateDiagnosticProgress() {
 }
 
 function handleDiagnosticSubmit(e) {
-    console.log("📝 Enviando diagnóstico...");
+    console.log("📝 Manejando envío de diagnóstico...");
     e.preventDefault();
     
     try {
-        const formData = new FormData(e.target);
-        const answers = {};
+        // Obtener la respuesta seleccionada
+        const selectedOption = document.querySelector(`input[name="q${currentQuestion + 1}"]:checked`);
         
-        // Recopilar respuestas
-        for (let [key, value] of formData.entries()) {
-            answers[key] = value;
+        if (!selectedOption) {
+            console.warn("⚠️ No se seleccionó ninguna opción");
+            if (typeof showNotification === 'function') {
+                showNotification('Por favor selecciona una respuesta', 'warning');
+            } else {
+                alert('Por favor selecciona una respuesta');
+            }
+            return;
         }
         
-        console.log("📋 Respuestas recopiladas:", answers);
+        const answer = parseInt(selectedOption.value);
+        const question = DIAGNOSTIC_QUESTIONS[currentQuestion];
         
-        // Calcular puntuación
-        diagnosticScore = calculateScore(answers);
-        console.log("🎯 Puntuación calculada:", diagnosticScore);
+        // Guardar respuesta
+        diagnosticAnswers[currentQuestion] = answer;
         
-        // Determinar nivel
-        const level = determineLevel(diagnosticScore);
-        console.log("📊 Nivel determinado:", level);
+        // Verificar si es correcta
+        if (answer === question.correct) {
+            diagnosticScore++;
+            console.log("✅ Respuesta correcta");
+        } else {
+            console.log("❌ Respuesta incorrecta");
+        }
         
-        // Guardar progreso del usuario
-        saveUserProgress(level);
-        console.log("💾 Progreso del usuario guardado");
+        console.log("📊 Puntuación actual:", diagnosticScore);
         
-        // Mostrar resultado
-        showDiagnosticResult(level, diagnosticScore);
-        console.log("✅ Resultado del diagnóstico mostrado");
+        // Avanzar a la siguiente pregunta o finalizar
+        if (currentQuestion < DIAGNOSTIC_QUESTIONS.length - 1) {
+            currentQuestion++;
+            showQuestion();
+        } else {
+            // Finalizar diagnóstico
+            completeDiagnostic();
+        }
         
     } catch (error) {
-        console.error("❌ Error al procesar diagnóstico:", error);
+        console.error("❌ Error al manejar envío:", error);
     }
 }
 
-function calculateScore(answers) {
-    console.log("🧮 Calculando puntuación...");
-    let score = 0;
-    
-    // Respuestas correctas
-    const correctAnswers = {
-        q1: 'a', // cat = gato
-        q2: 'c', // gracias = thanks
-        q3: 'b', // she reads a book
-        q4: 'a', // what's the time
-        q5: 'b', // children (plural de child)
-        q6: 'b', // went (pasado de go)
-        q7: 'b', // been (participio de be)
-        q8: 'c', // were (subjuntivo)
-        q9: 'c', // lying (gerundio de lie)
-        q10: 'a', // attend (subjuntivo)
-        q11: 'c', // was completed (pasiva)
-        q12: 'b'  // does (tercera persona singular)
-    };
-    
-    for (let question in answers) {
-        if (answers[question] === correctAnswers[question]) {
-            score++;
-        }
-    }
-    
-    console.log("✅ Puntuación calculada:", score, "de 12");
-    return score;
-}
-
-function determineLevel(score) {
-    console.log("📊 Determinando nivel basado en puntuación:", score);
-    
-    if (score >= 10) return 3;      // Avanzado
-    if (score >= 7) return 2;       // Intermedio
-    if (score >= 4) return 1;       // Básico
-    return 1;                        // Principiante por defecto
-}
-
-function saveUserProgress(level) {
-    console.log("💾 Guardando progreso del usuario, nivel:", level);
+function completeDiagnostic() {
+    console.log("🎉 Completando diagnóstico...");
     try {
+        // Calcular nivel basado en la puntuación
+        let level = 1;
+        if (diagnosticScore >= 8) {
+            level = 3; // Avanzado
+        } else if (diagnosticScore >= 5) {
+            level = 2; // Intermedio
+        } else {
+            level = 1; // Principiante
+        }
+        
+        console.log("📊 Puntuación final:", diagnosticScore, "/", DIAGNOSTIC_QUESTIONS.length);
+        console.log("🎯 Nivel asignado:", level);
+        
+        // Guardar progreso del usuario
         const userProgress = {
             level: level,
             xp: 0,
@@ -189,21 +265,17 @@ function saveUserProgress(level) {
             vocabularyWordsLearned: 0,
             practiceStreak: 0,
             diagnosticCompleted: true,
-            diagnosticScore: diagnosticScore,
-            lastPracticeDate: new Date().toISOString()
+            diagnosticScore: diagnosticScore
         };
         
         localStorage.setItem('englishLearningProgress', JSON.stringify(userProgress));
-        console.log("✅ Progreso guardado:", userProgress);
+        console.log("✅ Progreso guardado");
         
-        // Actualizar appState global
-        if (window.appState) {
-            window.appState.currentLevel = level;
-            console.log("✅ appState actualizado");
-        }
+        // Mostrar resultado
+        showDiagnosticResult(level, diagnosticScore);
         
     } catch (error) {
-        console.error("❌ Error al guardar progreso:", error);
+        console.error("❌ Error al completar diagnóstico:", error);
     }
 }
 
@@ -230,7 +302,7 @@ function showDiagnosticResult(level, score) {
                 <h3>🎯 Resultado del Diagnóstico</h3>
                 <p>Has completado la evaluación inicial. Tu nivel sugerido es:</p>
                 <div class="level-badge">${levelNames[level]}</div>
-                <p>Puntuación: ${score}/12</p>
+                <p>Puntuación: ${score}/${DIAGNOSTIC_QUESTIONS.length}</p>
                 <p>¡Perfecto! Ahora puedes comenzar a aprender con lecciones adaptadas a tu nivel.</p>
                 <button class="btn btn-violet" onclick="startLearning()">Comenzar a Aprender</button>
             `;

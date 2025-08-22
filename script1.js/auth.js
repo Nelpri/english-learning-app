@@ -98,8 +98,11 @@ function handleLogin(e) {
         console.log("🎯 Usuario nuevo, mostrando diagnóstico...");
         // Mostrar modal de diagnóstico
         if (typeof showDiagnosticModal === 'function') {
-            showDiagnosticModal();
-            console.log("✅ Modal de diagnóstico mostrado");
+            // Pequeño delay para asegurar que el DOM esté listo
+            setTimeout(() => {
+                showDiagnosticModal();
+                console.log("✅ Modal de diagnóstico mostrado");
+            }, 100);
         } else {
             console.warn("⚠️ showDiagnosticModal no está disponible");
             // Fallback: asignar nivel 1 por defecto
