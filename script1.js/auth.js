@@ -142,6 +142,20 @@ function handleLogin(e) {
             console.warn("⚠️ loadCurrentLesson no está disponible");
         }
         
+        // Inicializar sistema de práctica si está disponible
+        console.log("🎯 Inicializando sistema de práctica...");
+        if (window.practiceSystem && typeof window.practiceSystem.initialize === 'function') {
+            const currentUser = {
+                email: user.email,
+                name: user.name,
+                currentLevel: userProgress.level || 1
+            };
+            window.practiceSystem.initialize(currentUser);
+            console.log("✅ Sistema de práctica inicializado");
+        } else {
+            console.warn("⚠️ Sistema de práctica no disponible");
+        }
+        
         console.log("🎉 Login completado exitosamente");
     } catch (error) {
         console.error("❌ Error durante la carga:", error);

@@ -11,35 +11,95 @@ function shuffleArray(array) {
     return array;
 }
 
-/* Notificaciones simples */
-function showNotification(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-
-    // Para mensajes largos, usar un diseño diferente
-    if (typeof message === 'string' && message.length > 100) {
-        notification.style.maxWidth = '400px';
-        notification.style.padding = '1.5rem';
+// Función para mostrar notificaciones
+function showNotification(message, type = 'info', duration = 5000) {
+    try {
+        // Crear elemento de notificación
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        `;
+        
+        // Configurar colores según el tipo
+        switch (type) {
+            case 'success':
+                notification.style.background = 'var(--success-color)';
+                break;
+            case 'error':
+                notification.style.background = 'var(--error-color)';
+                break;
+            case 'warning':
+                notification.style.background = 'var(--warning-color)';
+                break;
+            default:
+                notification.style.background = 'var(--primary-color)';
+        }
+        
+        // Agregar icono según el tipo
+        let icon = '';
+        switch (type) {
+            case 'success':
+                icon = '✅';
+                break;
+            case 'error':
+                icon = '❌';
+                break;
+            case 'warning':
+                icon = '⚠️';
+                break;
+            default:
+                icon = 'ℹ️';
+        }
+        
+        notification.innerHTML = `${icon} ${message}`;
+        
+        // Agregar al DOM
+        document.body.appendChild(notification);
+        
+        // Animar entrada
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+        
+        // Auto-remover después del tiempo especificado
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, duration);
+        
+        // Permitir cerrar manualmente
+        notification.onclick = () => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        };
+        
+        console.log(`🔔 Notificación mostrada: ${message}`);
+        
+    } catch (error) {
+        console.error("❌ Error al mostrar notificación:", error);
+        // Fallback simple
+        alert(message);
     }
-
-    const icon = type === 'success' ? 'check-circle' :
-                 type === 'error' ? 'exclamation-circle' :
-                 type === 'warning' ? 'exclamation-triangle' : 'info-circle';
-
-    notification.innerHTML = `
-        <i class="fas fa-${icon}"></i>
-        <span>${message}</span>
-    `;
-
-    document.body.appendChild(notification);
-
-    // Auto-remover con pequeña animación (si se desea, se puede mejorar)
-    const duration = (typeof message === 'string' && message.length > 10) ? 5000 : 3000;
-    setTimeout(() => {
-        try {
-            notification.remove();
-        } catch(e) {}
-    }, duration);
 }
 
 /* Sonidos simples usando Web Audio API */
