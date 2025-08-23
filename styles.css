@@ -4181,3 +4181,267 @@ body {
         padding: 1rem;
     }
 }
+
+/* Estilos específicos para el modal de diagnóstico */
+.diagnostic-modal {
+    background: var(--surface-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    max-width: 600px;
+    width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.diagnostic-header {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    padding: 1.5rem;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    text-align: center;
+}
+
+.diagnostic-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.diagnostic-header p {
+    margin: 0.5rem 0 0 0;
+    opacity: 0.9;
+}
+
+.diagnostic-progress {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem;
+    padding: 1rem;
+    background: var(--background-color);
+    border-radius: var(--border-radius);
+}
+
+.diagnostic-progress .progress-bar {
+    flex: 1;
+    height: 8px;
+    background: var(--border-color);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.diagnostic-progress .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.diagnostic-progress .progress-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    min-width: 50px;
+    text-align: center;
+}
+
+.question-number {
+    font-size: 0.9rem;
+    color: var(--accent-color);
+    font-weight: 600;
+    margin-bottom: 1rem;
+    background: rgba(245, 158, 11, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    display: inline-block;
+}
+
+.diagnostic-form {
+    padding: 1.5rem;
+}
+
+.diagnostic-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.diagnostic-form p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+.diagnostic-form label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+}
+
+.diagnostic-form label:hover {
+    border-color: var(--primary-color);
+    background: var(--background-color);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.diagnostic-form input[type="radio"] {
+    margin: 0;
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary-color);
+}
+
+.diagnostic-form input[type="radio"]:checked + span {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.diagnostic-result {
+    padding: 2rem;
+    text-align: center;
+}
+
+.diagnostic-result h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.diagnostic-result .level-badge {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1.2rem;
+    display: inline-block;
+    margin: 1.5rem 0;
+    box-shadow: var(--shadow-md);
+}
+
+.diagnostic-result p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+
+.diagnostic-result .btn-violet {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-md);
+    margin-top: 1rem;
+}
+
+.diagnostic-result .btn-violet:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Responsive para diagnóstico */
+@media (max-width: 768px) {
+    .diagnostic-modal {
+        width: 95vw;
+        margin: 10px;
+    }
+    
+    .diagnostic-header {
+        padding: 1rem;
+    }
+    
+    .diagnostic-header h1 {
+        font-size: 1.3rem;
+    }
+    
+    .diagnostic-progress {
+        margin: 1rem;
+        padding: 0.75rem;
+    }
+    
+    .diagnostic-form {
+        padding: 1rem;
+    }
+    
+    .diagnostic-form label {
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .diagnostic-result {
+        padding: 1rem;
+    }
+    
+    .diagnostic-result .level-badge {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .diagnostic-result .btn-violet {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .diagnostic-modal {
+        width: 98vw;
+        margin: 5px;
+    }
+    
+    .diagnostic-header h1 {
+        font-size: 1.2rem;
+    }
+    
+    .diagnostic-form p {
+        font-size: 1rem;
+    }
+    
+    .diagnostic-form label {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Estilos para formularios en general */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    background: var(--surface-color);
+    color: var(--text-primary);
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}

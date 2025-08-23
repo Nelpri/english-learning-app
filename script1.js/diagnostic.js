@@ -72,37 +72,79 @@ function showDiagnosticModal() {
     console.log("🎯 Mostrando modal de diagnóstico...");
     try {
         const diagnosticModal = document.getElementById('diagnosticModal');
-        const diagnosticOverlay = document.getElementById('diagnosticOverlay');
+        
+        console.log("🔍 Elementos encontrados:", {
+            diagnosticModal: !!diagnosticModal
+        });
         
         if (diagnosticModal) {
             console.log("✅ Modal de diagnóstico encontrado");
-            diagnosticModal.style.display = 'block';
             
-            // Crear overlay si no existe
-            if (!diagnosticOverlay) {
-                const overlay = document.createElement('div');
-                overlay.id = 'diagnosticOverlay';
-                overlay.className = 'auth-overlay';
-                overlay.style.zIndex = '999';
-                document.body.appendChild(overlay);
-                console.log("✅ Overlay de diagnóstico creado");
-            } else {
-                diagnosticOverlay.style.display = 'block';
-            }
-            
-            // Resetear el diagnóstico
+            // Resetear el estado del diagnóstico
             currentQuestion = 0;
             diagnosticAnswers = [];
             diagnosticScore = 0;
+            console.log("🔄 Estado del diagnóstico reseteado");
+            
+            // Ocultar cualquier overlay de autenticación que pueda estar interfiriendo
+            const authOverlay = document.getElementById('authOverlay');
+            if (authOverlay) {
+                authOverlay.style.display = 'none';
+                console.log("🚪 Overlay de autenticación ocultado");
+            }
+            
+            // Ocultar modal de autenticación si está visible
+            const authModal = document.getElementById('authModal');
+            if (authModal) {
+                authModal.style.display = 'none';
+                console.log("🚪 Modal de autenticación ocultado");
+            }
+            
+            // Ocultar la aplicación principal para mostrar solo el diagnóstico
+            const mainApp = document.getElementById('mainApp');
+            if (mainApp) {
+                mainApp.style.display = 'none';
+                console.log("🚪 Aplicación principal ocultada");
+            }
+            
+            // Mostrar modal de diagnóstico
+            diagnosticModal.style.display = 'block';
+            diagnosticModal.style.zIndex = '1000';
+            console.log("🎨 Modal de diagnóstico mostrado (display: block)");
             
             // Mostrar primera pregunta
+            console.log("📝 Intentando mostrar primera pregunta...");
             showQuestion();
             console.log("✅ Modal de diagnóstico mostrado correctamente");
+            
+            // Asegurar que el modal esté visible
+            setTimeout(() => {
+                console.log("⏰ Verificación tardía del modal...");
+                if (diagnosticModal.style.display !== 'block') {
+                    console.log("🔧 Modal no está visible, forzando display...");
+                    diagnosticModal.style.display = 'block';
+                    diagnosticModal.style.visibility = 'visible';
+                    diagnosticModal.style.opacity = '1';
+                    console.log("🔧 Modal forzado a mostrar");
+                }
+                
+                // Verificar que la pregunta se haya mostrado
+                const questionContainer = document.getElementById('questionContainer');
+                if (questionContainer && questionContainer.innerHTML.trim() === '') {
+                    console.log("⚠️ Contenedor de pregunta vacío, reintentando...");
+                    showQuestion();
+                }
+            }, 200);
+            
         } else {
             console.error("❌ Modal de diagnóstico no encontrado");
+            console.error("🔍 Buscando elementos con ID 'diagnosticModal'...");
+            const allElements = document.querySelectorAll('[id*="diagnostic"]');
+            console.log("Elementos relacionados con diagnóstico:", allElements);
         }
     } catch (error) {
         console.error("❌ Error al mostrar modal de diagnóstico:", error);
+        console.error("Stack trace:", error.stack);
     }
 }
 
@@ -110,17 +152,25 @@ function hideDiagnosticModal() {
     console.log("🚪 Ocultando modal de diagnóstico...");
     try {
         const diagnosticModal = document.getElementById('diagnosticModal');
-        const diagnosticOverlay = document.getElementById('diagnosticOverlay');
         
         if (diagnosticModal) {
             diagnosticModal.style.display = 'none';
+            console.log("✅ Modal de diagnóstico ocultado");
         }
         
-        if (diagnosticOverlay) {
-            diagnosticOverlay.style.display = 'none';
+        // Mostrar la aplicación principal después de completar el diagnóstico
+        const mainApp = document.getElementById('mainApp');
+        if (mainApp) {
+            mainApp.style.display = 'block';
+            console.log("🚪 Aplicación principal mostrada");
         }
         
-        console.log("✅ Modal de diagnóstico ocultado");
+        // Limpiar cualquier estado residual
+        currentQuestion = 0;
+        diagnosticAnswers = [];
+        diagnosticScore = 0;
+        console.log("🔄 Estado del diagnóstico reseteado");
+        
     } catch (error) {
         console.error("❌ Error al ocultar modal de diagnóstico:", error);
     }
@@ -132,45 +182,118 @@ function showQuestion() {
         const questionContainer = document.getElementById('questionContainer');
         const diagnosticForm = document.getElementById('diagnosticForm');
         const diagnosticResult = document.getElementById('diagnosticResult');
-        const submitButton = diagnosticForm.querySelector('button[type="submit"]');
+        
+        console.log("🔍 Elementos de pregunta encontrados:", {
+            questionContainer: !!questionContainer,
+            diagnosticForm: !!diagnosticForm,
+            diagnosticResult: !!diagnosticResult
+        });
         
         if (questionContainer && diagnosticForm && diagnosticResult) {
             // Ocultar resultado anterior si existe
             diagnosticResult.style.display = 'none';
+            console.log("✅ Resultado anterior ocultado");
             
             // Mostrar formulario
             diagnosticForm.style.display = 'block';
+            console.log("✅ Formulario de diagnóstico mostrado");
             
             // Obtener la pregunta actual
             const question = DIAGNOSTIC_QUESTIONS[currentQuestion];
             
+            if (!question) {
+                console.error("❌ Pregunta no encontrada para el índice:", currentQuestion);
+                console.log("📊 Preguntas disponibles:", DIAGNOSTIC_QUESTIONS.length);
+                return;
+            }
+            
+            console.log("📝 Pregunta a mostrar:", question.question);
+            
             // Crear el HTML de la pregunta
-            questionContainer.innerHTML = `
+            const questionHTML = `
                 <div class="form-group">
                     <p class="question-number">Pregunta ${currentQuestion + 1} de ${DIAGNOSTIC_QUESTIONS.length}</p>
-                    <p>${question.question}</p>
-                    ${question.options.map((option, index) => `
-                        <label><input type="radio" name="q${currentQuestion + 1}" value="${index}" required> ${String.fromCharCode(97 + index)}) ${option}</label><br>
-                    `).join('')}
+                    <p style="font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-primary);">${question.question}</p>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        ${question.options.map((option, index) => `
+                            <label style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 2px solid var(--border-color); border-radius: 8px; cursor: pointer; transition: all 0.3s ease;">
+                                <input type="radio" name="q${currentQuestion + 1}" value="${index}" required style="margin: 0;">
+                                <span style="font-weight: 500; color: var(--text-primary);">${String.fromCharCode(97 + index)}) ${option}</span>
+                            </label>
+                        `).join('')}
+                    </div>
                 </div>
             `;
             
+            console.log("🎨 HTML de pregunta generado, aplicando al contenedor...");
+            questionContainer.innerHTML = questionHTML;
+            console.log("✅ HTML de pregunta aplicado al contenedor");
+            
+            // Verificar que el contenido se haya aplicado
+            if (questionContainer.innerHTML.trim() === '') {
+                console.error("❌ El contenedor de pregunta está vacío después de aplicar HTML");
+                return;
+            }
+            
+            // Agregar eventos de hover a las opciones
+            const optionLabels = questionContainer.querySelectorAll('label');
+            console.log("🎯 Opciones encontradas:", optionLabels.length);
+            
+            optionLabels.forEach((label, index) => {
+                label.addEventListener('mouseenter', () => {
+                    label.style.borderColor = 'var(--primary-color)';
+                    label.style.backgroundColor = 'var(--background-color)';
+                });
+                label.addEventListener('mouseleave', () => {
+                    label.style.borderColor = 'var(--border-color)';
+                    label.style.backgroundColor = 'transparent';
+                });
+                console.log(`✅ Eventos agregados a opción ${index + 1}`);
+            });
+            
             // Actualizar el texto del botón
-            if (currentQuestion === DIAGNOSTIC_QUESTIONS.length - 1) {
-                submitButton.textContent = 'Finalizar Diagnóstico';
+            const submitButton = diagnosticForm.querySelector('button[type="submit"]');
+            if (submitButton) {
+                if (currentQuestion === DIAGNOSTIC_QUESTIONS.length - 1) {
+                    submitButton.textContent = 'Finalizar Diagnóstico';
+                    submitButton.style.background = 'linear-gradient(135deg, var(--success-color), #059669)';
+                    console.log("🎯 Botón actualizado: Finalizar Diagnóstico");
+                } else {
+                    submitButton.textContent = 'Siguiente Pregunta';
+                    submitButton.style.background = 'linear-gradient(135deg, var(--primary-color), var(--primary-light))';
+                    console.log("🎯 Botón actualizado: Siguiente Pregunta");
+                }
             } else {
-                submitButton.textContent = 'Siguiente Pregunta';
+                console.warn("⚠️ Botón de envío no encontrado");
             }
             
             // Actualizar progreso
             updateDiagnosticProgress();
+            console.log("✅ Progreso del diagnóstico actualizado");
             
             console.log("✅ Pregunta mostrada correctamente");
+            
+            // Verificación final
+            setTimeout(() => {
+                const finalCheck = questionContainer.innerHTML.trim();
+                if (finalCheck === '') {
+                    console.error("❌ VERIFICACIÓN FINAL: El contenedor de pregunta está vacío");
+                } else {
+                    console.log("✅ VERIFICACIÓN FINAL: El contenedor de pregunta tiene contenido");
+                }
+            }, 100);
+            
         } else {
             console.error("❌ Elementos de pregunta no encontrados");
+            console.error("Elementos faltantes:", {
+                questionContainer: !questionContainer ? 'FALTA' : 'OK',
+                diagnosticForm: !diagnosticForm ? 'FALTA' : 'OK',
+                diagnosticResult: !diagnosticResult ? 'FALTA' : 'OK'
+            });
         }
     } catch (error) {
         console.error("❌ Error al mostrar pregunta:", error);
+        console.error("Stack trace:", error.stack);
     }
 }
 
@@ -298,13 +421,50 @@ function showDiagnosticResult(level, score) {
                 3: "Avanzado (B1)"
             };
             
+            const levelDescriptions = {
+                1: "Perfecto para comenzar tu viaje de aprendizaje del inglés. Te enfocarás en vocabulario básico, saludos, números y estructuras simples.",
+                2: "Excelente progreso. Continuarás con tiempos verbales, adjetivos comparativos y conversaciones más complejas.",
+                3: "¡Impresionante! Estás listo para desafíos avanzados, incluyendo expresiones idiomáticas y gramática compleja."
+            };
+            
+            const levelColors = {
+                1: "linear-gradient(135deg, #10b981, #059669)",
+                2: "linear-gradient(135deg, #f59e0b, #d97706)",
+                3: "linear-gradient(135deg, #8b5cf6, #7c3aed)"
+            };
+            
+            const percentage = Math.round((score / DIAGNOSTIC_QUESTIONS.length) * 100);
+            
             diagnosticResult.innerHTML = `
-                <h3>🎯 Resultado del Diagnóstico</h3>
-                <p>Has completado la evaluación inicial. Tu nivel sugerido es:</p>
-                <div class="level-badge">${levelNames[level]}</div>
-                <p>Puntuación: ${score}/${DIAGNOSTIC_QUESTIONS.length}</p>
-                <p>¡Perfecto! Ahora puedes comenzar a aprender con lecciones adaptadas a tu nivel.</p>
-                <button class="btn btn-violet" onclick="startLearning()">Comenzar a Aprender</button>
+                <div style="text-align: center; padding: 2rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🎯</div>
+                    <h3 style="color: var(--primary-color); margin-bottom: 1rem; font-size: 1.5rem;">¡Diagnóstico Completado!</h3>
+                    
+                    <div style="background: ${levelColors[level]}; color: white; padding: 1rem 2rem; border-radius: 25px; margin: 1.5rem 0; display: inline-block; font-weight: 600; font-size: 1.2rem;">
+                        ${levelNames[level]}
+                    </div>
+                    
+                    <div style="background: var(--background-color); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; text-align: left;">
+                        <h4 style="color: var(--text-primary); margin-bottom: 0.5rem;">📊 Tu Puntuación</h4>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem;">Obtuviste <strong>${score} de ${DIAGNOSTIC_QUESTIONS.length}</strong> respuestas correctas</p>
+                        
+                        <div style="background: var(--border-color); height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem;">
+                            <div style="background: ${levelColors[level]}; height: 100%; width: ${percentage}%; transition: width 0.5s ease;"></div>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; text-align: center;">${percentage}% de acierto</p>
+                    </div>
+                    
+                    <div style="background: var(--surface-color); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0; border-left: 4px solid var(--primary-color);">
+                        <h4 style="color: var(--text-primary); margin-bottom: 0.5rem;">📚 ¿Qué significa este nivel?</h4>
+                        <p style="color: var(--text-secondary); line-height: 1.6;">${levelDescriptions[level]}</p>
+                    </div>
+                    
+                    <p style="color: var(--text-secondary); margin: 1.5rem 0; font-size: 1.1rem;">¡Perfecto! Ahora puedes comenzar a aprender con lecciones adaptadas a tu nivel.</p>
+                    
+                    <button class="btn btn-violet" onclick="startLearning()" style="padding: 1rem 2rem; font-size: 1.1rem; font-weight: 600; border-radius: 25px; box-shadow: var(--shadow-md);">
+                        🚀 Comenzar a Aprender
+                    </button>
+                </div>
             `;
             
             console.log("✅ Resultado del diagnóstico mostrado");
@@ -312,7 +472,7 @@ function showDiagnosticResult(level, score) {
             console.error("❌ Elementos de resultado no encontrados");
         }
     } catch (error) {
-        console.error("❌ Error al mostrar resultado:", error);
+        console.error("❌ Error al mostrar resultado del diagnóstico:", error);
     }
 }
 
@@ -322,28 +482,40 @@ function startLearning() {
         // Ocultar modal de diagnóstico
         hideDiagnosticModal();
         
-        // Cargar contenido de la aplicación
-        if (typeof loadProgress === 'function') {
-            loadProgress();
-            console.log("✅ Progreso cargado");
-        }
-        
-        if (typeof updateUI === 'function') {
-            updateUI();
-            console.log("✅ UI actualizada");
-        }
-        
-        if (typeof loadCurrentLesson === 'function') {
-            loadCurrentLesson();
-            console.log("✅ Lección actual cargada");
-        }
-        
-        if (typeof loadVocabularyCategories === 'function') {
-            loadVocabularyCategories();
-            console.log("✅ Categorías de vocabulario cargadas");
-        }
-        
-        console.log("🎉 Aprendizaje iniciado correctamente");
+        // Cargar contenido de la aplicación DESPUÉS de ocultar el diagnóstico
+        setTimeout(() => {
+            console.log("⏰ Cargando contenido de la aplicación...");
+            
+            // Ejecutar checkAuth para cargar la aplicación principal
+            if (typeof checkAuth === 'function') {
+                console.log("🔍 Ejecutando checkAuth para cargar aplicación...");
+                checkAuth();
+            } else {
+                console.warn("⚠️ checkAuth no disponible, cargando funciones individuales...");
+                
+                if (typeof loadProgress === 'function') {
+                    loadProgress();
+                    console.log("✅ Progreso cargado");
+                }
+                
+                if (typeof updateUI === 'function') {
+                    updateUI();
+                    console.log("✅ UI actualizada");
+                }
+                
+                if (typeof loadCurrentLesson === 'function') {
+                    loadCurrentLesson();
+                    console.log("✅ Lección actual cargada");
+                }
+                
+                if (typeof loadVocabularyCategories === 'function') {
+                    loadVocabularyCategories();
+                    console.log("✅ Categorías de vocabulario cargadas");
+                }
+            }
+            
+            console.log("🎉 Aprendizaje iniciado correctamente");
+        }, 100); // Pequeño delay para asegurar que el modal se oculte primero
         
     } catch (error) {
         console.error("❌ Error al iniciar aprendizaje:", error);

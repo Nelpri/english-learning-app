@@ -24,19 +24,108 @@ function handleRegister(e) {
         return;
     }
     
-    users.push({ name, email, password });
+    // Crear nuevo usuario
+    const newUser = { name, email, password };
+    users.push(newUser);
     localStorage.setItem('englishLearningUsers', JSON.stringify(users));
     console.log("✅ Usuario registrado exitosamente");
     
+    // LIMPIAR cualquier progreso previo para asegurar que sea usuario nuevo
+    localStorage.removeItem('englishLearningProgress');
+    console.log("🧹 Progreso previo limpiado para usuario nuevo");
+    
+    // Hacer login automático después del registro
+    console.log("🔄 Haciendo login automático...");
+    
+    // Guardar sesión del usuario
+    localStorage.setItem('englishLearningSession', JSON.stringify({
+        email: newUser.email, 
+        name: newUser.name 
+    }));
+    
+    // Ocultar modal de autenticación
+    hideAuthModal();
+    
+    // Mostrar notificación de bienvenida
     if (typeof showNotification === 'function') {
-        showNotification('¡Registro exitoso! Ahora puedes iniciar sesión.', 'success');
+        showNotification(`🎉 ¡Bienvenido a English Learning, ${newUser.name}!`, 'success');
     } else {
-        alert('¡Registro exitoso! Ahora puedes iniciar sesión.');
+        alert(`🎉 ¡Bienvenido a English Learning, ${newUser.name}!`);
     }
     
-    console.log("🔄 Cambiando a tab de login...");
-    document.querySelector('.auth-tab[data-tab="login"]').click();
-    console.log("✅ Cambio a tab de login completado");
+    console.log("🚪 Modal de autenticación ocultado");
+    
+    // Actualizar display del usuario
+    updateUserDisplay(newUser);
+    
+    // Verificar si es usuario nuevo (debe serlo)
+    const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+    const hasLevel = userProgress.level && userProgress.level > 0;
+    
+    if (!hasLevel) {
+        console.log("🎯 Usuario nuevo, mostrando diagnóstico...");
+        
+        // Verificar que la función esté disponible
+        console.log("🔍 Verificando disponibilidad de showDiagnosticModal...");
+        console.log("showDiagnosticModal disponible:", typeof showDiagnosticModal === 'function');
+        console.log("showDiagnosticModal en window:", typeof window.showDiagnosticModal === 'function');
+        
+        // Mostrar modal de diagnóstico con delay para asegurar que el DOM esté listo
+        setTimeout(() => {
+            console.log("⏰ Timeout ejecutado, verificando función nuevamente...");
+            console.log("showDiagnosticModal disponible:", typeof showDiagnosticModal === 'function');
+            console.log("showDiagnosticModal en window:", typeof window.showDiagnosticModal === 'function');
+            
+            if (typeof showDiagnosticModal === 'function') {
+                console.log("✅ Función disponible, ejecutando...");
+                try {
+                    showDiagnosticModal();
+                    console.log("✅ Modal de diagnóstico mostrado para usuario nuevo");
+                } catch (error) {
+                    console.error("❌ Error al ejecutar showDiagnosticModal:", error);
+                }
+            } else if (typeof window.showDiagnosticModal === 'function') {
+                console.log("✅ Función disponible en window, ejecutando...");
+                try {
+                    window.showDiagnosticModal();
+                    console.log("✅ Modal de diagnóstico mostrado para usuario nuevo (via window)");
+                } catch (error) {
+                    console.error("❌ Error al ejecutar window.showDiagnosticModal:", error);
+                }
+            } else {
+                console.warn("⚠️ showDiagnosticModal no está disponible");
+                console.warn("🔍 Buscando función en diferentes ubicaciones...");
+                
+                // Buscar la función en diferentes lugares
+                const possibleLocations = [
+                    'showDiagnosticModal',
+                    'window.showDiagnosticModal',
+                    'global.showDiagnosticModal'
+                ];
+                
+                possibleLocations.forEach(location => {
+                    try {
+                        const func = eval(location);
+                        if (typeof func === 'function') {
+                            console.log(`✅ Función encontrada en: ${location}`);
+                        } else {
+                            console.log(`❌ No es función en: ${location}`);
+                        }
+                    } catch (error) {
+                        console.log(`❌ Error al evaluar: ${location}`);
+                    }
+                });
+                
+                // NO asignar nivel por defecto aquí
+                // El nivel se asignará DESPUÉS de completar el diagnóstico
+                console.log("⏸️ Saltando asignación de nivel hasta completar diagnóstico");
+            }
+        }, 500);
+    }
+    
+    // NO cargar progreso y UI cuando se muestra el diagnóstico
+    // Estas funciones se ejecutarán después de completar el diagnóstico
+    console.log("⏸️ Saltando carga de progreso/UI hasta completar diagnóstico");
 }
 
 function handleLogin(e) {
@@ -105,16 +194,9 @@ function handleLogin(e) {
             }, 100);
         } else {
             console.warn("⚠️ showDiagnosticModal no está disponible");
-            // Fallback: asignar nivel 1 por defecto
-            const defaultProgress = {
-                level: 1,
-                xp: 0,
-                lessonsCompleted: 0,
-                vocabularyWordsLearned: 0,
-                practiceStreak: 0
-            };
-            localStorage.setItem('englishLearningProgress', JSON.stringify(defaultProgress));
-            console.log("✅ Nivel por defecto asignado");
+            // NO asignar nivel por defecto aquí
+            // El nivel se asignará DESPUÉS de completar el diagnóstico
+            console.log("⏸️ Saltando asignación de nivel hasta completar diagnóstico");
         }
     } else {
         console.log("📊 Usuario existente, nivel actual:", userProgress.level);
@@ -165,74 +247,143 @@ function handleLogin(e) {
     }
 }
 
+// Función para obtener el usuario actual de la sesión
 function getCurrentUser() {
-    const session = JSON.parse(localStorage.getItem('englishLearningSession') || 'null');
-    if (!session) return null;
-    return session;
+    try {
+        const session = JSON.parse(localStorage.getItem('englishLearningSession') || 'null');
+        return session;
+    } catch (error) {
+        console.error("❌ Error al obtener usuario actual:", error);
+        return null;
+    }
 }
 
-function updateUserDisplay() {
-    const userDisplay = document.getElementById('userDisplay');
+// Función para verificar si hay una sesión activa
+function isAuthenticated() {
     const session = getCurrentUser();
-    if (session && session.name) {
-        userDisplay.innerHTML = `<i class="fas fa-user"></i> ${session.name}`;
-        userDisplay.style.display = 'block';
-    } else if (userDisplay) {
-        userDisplay.style.display = 'none';
+    return !!(session && session.email);
+}
+
+function updateUserDisplay(user) {
+    console.log("👤 Actualizando display del usuario...");
+    try {
+        const userDisplay = document.getElementById('userDisplay');
+        
+        // Verificar si el elemento existe antes de continuar
+        if (!userDisplay) {
+            console.log("⚠️ Elemento userDisplay no encontrado, saltando actualización");
+            return;
+        }
+        
+        if (user) {
+            console.log("✅ Usuario encontrado, mostrando información");
+            userDisplay.style.display = 'flex';
+            
+            const userInfo = userDisplay.querySelector('.user-info');
+            const userName = userDisplay.querySelector('.user-name');
+            const userLevel = userDisplay.querySelector('.user-level');
+            
+            if (userInfo && userName && userLevel) {
+                userName.textContent = user.name;
+                
+                // Obtener nivel del usuario
+                const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+                const level = userProgress.level || 1;
+                
+                const levelNames = {
+                    1: "Principiante",
+                    2: "Intermedio", 
+                    3: "Avanzado"
+                };
+                
+                userLevel.textContent = levelNames[level] || "Principiante";
+                
+                console.log("✅ Display del usuario actualizado");
+            } else {
+                console.warn("⚠️ Elementos internos de userDisplay no encontrados");
+            }
+        } else {
+            console.log("❌ No hay usuario activo, ocultando display");
+            userDisplay.style.display = 'none';
+        }
+    } catch (error) {
+        console.error("❌ Error al actualizar display del usuario:", error);
     }
 }
 
 function checkAuth() {
-    console.log("🔐 Iniciando verificación de autenticación...");
+    console.log("🔍 Verificando autenticación...");
     try {
-        const session = JSON.parse(localStorage.getItem('englishLearningSession') || 'null');
-        console.log("📋 Sesión encontrada en localStorage:", session);
+        // Verificar si ya se está mostrando el diagnóstico
+        const diagnosticModal = document.getElementById('diagnosticModal');
+        if (diagnosticModal && diagnosticModal.style.display === 'block') {
+            console.log("⚠️ Diagnóstico ya visible, saltando checkAuth...");
+            return true;
+        }
+        
+        const session = getCurrentUser();
         
         if (session && session.email) {
-            console.log("🔐 Sesión encontrada, ocultando modal...");
-            hideAuthModal();
-            updateUserDisplay();
+            console.log("✅ Usuario autenticado:", session.email);
             
-            try {
-                console.log("📊 Cargando progreso...");
-                if (typeof loadProgress === "function") {
-                    loadProgress();
-                    console.log("✅ Progreso cargado");
-                } else {
-                    console.warn("⚠️ loadProgress no está disponible");
-                }
+            // Actualizar UI del usuario
+            updateUserDisplay(session);
+            
+            // Ocultar modal de autenticación si está visible
+            hideAuthModal();
+            
+            // Verificar si el usuario ya completó el diagnóstico
+            const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+            const hasLevel = userProgress.level && userProgress.diagnosticCompleted;
+            
+            if (!hasLevel) {
+                console.log("🎯 Usuario nuevo, mostrando diagnóstico...");
                 
-                console.log("🎨 Actualizando UI...");
-                if (typeof updateUI === "function") {
-                    updateUI();
-                    console.log("✅ UI actualizada");
-                } else {
-                    console.warn("⚠️ updateUI no está disponible");
-                }
+                // Verificar que la función esté disponible
+                console.log("🔍 Verificando disponibilidad de showDiagnosticModal...");
+                console.log("showDiagnosticModal disponible:", typeof showDiagnosticModal === 'function');
+                console.log("showDiagnosticModal en window:", typeof window.showDiagnosticModal === 'function');
                 
-                console.log("📚 Cargando lección actual...");
-                if (typeof loadCurrentLesson === "function") {
-                    loadCurrentLesson();
-                    console.log("✅ Lección actual cargada");
-                } else {
-                    console.warn("⚠️ loadCurrentLesson no está disponible");
-                }
-                
-                console.log("🎉 Autenticación verificada exitosamente");
-            } catch (error) {
-                console.error("❌ Error durante la verificación de autenticación:", error);
+                // Mostrar modal de diagnóstico con delay para asegurar que el DOM esté listo
+                setTimeout(() => {
+                    console.log("⏰ Timeout ejecutado, verificando función nuevamente...");
+                    console.log("showDiagnosticModal disponible:", typeof showDiagnosticModal === 'function');
+                    console.log("showDiagnosticModal en window:", typeof window.showDiagnosticModal === 'function');
+                    
+                    if (typeof showDiagnosticModal === 'function') {
+                        showDiagnosticModal();
+                        console.log("✅ Diagnóstico mostrado correctamente");
+                    } else if (typeof window.showDiagnosticModal === 'function') {
+                        window.showDiagnosticModal();
+                        console.log("✅ Diagnóstico mostrado desde window");
+                    } else {
+                        console.error("❌ showDiagnosticModal no está disponible");
+                        // Fallback: mostrar notificación
+                        if (typeof showNotification === 'function') {
+                            showNotification('Error: No se pudo mostrar el diagnóstico', 'error');
+                        }
+                    }
+                }, 500);
+            } else {
+                console.log("✅ Usuario ya tiene nivel asignado:", userProgress.level);
             }
+            
+            return true;
         } else {
-            console.log("🔐 No hay sesión, mostrando modal de login...");
-            console.log("🎯 Llamando a showAuthModal()...");
+            console.log("❌ No hay sesión activa");
+            updateUserDisplay(null);
+            
+            // NO mostrar diagnóstico automáticamente aquí
+            // Solo mostrar modal de autenticación
+            console.log("🚪 Mostrando modal de autenticación para usuario no autenticado");
             showAuthModal();
-            console.log("✅ showAuthModal() ejecutado");
+            
+            return false;
         }
     } catch (error) {
         console.error("❌ Error en checkAuth:", error);
-        // Si hay error, mostrar modal de login como fallback
-        console.log("🔄 Mostrando modal de login como fallback...");
-        showAuthModal();
+        updateUserDisplay(null);
+        return false;
     }
 }
 
@@ -425,15 +576,34 @@ function setupAuthTabs() {
     }
 }
 
+// Variable para controlar si los tabs ya se configuraron
+let authTabsConfigured = false;
+
 // Función de inicialización para el módulo de autenticación
 function initAuth() {
     console.log("🚀 Módulo de autenticación inicializado");
     try {
-        setupAuthTabs();
-        console.log("✅ Tabs de autenticación configurados");
+        // Solo configurar tabs una vez
+        if (!authTabsConfigured) {
+            setupAuthTabs();
+            console.log("✅ Tabs de autenticación configurados");
+            authTabsConfigured = true;
+        } else {
+            console.log("✅ Tabs ya configurados, saltando...");
+        }
         
-        checkAuth();
-        console.log("✅ Verificación de autenticación completada");
+        // Verificar autenticación cada vez
+        const session = getCurrentUser();
+        if (!session || !session.email) {
+            console.log("🔍 No hay sesión activa, verificando autenticación...");
+            checkAuth();
+            console.log("✅ Verificación de autenticación completada");
+        } else {
+            console.log("✅ Sesión ya activa, saltando verificación de autenticación");
+        }
+        
+        console.log("✅ Módulo de autenticación inicializado correctamente");
+        
     } catch (error) {
         console.error("❌ Error en inicialización del módulo de autenticación:", error);
     }
