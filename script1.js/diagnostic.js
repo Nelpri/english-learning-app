@@ -486,6 +486,20 @@ function startLearning() {
         setTimeout(() => {
             console.log("⏰ Cargando contenido de la aplicación...");
             
+            // Actualizar el display del header principal con la información del usuario
+            const currentUser = JSON.parse(localStorage.getItem('englishLearningSession') || '{}');
+            const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+            
+            if (currentUser.name) {
+                const userNameDisplay = document.getElementById('userNameDisplay');
+                const userLevelDisplay = document.getElementById('userLevelDisplay');
+                
+                if (userNameDisplay && userLevelDisplay) {
+                    userNameDisplay.textContent = currentUser.name;
+                    userLevelDisplay.textContent = `Nivel ${userProgress.level || 1}`;
+                }
+            }
+            
             // Ejecutar checkAuth para cargar la aplicación principal
             if (typeof checkAuth === 'function') {
                 console.log("🔍 Ejecutando checkAuth para cargar aplicación...");

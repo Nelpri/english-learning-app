@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Header Display</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header de prueba -->
+    <header class="header">
+        <h1><i class="fas fa-graduation-cap"></i> English Learning</h1>
+        <div class="user-progress">
+            <span class="level">Nivel: <span id="currentLevel">1</span></span>
+            <span class="xp">XP: <span id="currentXP">0</span></span>
+        </div>
+        <div class="level-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="levelProgressFill"></div>
+            </div>
+            <span class="progress-text" id="levelProgressText">0%</span>
+        </div>
+        <div id="userDisplay" class="user-display" style="display: none;">
+            <!-- El nombre del usuario se insertará aquí dinámicamente -->
+        </div>
+        <div class="user-info-display">
+            <span class="user-name-display" id="userNameDisplay">Usuario</span>
+            <span class="user-level-display" id="userLevelDisplay">Nivel A1</span>
+        </div>
+        <button class="btn btn-secondary logout-btn" onclick="testLogout()" title="Cerrar sesión">
+            <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+        </button>
+    </header>
+
+    <div style="padding: 2rem; text-align: center;">
+        <h2>Test del Header Display</h2>
+        <p>Este es un archivo de prueba para verificar que el display del header principal funcione correctamente.</p>
+        
+        <div style="margin: 2rem 0;">
+            <button onclick="testLogin()" style="padding: 1rem 2rem; margin: 0.5rem; background: #4f46e5; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                🔐 Simular Login
+            </button>
+            <button onclick="testRegister()" style="padding: 1rem 2rem; margin: 0.5rem; background: #10b981; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                📝 Simular Registro
+            </button>
+            <button onclick="testLogout()" style="padding: 1rem 2rem; margin: 0.5rem; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                🚪 Simular Logout
+            </button>
+        </div>
+
+        <div style="background: #f3f4f6; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+            <h3>Estado Actual:</h3>
+            <p><strong>Nombre:</strong> <span id="statusName">Usuario</span></p>
+            <p><strong>Nivel:</strong> <span id="statusLevel">A1</span></p>
+            <p><strong>Sesión:</strong> <span id="statusSession">No iniciada</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Función para simular login
+        function testLogin() {
+            const testUser = {
+                name: "Juan Pérez",
+                email: "juan@test.com",
+                level: 2
+            };
+            
+            // Simular sesión
+            localStorage.setItem('englishLearningSession', JSON.stringify(testUser));
+            localStorage.setItem('englishLearningProgress', JSON.stringify({
+                level: 2,
+                diagnosticCompleted: true
+            }));
+            
+            // Actualizar displays
+            updateTestDisplay(testUser);
+            
+            console.log("✅ Login simulado exitosamente");
+        }
+
+        // Función para simular registro
+        function testRegister() {
+            const testUser = {
+                name: "María García",
+                email: "maria@test.com",
+                level: 1
+            };
+            
+            // Simular sesión
+            localStorage.setItem('englishLearningSession', JSON.stringify(testUser));
+            localStorage.setItem('englishLearningProgress', JSON.stringify({
+                level: 1,
+                diagnosticCompleted: true
+            }));
+            
+            // Actualizar displays
+            updateTestDisplay(testUser);
+            
+            console.log("✅ Registro simulado exitosamente");
+        }
+
+        // Función para simular logout
+        function testLogout() {
+            // Limpiar sesión
+            localStorage.removeItem('englishLearningSession');
+            localStorage.removeItem('englishLearningProgress');
+            
+            // Resetear displays
+            updateTestDisplay(null);
+            
+            console.log("✅ Logout simulado exitosamente");
+        }
+
+        // Función para actualizar el display de prueba
+        function updateTestDisplay(user) {
+            const userNameDisplay = document.getElementById('userNameDisplay');
+            const userLevelDisplay = document.getElementById('userLevelDisplay');
+            const statusName = document.getElementById('statusName');
+            const statusLevel = document.getElementById('statusLevel');
+            const statusSession = document.getElementById('statusSession');
+            
+            if (user) {
+                // Actualizar header
+                userNameDisplay.textContent = user.name;
+                userLevelDisplay.textContent = `Nivel ${user.level}`;
+                
+                // Actualizar estado
+                statusName.textContent = user.name;
+                statusLevel.textContent = `A${user.level}`;
+                statusSession.textContent = "Iniciada";
+            } else {
+                // Resetear header
+                userNameDisplay.textContent = 'Usuario';
+                userLevelDisplay.textContent = 'Nivel A1';
+                
+                // Resetear estado
+                statusName.textContent = 'Usuario';
+                statusLevel.textContent = 'A1';
+                statusSession.textContent = 'No iniciada';
+            }
+        }
+
+        // Inicializar estado
+        window.onload = function() {
+            const session = JSON.parse(localStorage.getItem('englishLearningSession') || 'null');
+            if (session) {
+                updateTestDisplay(session);
+            }
+        };
+    </script>
+</body>
+</html>

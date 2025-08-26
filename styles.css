@@ -158,6 +158,36 @@ body {
     line-height: 1;
 }
 
+/* Display de información del usuario en el header */
+.user-info-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    margin-right: 0.5rem;
+    min-width: 120px;
+}
+
+.user-name-display {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: white;
+    line-height: 1;
+    margin-bottom: 0.2rem;
+}
+
+.user-level-display {
+    font-size: 0.7rem;
+    color: var(--accent-color);
+    font-weight: 500;
+    background: rgba(245, 158, 11, 0.2);
+    padding: 0.1rem 0.4rem;
+    border-radius: 8px;
+    line-height: 1;
+}
+
 /* Navegación */
 .nav-tabs {
     display: flex;
@@ -1053,6 +1083,22 @@ body {
         margin-bottom: 0.5em;
     }
     
+    .user-info-display {
+        margin-right: 0;
+        margin-bottom: 0.5em;
+        min-width: 100px;
+        padding: 0.3rem 0.5rem;
+    }
+    
+    .user-name-display {
+        font-size: 0.8rem;
+    }
+    
+    .user-level-display {
+        font-size: 0.6rem;
+        padding: 0.05rem 0.3rem;
+    }
+    
     .user-details {
         gap: 0.05rem;
     }
@@ -1356,6 +1402,20 @@ body {
     
     .user-display {
         padding: 0.3rem 0.5em;
+    }
+    
+    .user-info-display {
+        min-width: 80px;
+        padding: 0.2rem 0.4rem;
+    }
+    
+    .user-name-display {
+        font-size: 0.7rem;
+    }
+    
+    .user-level-display {
+        font-size: 0.5rem;
+        padding: 0.05rem 0.2rem;
     }
     
     .user-name {

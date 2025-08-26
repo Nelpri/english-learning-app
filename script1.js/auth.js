@@ -58,6 +58,15 @@ function handleRegister(e) {
     // Actualizar display del usuario
     updateUserDisplay(newUser);
     
+    // Actualizar también el display del header principal
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    const userLevelDisplay = document.getElementById('userLevelDisplay');
+    
+    if (userNameDisplay && userLevelDisplay) {
+        userNameDisplay.textContent = newUser.name;
+        userLevelDisplay.textContent = 'Nivel 1';
+    }
+    
     // Verificar si es usuario nuevo (debe serlo)
     const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
     const hasLevel = userProgress.level && userProgress.level > 0;
@@ -179,6 +188,19 @@ function handleLogin(e) {
     updateUserDisplay();
     console.log("👤 Display del usuario actualizado");
     
+    // Actualizar también el display del header principal
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    const userLevelDisplay = document.getElementById('userLevelDisplay');
+    
+    if (userNameDisplay && userLevelDisplay) {
+        userNameDisplay.textContent = user.name;
+        
+        // Obtener nivel del usuario
+        const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+        const level = userProgress.level || 1;
+        userLevelDisplay.textContent = `Nivel ${level}`;
+    }
+    
     // Verificar si el usuario ya tiene un nivel asignado
     const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
     const hasLevel = userProgress.level && userProgress.level > 0;
@@ -268,8 +290,10 @@ function updateUserDisplay(user) {
     console.log("👤 Actualizando display del usuario...");
     try {
         const userDisplay = document.getElementById('userDisplay');
+        const userNameDisplay = document.getElementById('userNameDisplay');
+        const userLevelDisplay = document.getElementById('userLevelDisplay');
         
-        // Verificar si el elemento existe antes de continuar
+        // Verificar si los elementos existen antes de continuar
         if (!userDisplay) {
             console.log("⚠️ Elemento userDisplay no encontrado, saltando actualización");
             return;
@@ -296,7 +320,14 @@ function updateUserDisplay(user) {
                     3: "Avanzado"
                 };
                 
-                userLevel.textContent = levelNames[level] || "Principiante";
+                const levelText = levelNames[level] || "Principiante";
+                userLevel.textContent = levelText;
+                
+                // Actualizar también el display en el header principal
+                if (userNameDisplay && userLevelDisplay) {
+                    userNameDisplay.textContent = user.name;
+                    userLevelDisplay.textContent = `Nivel ${level}`;
+                }
                 
                 console.log("✅ Display del usuario actualizado");
             } else {
@@ -305,6 +336,12 @@ function updateUserDisplay(user) {
         } else {
             console.log("❌ No hay usuario activo, ocultando display");
             userDisplay.style.display = 'none';
+            
+            // Resetear el display del header principal
+            if (userNameDisplay && userLevelDisplay) {
+                userNameDisplay.textContent = 'Usuario';
+                userLevelDisplay.textContent = 'Nivel A1';
+            }
         }
     } catch (error) {
         console.error("❌ Error al actualizar display del usuario:", error);
@@ -389,6 +426,16 @@ function checkAuth() {
 
 function logout() {
     localStorage.removeItem('englishLearningSession');
+    
+    // Resetear el display del header principal
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    const userLevelDisplay = document.getElementById('userLevelDisplay');
+    
+    if (userNameDisplay && userLevelDisplay) {
+        userNameDisplay.textContent = 'Usuario';
+        userLevelDisplay.textContent = 'Nivel A1';
+    }
+    
     updateUserDisplay();
     showAuthModal();
 }
