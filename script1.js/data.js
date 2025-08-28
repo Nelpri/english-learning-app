@@ -36,14 +36,12 @@ const LESSONS_DATABASE = {
                 title: "Artículos Indefinidos",
                 content: "a (un/una), an (un/una - antes de vocales)"
             }
-        }
-    ],
-    level2: [
+        },
         {
             id: 3,
             title: "Colores Básicos",
-            difficulty: "Básico",
-            mcer: "A2",
+            difficulty: "Principiante",
+            mcer: "A1",
             vocabulary: [
                 { english: "Red", spanish: "Rojo", pronunciation: "/red/" },
                 { english: "Blue", spanish: "Azul", pronunciation: "/bluː/" },
@@ -52,8 +50,78 @@ const LESSONS_DATABASE = {
                 { english: "Black", spanish: "Negro", pronunciation: "/blæk/" }
             ],
             grammar: {
-                title: "Adjetivos",
-                content: "Los adjetivos van antes del sustantivo en inglés"
+                title: "Adjetivos de Color",
+                content: "Los colores son adjetivos que describen la apariencia de los objetos"
+            }
+        },
+        {
+            id: 4,
+            title: "Familia Básica",
+            difficulty: "Principiante",
+            mcer: "A1",
+            vocabulary: [
+                { english: "Mother", spanish: "Madre", pronunciation: "/ˈmʌðər/" },
+                { english: "Father", spanish: "Padre", pronunciation: "/ˈfɑːðər/" },
+                { english: "Sister", spanish: "Hermana", pronunciation: "/ˈsɪstər/" },
+                { english: "Brother", spanish: "Hermano", pronunciation: "/ˈbrʌðər/" },
+                { english: "Baby", spanish: "Bebé", pronunciation: "/ˈbeɪbi/" }
+            ],
+            grammar: {
+                title: "Posesivos",
+                content: "my (mi), your (tu), his (su - de él), her (su - de ella), our (nuestro)"
+            }
+        },
+        {
+            id: 5,
+            title: "Animales Domésticos",
+            difficulty: "Principiante",
+            mcer: "A1",
+            vocabulary: [
+                { english: "Dog", spanish: "Perro", pronunciation: "/dɔːɡ/" },
+                { english: "Cat", spanish: "Gato", pronunciation: "/kæt/" },
+                { english: "Bird", spanish: "Pájaro", pronunciation: "/bɜːrd/" },
+                { english: "Fish", spanish: "Pez", pronunciation: "/fɪʃ/" },
+                { english: "Rabbit", spanish: "Conejo", pronunciation: "/ˈræbɪt/" }
+            ],
+            grammar: {
+                title: "Plurales Regulares",
+                content: "Para formar plurales regulares en inglés, agregamos -s al final de la palabra"
+            }
+        },
+        {
+            id: 6,
+            title: "Comida Básica",
+            difficulty: "Principiante",
+            mcer: "A1",
+            vocabulary: [
+                { english: "Bread", spanish: "Pan", pronunciation: "/bred/" },
+                { english: "Milk", spanish: "Leche", pronunciation: "/mɪlk/" },
+                { english: "Apple", spanish: "Manzana", pronunciation: "/ˈæpəl/" },
+                { english: "Water", spanish: "Agua", pronunciation: "/ˈwɔːtər/" },
+                { english: "Rice", spanish: "Arroz", pronunciation: "/raɪs/" }
+            ],
+            grammar: {
+                title: "Sustantivos Contables e Incontables",
+                content: "Los sustantivos contables pueden contarse (apples), los incontables no (water)"
+            }
+        }
+    ],
+    level2: [
+        {
+            id: 7,
+            title: "Colores Avanzados",
+            difficulty: "Básico",
+            mcer: "A2",
+            vocabulary: [
+                { english: "Purple", spanish: "Morado", pronunciation: "/ˈpɜːrpl/" },
+                { english: "Orange", spanish: "Naranja", pronunciation: "/ˈɔːrɪndʒ/" },
+                { english: "Pink", spanish: "Rosa", pronunciation: "/pɪŋk/" },
+                { english: "Brown", spanish: "Marrón", pronunciation: "/braʊn/" },
+                { english: "Gray", spanish: "Gris", pronunciation: "/ɡreɪ/" }
+            ],
+            grammar: {
+                title: "Adjetivos Comparativos",
+                content: "Para comparar usamos: big - bigger, small - smaller, beautiful - more beautiful"
             }
         }
     ]

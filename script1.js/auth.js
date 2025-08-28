@@ -185,7 +185,10 @@ function handleLogin(e) {
         alert(`👋 ¡Bienvenido de vuelta, ${user.name}!`);
     }
     
-    updateUserDisplay();
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+        updateUserDisplay(currentUser);
+    }
     console.log("👤 Display del usuario actualizado");
     
     // Actualizar también el display del header principal
@@ -272,8 +275,48 @@ function handleLogin(e) {
 // Función para obtener el usuario actual de la sesión
 function getCurrentUser() {
     try {
-        const session = JSON.parse(localStorage.getItem('englishLearningSession') || 'null');
-        return session;
+        console.log("🔍 Buscando usuario actual...");
+        
+        // 1. Intentar obtener de englishLearningSession
+        let session = JSON.parse(localStorage.getItem('englishLearningSession') || 'null');
+        if (session && session.email) {
+            console.log("✅ Usuario encontrado en englishLearningSession:", session.name);
+            return session;
+        }
+        
+        // 2. Intentar obtener de englishLearningUser
+        session = JSON.parse(localStorage.getItem('englishLearningUser') || 'null');
+        if (session && session.email) {
+            console.log("✅ Usuario encontrado en englishLearningUser:", session.name);
+            return session;
+        }
+        
+        // 3. Intentar obtener de appState si está disponible
+        if (typeof appState !== 'undefined' && appState.currentUser) {
+            console.log("✅ Usuario encontrado en appState:", appState.currentUser.name);
+            return appState.currentUser;
+        }
+        
+        // 4. Verificar si hay algún usuario en localStorage
+        const allKeys = Object.keys(localStorage);
+        const userKeys = allKeys.filter(key => key.includes('user') || key.includes('session'));
+        console.log("🔍 Claves relacionadas con usuario encontradas:", userKeys);
+        
+        for (const key of userKeys) {
+            try {
+                const data = JSON.parse(localStorage.getItem(key));
+                if (data && data.name && data.email) {
+                    console.log(`✅ Usuario encontrado en ${key}:`, data.name);
+                    return data;
+                }
+            } catch (e) {
+                // Ignorar errores de parsing
+            }
+        }
+        
+        console.log("❌ No se encontró usuario activo");
+        return null;
+        
     } catch (error) {
         console.error("❌ Error al obtener usuario actual:", error);
         return null;
@@ -289,59 +332,111 @@ function isAuthenticated() {
 function updateUserDisplay(user) {
     console.log("👤 Actualizando display del usuario...");
     try {
-        const userDisplay = document.getElementById('userDisplay');
+        // Obtener elementos del header principal
         const userNameDisplay = document.getElementById('userNameDisplay');
         const userLevelDisplay = document.getElementById('userLevelDisplay');
-        
-        // Verificar si los elementos existen antes de continuar
-        if (!userDisplay) {
-            console.log("⚠️ Elemento userDisplay no encontrado, saltando actualización");
-            return;
-        }
+        const currentXPElement = document.getElementById('currentXP');
+        const currentLevelElement = document.getElementById('currentLevel');
+        const levelProgressFill = document.getElementById('levelProgressFill');
+        const levelProgressText = document.getElementById('levelProgressText');
         
         if (user) {
-            console.log("✅ Usuario encontrado, mostrando información");
-            userDisplay.style.display = 'flex';
+            console.log("✅ Usuario encontrado, mostrando información:", user.name);
             
-            const userInfo = userDisplay.querySelector('.user-info');
-            const userName = userDisplay.querySelector('.user-name');
-            const userLevel = userDisplay.querySelector('.user-level');
-            
-            if (userInfo && userName && userLevel) {
-                userName.textContent = user.name;
-                
-                // Obtener nivel del usuario
-                const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-                const level = userProgress.level || 1;
-                
-                const levelNames = {
-                    1: "Principiante",
-                    2: "Intermedio", 
-                    3: "Avanzado"
-                };
-                
-                const levelText = levelNames[level] || "Principiante";
-                userLevel.textContent = levelText;
-                
-                // Actualizar también el display en el header principal
-                if (userNameDisplay && userLevelDisplay) {
-                    userNameDisplay.textContent = user.name;
-                    userLevelDisplay.textContent = `Nivel ${level}`;
-                }
-                
-                console.log("✅ Display del usuario actualizado");
+            // Obtener progreso del usuario desde appState o localStorage
+            let userProgress;
+            if (typeof appState !== 'undefined' && appState.currentXP !== undefined) {
+                userProgress = appState;
+                console.log("📊 Progreso del usuario desde appState:", userProgress);
             } else {
-                console.warn("⚠️ Elementos internos de userDisplay no encontrados");
+                userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+                console.log("📊 Progreso del usuario desde localStorage:", userProgress);
             }
+            
+            // Obtener nivel y XP
+            const level = userProgress.currentLevel || 1;
+            const xp = userProgress.currentXP || 0;
+            
+            // Calcular nivel MCER basado en XP
+            let mcerLevel;
+            if (xp < 100) mcerLevel = 'A1';
+            else if (xp < 300) mcerLevel = 'A1+';
+            else if (xp < 600) mcerLevel = 'A2';
+            else if (xp < 1000) mcerLevel = 'A2+';
+            else if (xp < 1500) mcerLevel = 'B1';
+            else if (xp < 2500) mcerLevel = 'B1+';
+            else if (xp < 4000) mcerLevel = 'B2';
+            else if (xp < 6000) mcerLevel = 'B2+';
+            else if (xp < 9000) mcerLevel = 'C1';
+            else mcerLevel = 'C2';
+            
+            console.log("📊 Nivel calculado:", { level, xp, mcerLevel });
+            
+            // Actualizar nombre del usuario en el header
+            if (userNameDisplay) {
+                userNameDisplay.textContent = user.name;
+                console.log("✅ Nombre del usuario actualizado:", user.name);
+            } else {
+                console.warn("⚠️ Elemento userNameDisplay no encontrado");
+            }
+            
+            // Actualizar nivel MCER en el header
+            if (userLevelDisplay) {
+                userLevelDisplay.textContent = `Nivel ${mcerLevel}`;
+                console.log("✅ Nivel MCER actualizado:", mcerLevel);
+            } else {
+                console.warn("⚠️ Elemento userLevelDisplay no encontrado");
+            }
+            
+            // Actualizar XP en el header
+            if (currentXPElement) {
+                currentXPElement.textContent = xp;
+                console.log("✅ XP del header actualizado:", xp);
+            } else {
+                console.warn("⚠️ Elemento currentXP no encontrado");
+            }
+            
+            // Actualizar nivel en el header
+            if (currentLevelElement) {
+                currentLevelElement.textContent = level;
+                console.log("✅ Nivel del header actualizado:", level);
+            } else {
+                console.warn("⚠️ Elemento currentLevel no encontrado");
+            }
+            
+            // Actualizar barra de progreso si está disponible
+            if (levelProgressFill && levelProgressText) {
+                try {
+                    // Calcular progreso del nivel actual
+                    const xpForNextLevel = level * 100; // XP requerido para el siguiente nivel
+                    const xpInCurrentLevel = xp % 100; // XP en el nivel actual
+                    const progressPercentage = Math.min((xpInCurrentLevel / 100) * 100, 100);
+                    
+                    levelProgressFill.style.width = `${progressPercentage}%`;
+                    levelProgressText.textContent = `${xpInCurrentLevel} / 100 XP`;
+                    console.log("✅ Barra de progreso actualizada:", progressPercentage + "%");
+                } catch (error) {
+                    console.warn("⚠️ No se pudo actualizar barra de progreso:", error);
+                }
+            } else {
+                console.warn("⚠️ Elementos de barra de progreso no encontrados");
+            }
+            
+            console.log("✅ Display del usuario actualizado completamente");
+            console.log("📊 Resumen:", { name: user.name, level, xp, mcerLevel });
+            
         } else {
-            console.log("❌ No hay usuario activo, ocultando display");
-            userDisplay.style.display = 'none';
+            console.log("❌ No hay usuario activo, reseteando display");
             
             // Resetear el display del header principal
-            if (userNameDisplay && userLevelDisplay) {
-                userNameDisplay.textContent = 'Usuario';
-                userLevelDisplay.textContent = 'Nivel A1';
-            }
+            if (userNameDisplay) userNameDisplay.textContent = 'Usuario';
+            if (userLevelDisplay) userLevelDisplay.textContent = 'Nivel A1';
+            if (currentXPElement) currentXPElement.textContent = '0';
+            if (currentLevelElement) currentLevelElement.textContent = '1';
+            if (levelProgressFill) levelProgressFill.style.width = '0%';
+            if (levelProgressText) levelProgressText.textContent = '0 / 100 XP';
+            
+            console.log("✅ Display reseteado");
         }
     } catch (error) {
         console.error("❌ Error al actualizar display del usuario:", error);
@@ -403,6 +498,12 @@ function checkAuth() {
                 }, 500);
             } else {
                 console.log("✅ Usuario ya tiene nivel asignado:", userProgress.level);
+                
+                // Sincronizar automáticamente el display del usuario
+                setTimeout(() => {
+                    console.log("🔄 Sincronizando display del usuario existente...");
+                    updateUserDisplay(session);
+                }, 100);
             }
             
             return true;
@@ -436,7 +537,10 @@ function logout() {
         userLevelDisplay.textContent = 'Nivel A1';
     }
     
-    updateUserDisplay();
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+        updateUserDisplay(currentUser);
+    }
     showAuthModal();
 }
 
@@ -656,6 +760,57 @@ function initAuth() {
     }
 }
 
+// Función de sincronización global para resolver problemas de estado
+function syncUserDisplay() {
+    console.log("🔄 Iniciando sincronización global del display del usuario...");
+    
+    try {
+        // 1. Obtener usuario actual
+        const currentUser = getCurrentUser();
+        if (!currentUser) {
+            console.log("❌ No hay usuario activo para sincronizar");
+            return;
+        }
+        
+        console.log("✅ Usuario encontrado para sincronización:", currentUser.name);
+        
+        // 2. Actualizar display del usuario
+        updateUserDisplay(currentUser);
+        
+        // 3. Verificar que los elementos se hayan actualizado correctamente
+        const userNameDisplay = document.getElementById('userNameDisplay');
+        const userLevelDisplay = document.getElementById('userLevelDisplay');
+        
+        if (userNameDisplay && userLevelDisplay) {
+            console.log("✅ Verificación de sincronización:");
+            console.log("   - Nombre:", userNameDisplay.textContent);
+            console.log("   - Nivel:", userLevelDisplay.textContent);
+        }
+        
+        console.log("✅ Sincronización global completada");
+        
+    } catch (error) {
+        console.error("❌ Error en sincronización global:", error);
+    }
+}
+
+// Función para forzar la actualización del display
+function forceUpdateDisplay() {
+    console.log("🔧 Forzando actualización del display...");
+    
+    try {
+        const currentUser = getCurrentUser();
+        if (currentUser) {
+            updateUserDisplay(currentUser);
+            console.log("✅ Display forzado a actualizar");
+        } else {
+            console.log("❌ No se pudo forzar la actualización - usuario no encontrado");
+        }
+    } catch (error) {
+        console.error("❌ Error al forzar actualización:", error);
+    }
+}
+
 // Exportar funciones globalmente
 window.handleRegister = handleRegister;
 window.handleLogin = handleLogin;
@@ -666,3 +821,6 @@ window.updateUserDisplay = updateUserDisplay;
 window.showAuthModal = showAuthModal;
 window.hideAuthModal = hideAuthModal;
 window.initAuth = initAuth;
+window.syncUserDisplay = syncUserDisplay;
+window.forceUpdateDisplay = forceUpdateDisplay;
+window.getCurrentUser = getCurrentUser;

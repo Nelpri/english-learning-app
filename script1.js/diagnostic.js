@@ -369,21 +369,53 @@ function completeDiagnostic() {
     try {
         // Calcular nivel basado en la puntuación
         let level = 1;
-        if (diagnosticScore >= 8) {
-            level = 3; // Avanzado
+        if (diagnosticScore >= 11) {
+            level = 5; // B2 - Intermedio Alto
+        } else if (diagnosticScore >= 10) {
+            level = 4; // B1+ - Avanzado+
+        } else if (diagnosticScore >= 9) {
+            level = 3; // B1 - Avanzado
+        } else if (diagnosticScore >= 7) {
+            level = 2; // A2 - Intermedio
         } else if (diagnosticScore >= 5) {
-            level = 2; // Intermedio
+            level = 1; // A1 - Principiante
         } else {
-            level = 1; // Principiante
+            level = 1; // A1 - Principiante (fallback)
         }
         
         console.log("📊 Puntuación final:", diagnosticScore, "/", DIAGNOSTIC_QUESTIONS.length);
         console.log("🎯 Nivel asignado:", level);
         
+        // Calcular XP inicial basado en el nivel diagnosticado
+        let initialXP;
+        if (level === 1) {
+            initialXP = 0; // A1 - Principiante
+        } else if (level === 2) {
+            initialXP = 300; // A2 - Intermedio
+        } else if (level === 3) {
+            initialXP = 1000; // B1 - Avanzado
+        } else if (level === 4) {
+            initialXP = 1500; // B1+ - Avanzado+
+        } else if (level === 5) {
+            initialXP = 2000; // B2 - Intermedio Alto
+        } else if (level === 6) {
+            initialXP = 3000; // B2+ - Intermedio Alto+
+        } else if (level === 7) {
+            initialXP = 4000; // C1 - Avanzado
+        } else if (level === 8) {
+            initialXP = 6000; // C1+ - Avanzado+
+        } else if (level === 9) {
+            initialXP = 8000; // C2 - Maestría
+        } else {
+            initialXP = 10000; // C2+ - Maestría+
+        }
+        
         // Guardar progreso del usuario
         const userProgress = {
-            level: level,
-            xp: 0,
+            currentLevel: level,
+            currentXP: initialXP,
+            level: level, // Mantener compatibilidad
+            xp: initialXP, // Mantener compatibilidad
             lessonsCompleted: 0,
             vocabularyWordsLearned: 0,
             practiceStreak: 0,
@@ -415,25 +447,73 @@ function showDiagnosticResult(level, score) {
             // Mostrar resultado
             diagnosticResult.style.display = 'block';
             
+            // Mapear nivel a MCER
+            const mcerLevels = {
+                1: "A1",
+                2: "A2", 
+                3: "B1",
+                4: "B1+",
+                5: "B2",
+                6: "B2+",
+                7: "C1",
+                8: "C1+",
+                9: "C2",
+                10: "C2+"
+            };
+            
             const levelNames = {
-                1: "Principiante (A1)",
-                2: "Intermedio (A2)",
-                3: "Avanzado (B1)"
+                1: `Principiante (${mcerLevels[1]})`,
+                2: `Intermedio (${mcerLevels[2]})`,
+                3: `Avanzado (${mcerLevels[3]})`,
+                4: `Avanzado+ (${mcerLevels[4]})`,
+                5: `Intermedio Alto (${mcerLevels[5]})`,
+                6: `Intermedio Alto+ (${mcerLevels[6]})`,
+                7: `Avanzado Alto (${mcerLevels[7]})`,
+                8: `Avanzado Alto+ (${mcerLevels[8]})`,
+                9: `Maestría (${mcerLevels[9]})`,
+                10: `Maestría+ (${mcerLevels[10]})`
             };
             
             const levelDescriptions = {
                 1: "Perfecto para comenzar tu viaje de aprendizaje del inglés. Te enfocarás en vocabulario básico, saludos, números y estructuras simples.",
                 2: "Excelente progreso. Continuarás con tiempos verbales, adjetivos comparativos y conversaciones más complejas.",
-                3: "¡Impresionante! Estás listo para desafíos avanzados, incluyendo expresiones idiomáticas y gramática compleja."
+                3: "¡Impresionante! Estás listo para desafíos avanzados, incluyendo expresiones idiomáticas y gramática compleja.",
+                4: "¡Excelente nivel! Dominas estructuras complejas y estás listo para expresiones idiomáticas y vocabulario avanzado.",
+                5: "¡Nivel intermedio alto! Tienes un dominio sólido del inglés y puedes manejar conversaciones complejas con fluidez.",
+                6: "¡Nivel intermedio alto+! Tu inglés es muy bueno y puedes expresarte con precisión en situaciones profesionales.",
+                7: "¡Nivel avanzado alto! Tienes un dominio excepcional del inglés y puedes manejar cualquier situación comunicativa.",
+                8: "¡Nivel avanzado alto+! Tu inglés es casi nativo y puedes expresarte con elegancia y precisión.",
+                9: "¡Nivel de maestría! Tienes un dominio nativo del inglés y puedes expresarte con fluidez y naturalidad.",
+                10: "¡Nivel de maestría+! Tu inglés es excepcional y puedes manejar cualquier registro y contexto comunicativo."
             };
             
             const levelColors = {
                 1: "linear-gradient(135deg, #10b981, #059669)",
                 2: "linear-gradient(135deg, #f59e0b, #d97706)",
-                3: "linear-gradient(135deg, #8b5cf6, #7c3aed)"
+                3: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
+                4: "linear-gradient(135deg, #ec4899, #be185d)",
+                5: "linear-gradient(135deg, #06b6d4, #0891b2)",
+                6: "linear-gradient(135deg, #84cc16, #65a30d)",
+                7: "linear-gradient(135deg, #f97316, #ea580c)",
+                8: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
+                9: "linear-gradient(135deg, #ef4444, #dc2626)",
+                10: "linear-gradient(135deg, #000000, #374151)"
             };
             
             const percentage = Math.round((score / DIAGNOSTIC_QUESTIONS.length) * 100);
+            
+            // Guardar el nivel MCER en localStorage
+            const mcerLevel = mcerLevels[level];
+            const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+            userProgress.diagnosticLevel = mcerLevel;
+            userProgress.currentLevel = level;
+            userProgress.currentXP = userProgress.currentXP || 0;
+            userProgress.level = level; // Mantener compatibilidad
+            userProgress.xp = userProgress.currentXP; // Mantener compatibilidad
+            userProgress.diagnosticCompleted = true;
+            localStorage.setItem('englishLearningProgress', JSON.stringify(userProgress));
+            
+            console.log("💾 Nivel MCER guardado:", mcerLevel);
             
             diagnosticResult.innerHTML = `
                 <div style="text-align: center; padding: 2rem;">
@@ -486,47 +566,67 @@ function startLearning() {
         setTimeout(() => {
             console.log("⏰ Cargando contenido de la aplicación...");
             
-            // Actualizar el display del header principal con la información del usuario
-            const currentUser = JSON.parse(localStorage.getItem('englishLearningSession') || '{}');
-            const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-            
-            if (currentUser.name) {
-                const userNameDisplay = document.getElementById('userNameDisplay');
-                const userLevelDisplay = document.getElementById('userLevelDisplay');
-                
-                if (userNameDisplay && userLevelDisplay) {
-                    userNameDisplay.textContent = currentUser.name;
-                    userLevelDisplay.textContent = `Nivel ${userProgress.level || 1}`;
-                }
-            }
-            
-            // Ejecutar checkAuth para cargar la aplicación principal
-            if (typeof checkAuth === 'function') {
-                console.log("🔍 Ejecutando checkAuth para cargar aplicación...");
-                checkAuth();
+            // Inicializar el estado desde el diagnóstico usando la nueva función
+            if (typeof initializeFromDiagnostic === 'function') {
+                console.log("🎯 Inicializando estado desde diagnóstico...");
+                const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+                const diagnosticLevel = userProgress.diagnosticLevel || 'A1';
+                initializeFromDiagnostic(diagnosticLevel);
             } else {
-                console.warn("⚠️ checkAuth no disponible, cargando funciones individuales...");
+                console.warn("⚠️ initializeFromDiagnostic no disponible, usando método alternativo...");
                 
-                if (typeof loadProgress === 'function') {
-                    loadProgress();
-                    console.log("✅ Progreso cargado");
+                // Método alternativo: actualizar el display del header principal
+                const currentUser = JSON.parse(localStorage.getItem('englishLearningSession') || '{}');
+                const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+                
+                if (currentUser.name) {
+                    const userNameDisplay = document.getElementById('userNameDisplay');
+                    const userLevelDisplay = document.getElementById('userLevelDisplay');
+                    
+                    if (userNameDisplay && userLevelDisplay) {
+                        userNameDisplay.textContent = currentUser.name;
+                        const level = userProgress.currentLevel || userProgress.level || 1;
+                        userLevelDisplay.textContent = `Nivel ${level}`;
+                    }
                 }
                 
-                if (typeof updateUI === 'function') {
-                    updateUI();
-                    console.log("✅ UI actualizada");
-                }
-                
-                if (typeof loadCurrentLesson === 'function') {
-                    loadCurrentLesson();
-                    console.log("✅ Lección actual cargada");
-                }
-                
-                if (typeof loadVocabularyCategories === 'function') {
-                    loadVocabularyCategories();
-                    console.log("✅ Categorías de vocabulario cargadas");
+                // Ejecutar checkAuth para cargar la aplicación principal
+                if (typeof checkAuth === 'function') {
+                    console.log("🔍 Ejecutando checkAuth para cargar aplicación...");
+                    checkAuth();
                 }
             }
+            
+            // Sincronizar automáticamente el display del usuario después de un breve delay
+            setTimeout(() => {
+                console.log("🔄 Sincronizando display del usuario...");
+                if (typeof updateUserDisplay === 'function') {
+                    const currentUser = getCurrentUser();
+                    if (currentUser) {
+                        updateUserDisplay(currentUser);
+                        console.log("✅ Display del usuario sincronizado automáticamente");
+                    }
+                }
+                
+                // Verificar que la sincronización funcionó
+                setTimeout(() => {
+                    const userNameDisplay = document.getElementById('userNameDisplay');
+                    const userLevelDisplay = document.getElementById('userLevelDisplay');
+                    
+                    if (userNameDisplay && userLevelDisplay) {
+                        console.log("✅ Verificación de sincronización:");
+                        console.log("   - Nombre:", userNameDisplay.textContent);
+                        console.log("   - Nivel:", userLevelDisplay.textContent);
+                        
+                        if (userNameDisplay.textContent === 'Usuario' || userLevelDisplay.textContent === 'Nivel A1') {
+                            console.warn("⚠️ La sincronización no funcionó correctamente, forzando...");
+                            if (typeof forceUpdateDisplay === 'function') {
+                                forceUpdateDisplay();
+                            }
+                        }
+                    }
+                }, 300);
+            }, 200);
             
             console.log("🎉 Aprendizaje iniciado correctamente");
         }, 100); // Pequeño delay para asegurar que el modal se oculte primero

@@ -1,5 +1,8 @@
 // Módulo de práctica: ejercicios de vocabulario, gramática, listening, pronunciación
 
+// Variable global para el índice de lección de práctica
+let practiceLessonIndex = 0;
+
 function loadPracticeModes() {
     try {
         console.log("🎯 Cargando modos de práctica integrados");
@@ -93,6 +96,15 @@ function loadPracticeExercise(mode, categoryKey = null) {
             return;
         }
         
+        // Sincronizar práctica con el sistema global de lecciones
+        if (typeof appState !== 'undefined' && typeof getAllowedLessonsByLevel === 'function') {
+            const allowedLessons = getAllowedLessonsByLevel();
+            if (practiceLessonIndex !== appState.currentLesson) {
+                practiceLessonIndex = appState.currentLesson;
+                console.log("🔄 Sincronizando práctica con lección global:", practiceLessonIndex);
+            }
+        }
+        
         // Mostrar área de práctica
         practiceArea.style.display = 'block';
         
@@ -111,8 +123,23 @@ function loadPracticeExercise(mode, categoryKey = null) {
         const modeTitle = document.createElement('h3');
         modeTitle.textContent = getModeTitle(mode);
         
+        // Agregar información de la lección actual
+        const lessonInfo = document.createElement('div');
+        lessonInfo.className = 'practice-lesson-info';
+        if (typeof appState !== 'undefined' && typeof getAllowedLessonsByLevel === 'function') {
+            const allowedLessons = getAllowedLessonsByLevel();
+            const currentLesson = allowedLessons[appState.currentLesson];
+            if (currentLesson) {
+                lessonInfo.innerHTML = `
+                    <div class="practice-lesson-title">${currentLesson.title}</div>
+                    <div class="practice-lesson-counter">Lección ${appState.currentLesson + 1} de ${allowedLessons.length}</div>
+                `;
+            }
+        }
+        
         practiceHeader.appendChild(backBtn);
         practiceHeader.appendChild(modeTitle);
+        practiceHeader.appendChild(lessonInfo);
         
         // Limpiar área de práctica
         practiceArea.innerHTML = '';
@@ -121,19 +148,7 @@ function loadPracticeExercise(mode, categoryKey = null) {
         // Cargar ejercicio según el modo
         let exerciseContent;
         
-        // Intentar usar el nuevo sistema de práctica integrado primero
-        if (window.practiceSystem && typeof window.practiceSystem.startPracticeSession === 'function') {
-            try {
-                window.practiceSystem.startPracticeSession(mode, categoryKey);
-                window.practiceSystem.loadPracticeExercises();
-                console.log("✅ Ejercicio cargado con sistema integrado:", mode);
-                return;
-            } catch (error) {
-                console.warn("⚠️ Fallback al sistema anterior:", error);
-            }
-        }
-        
-        // Fallback al sistema anterior
+        // Cargar ejercicio directamente según el modo
         switch (mode) {
             case 'vocabulary':
                 exerciseContent = createVocabularyExerciseContent(categoryKey);
@@ -156,7 +171,7 @@ function loadPracticeExercise(mode, categoryKey = null) {
         
         if (exerciseContent) {
             practiceArea.appendChild(exerciseContent);
-            console.log("✅ Ejercicio de práctica cargado (sistema anterior):", mode);
+            console.log("✅ Ejercicio de práctica cargado:", mode);
         } else {
             practiceArea.innerHTML = `
                 <div class="practice-header">
@@ -435,7 +450,13 @@ function handleExerciseAnswer(button) {
         if (resultDiv) {
             resultDiv.innerHTML = `<div class="success exercise-success-animate">¡Correcto! ${randomEmoji} ¡Sigue así!</div>`;
         }
-        appState.currentXP += 10;
+        
+        // Sumar experiencia al estado global de la aplicación
+        if (typeof appState !== 'undefined') {
+            appState.currentXP += 10;
+            console.log("✅ XP sumado en práctica:", appState.currentXP);
+        }
+        
         playSuccessSound();
         practiceStreak++;
         
@@ -446,9 +467,48 @@ function handleExerciseAnswer(button) {
             if (perfectScoreAchievement && !perfectScoreAchievement.unlocked) {
                 perfectScoreAchievement.unlocked = true;
                 perfectScoreAchievement.unlockedAt = new Date().toISOString();
-                appState.currentXP += perfectScoreAchievement.xpReward;
+                if (typeof appState !== 'undefined') {
+                    appState.currentXP += perfectScoreAchievement.xpReward;
+                }
                 ACHIEVEMENTS_SYSTEM.showAchievementNotification(perfectScoreAchievement);
             }
+        }
+        
+        // Verificar si se completó la lección actual (5 aciertos consecutivos)
+        if (practiceStreak >= 5) {
+            console.log("🎯 Lección completada en práctica, actualizando estado global...");
+            
+            // Marcar la lección actual como completada en el sistema global
+            if (typeof markLessonCompleted === 'function' && typeof appState !== 'undefined') {
+                markLessonCompleted(appState.currentLesson);
+                console.log("✅ Lección marcada como completada:", appState.currentLesson);
+            }
+            
+            // Avanzar a la siguiente lección en el sistema global
+            if (typeof appState !== 'undefined') {
+                const allowedLessons = getAllowedLessonsByLevel();
+                if (appState.currentLesson < allowedLessons.length - 1) {
+                    appState.currentLesson++;
+                    console.log("🚀 Avanzando a lección:", appState.currentLesson);
+                    
+                    // Cargar la nueva lección en la sección principal
+                    if (typeof loadCurrentLesson === 'function') {
+                        loadCurrentLesson();
+                    }
+                    
+                    // Actualizar el botón "siguiente lección"
+                    if (typeof updateNextLessonButton === 'function') {
+                        updateNextLessonButton();
+                    }
+                    
+                    showNotification('¡Lección completada! Avanzando a la siguiente... 🚀', 'success');
+                } else {
+                    showNotification('¡Felicidades! Has completado todas las lecciones disponibles. 🎓', 'success');
+                }
+            }
+            
+            // Reiniciar streak para la nueva lección
+            practiceStreak = 0;
         }
     } else {
         if (resultDiv) {
@@ -458,15 +518,22 @@ function handleExerciseAnswer(button) {
         practiceStreak = 0;
     }
     
-    updateUI();
-    saveProgress();
+    // Actualizar UI y guardar progreso
+    if (typeof updateUI === 'function') {
+        updateUI();
+    }
+    if (typeof saveProgress === 'function') {
+        saveProgress();
+    }
     
     // Registrar actividad en estadísticas
-    STATISTICS_SYSTEM.recordActivity('exercise_completed', {
-        type: 'vocabulary',
-        success: isCorrect,
-        xpEarned: isCorrect ? 10 : 0
-    });
+    if (typeof STATISTICS_SYSTEM !== 'undefined' && STATISTICS_SYSTEM.recordActivity) {
+        STATISTICS_SYSTEM.recordActivity('exercise_completed', {
+            type: 'vocabulary',
+            success: isCorrect,
+            xpEarned: isCorrect ? 10 : 0
+        });
+    }
     
     setTimeout(() => {
         // Si estamos en la sección de práctica y modo vocabulario, gramática o listening, avanzar a la siguiente pregunta
@@ -477,21 +544,8 @@ function handleExerciseAnswer(button) {
             if (header) {
                 const modo = header.textContent.trim().toLowerCase();
                 if (['vocabulario', 'gramática', 'comprensión'].includes(modo)) {
-                    // Avance automático de lección tras 5 aciertos
-                    const allowedLessons = getAllowedLessonsByLevel();
-                    if (isCorrect && practiceStreak >= 5) {
-                        practiceStreak = 0;
-                        practiceLessonIndex++;
-                        if (practiceLessonIndex >= allowedLessons.length) {
-                            practiceLessonIndex = 0;
-                            showNotification('¡Felicidades! Has completado todas las lecciones de tu nivel. ¡Sigue practicando para subir de nivel! 🎓', 'success');
-                        } else {
-                            showNotification('¡Avanzas a la siguiente lección de tu nivel! 🚀', 'success');
-                        }
-                        loadPracticeExercise(modo === 'vocabulario' ? 'vocabulary' : modo === 'gramática' ? 'grammar' : 'listening');
-                        return;
-                    }
-                    if (isCorrect) {
+                    // Solo cargar nuevo ejercicio si no se completó la lección
+                    if (isCorrect && practiceStreak < 5) {
                         loadPracticeExercise(modo === 'vocabulario' ? 'vocabulary' : modo === 'gramática' ? 'grammar' : 'listening');
                         return;
                     }
@@ -531,6 +585,22 @@ function nextPracticeLesson(mode) {
         showNotification('¡Has completado todas las lecciones de práctica! Volviendo al inicio. 🔄', 'info');
     } else {
         showNotification('Avanzando a la siguiente lección de práctica... 🚀', 'success');
+    }
+    
+    // Sincronizar con el sistema global de lecciones
+    if (typeof appState !== 'undefined') {
+        appState.currentLesson = practiceLessonIndex;
+        console.log("🔄 Sincronizando práctica con lección global:", appState.currentLesson);
+        
+        // Cargar la nueva lección en la sección principal
+        if (typeof loadCurrentLesson === 'function') {
+            loadCurrentLesson();
+        }
+        
+        // Actualizar el botón "siguiente lección"
+        if (typeof updateNextLessonButton === 'function') {
+            updateNextLessonButton();
+        }
     }
     
     // Cargar el ejercicio con la nueva lección
@@ -771,6 +841,9 @@ function initPractice() {
             console.log("✅ Sistema de práctica integrado inicializado");
         }
         
+        // Cargar modos de práctica y configurar event listeners
+        loadPracticeModes();
+        
         // Verificar que las funciones principales estén disponibles
         console.log("🎯 loadPracticeModes disponible:", typeof loadPracticeModes === 'function');
         console.log("📝 loadPracticeExercise disponible:", typeof loadPracticeExercise === 'function');
@@ -884,30 +957,66 @@ window.sendChatMessage = sendChatMessage;
 function createVocabularyExerciseContent(categoryKey) {
     console.log("📚 Creando ejercicio de vocabulario para categoría:", categoryKey);
     try {
-        // Obtener vocabulario de la categoría
+        // Obtener vocabulario de la lección actual del sistema global (prioridad alta)
         let vocabulary = [];
-        if (categoryKey && window.VOCABULARY_DATABASE && window.VOCABULARY_DATABASE[categoryKey]) {
-            vocabulary = window.VOCABULARY_DATABASE[categoryKey];
-        } else {
-            // Si no hay categoría específica, usar vocabulario de la lección actual
-            if (window.appState && window.appState.currentLesson) {
-                const currentLesson = window.appState.currentLesson;
-                if (currentLesson.vocabulary) {
-                    vocabulary = currentLesson.vocabulary;
-                }
+        let lessonSource = '';
+        
+        if (typeof appState !== 'undefined' && typeof getAllowedLessonsByLevel === 'function') {
+            const allowedLessons = getAllowedLessonsByLevel();
+            const currentLesson = allowedLessons[appState.currentLesson];
+            if (currentLesson && currentLesson.vocabulary) {
+                vocabulary = currentLesson.vocabulary;
+                lessonSource = `lección actual: ${currentLesson.title}`;
+                console.log("📝 Usando vocabulario de lección actual:", currentLesson.title);
+            } else {
+                console.warn("⚠️ No se encontró vocabulario en la lección actual");
             }
         }
         
+        // Si no hay vocabulario de lección actual, usar categoría específica
+        if (vocabulary.length === 0 && categoryKey && window.VOCABULARY_DATABASE && window.VOCABULARY_DATABASE[categoryKey]) {
+            vocabulary = window.VOCABULARY_DATABASE[categoryKey];
+            lessonSource = `categoría: ${categoryKey}`;
+            console.log("📝 Usando vocabulario de categoría:", categoryKey);
+        }
+        
+        // Si aún no hay vocabulario, usar vocabulario general
         if (vocabulary.length === 0) {
             console.warn("⚠️ No hay vocabulario disponible para ejercicios");
             return createNoVocabularyMessage();
         }
         
-        console.log("📝 Vocabulario disponible para ejercicios:", vocabulary.length, "palabras");
+        console.log("📝 Vocabulario disponible para ejercicios:", vocabulary.length, "palabras de", lessonSource);
         
         // Crear contenedor de ejercicios
         const exerciseContainer = document.createElement('div');
         exerciseContainer.className = 'exercise-container';
+        
+        // Agregar información de la lección actual
+        if (typeof appState !== 'undefined' && typeof getAllowedLessonsByLevel === 'function') {
+            const allowedLessons = getAllowedLessonsByLevel();
+            const currentLesson = allowedLessons[appState.currentLesson];
+            if (currentLesson) {
+                const lessonInfo = document.createElement('div');
+                lessonInfo.style.cssText = `
+                    background: var(--background-color);
+                    padding: 1rem;
+                    border-radius: 8px;
+                    margin-bottom: 1.5rem;
+                    border-left: 4px solid var(--primary-color);
+                `;
+                lessonInfo.innerHTML = `
+                    <h4 style="color: var(--primary-color); margin: 0 0 0.5rem 0;">
+                        <i class="fas fa-book"></i> Practicando: ${currentLesson.title}
+                    </h4>
+                    <p style="margin: 0; color: var(--text-secondary);">
+                        Vocabulario: ${currentLesson.vocabulary.length} palabras | 
+                        Gramática: ${currentLesson.grammar.title}
+                    </p>
+                `;
+                exerciseContainer.appendChild(lessonInfo);
+            }
+        }
         
         // Crear múltiples ejercicios
         const exercises = [];
@@ -978,7 +1087,7 @@ function createSingleVocabularyExercise(vocabulary, exerciseIndex) {
         
         // Pregunta
         const question = document.createElement('p');
-        question.innerHTML = `¿Cómo se dice "${vocab.spanish}" en inglés?`;
+        question.innerHTML = `¿Cómo se dice "${word.spanish}" en inglés?`;
         question.style.fontSize = '1.1rem';
         question.style.marginBottom = '1.5rem';
         
@@ -1142,6 +1251,54 @@ function showVocabularyResults(exercises) {
         
         const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
         
+        // Sumar XP basado en el rendimiento
+        let xpEarned = 0;
+        if (percentage >= 80) {
+            xpEarned = 25; // Excelente: +25 XP
+        } else if (percentage >= 60) {
+            xpEarned = 15; // Bueno: +15 XP
+        } else {
+            xpEarned = 5;  // Necesita mejorar: +5 XP
+        }
+        
+        // Sumar XP al usuario si está disponible el sistema global
+        if (typeof appState !== 'undefined' && typeof LEVEL_SYSTEM !== 'undefined') {
+            appState.currentXP += xpEarned;
+            console.log("✅ XP sumado por práctica:", xpEarned);
+            console.log("📊 XP total después de práctica:", appState.currentXP);
+            
+            // Verificar si subió de nivel
+            if (typeof checkLevelUp === 'function') {
+                const leveledUp = checkLevelUp();
+                if (leveledUp) {
+                    console.log("🎉 ¡Usuario subió de nivel por práctica!");
+                }
+            }
+            
+            // Actualizar la UI si está disponible
+            if (typeof updateUI === 'function') {
+                updateUI();
+            }
+            
+            // Actualizar el display del usuario si está disponible
+            if (typeof updateUserDisplay === 'function') {
+                // Obtener usuario del localStorage directamente
+                const userData = localStorage.getItem('englishLearningUser');
+                if (userData) {
+                    const currentUser = JSON.parse(userData);
+                    updateUserDisplay(currentUser);
+                }
+            }
+            
+            // Actualizar directamente los elementos del header
+            updateHeaderElements();
+            
+            // Guardar progreso si está disponible
+            if (typeof saveProgress === 'function') {
+                saveProgress();
+            }
+        }
+        
         // Crear modal de resultados
         const resultsModal = document.createElement('div');
         resultsModal.style.cssText = `
@@ -1185,15 +1342,38 @@ function showVocabularyResults(exercises) {
             resultColor = 'var(--error-color)';
         }
         
+        // Crear mensaje de XP ganado
+        const xpMessage = xpEarned > 0 ? 
+            `<div style="background: var(--accent-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; margin: 1rem 0; font-weight: bold;">
+                <i class="fas fa-star"></i> +${xpEarned} XP ganados!
+            </div>` : '';
+        
+        // Verificar si se puede activar el botón "siguiente lección"
+        let nextLessonMessage = '';
+        if (typeof appState !== 'undefined' && typeof getAllowedLessonsByLevel === 'function') {
+            const allowedLessons = getAllowedLessonsByLevel();
+            const hasNextLesson = appState.currentLesson < allowedLessons.length - 1;
+            
+            if (hasNextLesson) {
+                nextLessonMessage = `
+                    <div style="background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; margin: 1rem 0; font-weight: bold;">
+                        <i class="fas fa-arrow-right"></i> ¡Botón "Siguiente Lección" activado!
+                    </div>
+                `;
+            }
+        }
+        
         resultsContent.innerHTML = `
             <div style="font-size: 3rem; margin-bottom: 1rem;">${resultIcon}</div>
             <h3 style="color: ${resultColor}; margin-bottom: 1rem;">${resultMessage}</h3>
             <div style="font-size: 2rem; font-weight: bold; color: var(--primary-color); margin-bottom: 1rem;">
                 ${correct}/${total} correctas
             </div>
-            <div style="font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 2rem;">
+            <div style="font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 1rem;">
                 ${percentage}% de acierto
             </div>
+            ${xpMessage}
+            ${nextLessonMessage}
             <button class="btn btn-primary" onclick="this.closest('.results-modal').remove()" style="margin-right: 1rem;">
                 <i class="fas fa-check"></i> Continuar
             </button>
@@ -1207,6 +1387,12 @@ function showVocabularyResults(exercises) {
         document.body.appendChild(resultsModal);
         
         console.log("✅ Resultados mostrados:", correct, "de", total, "correctas (", percentage, "%)");
+        console.log("✅ XP ganado:", xpEarned);
+        
+        // Activar el botón "siguiente lección" si está disponible
+        if (typeof updateNextLessonButton === 'function') {
+            updateNextLessonButton();
+        }
         
     } catch (error) {
         console.error("❌ Error al mostrar resultados:", error);
@@ -1217,6 +1403,19 @@ function showVocabularyResults(exercises) {
 function createGrammarExerciseContent() {
     console.log("📝 Creando ejercicios de gramática inteligentes");
     try {
+        // Obtener información de la lección actual
+        let currentLesson = null;
+        let lessonSource = '';
+        
+        if (typeof appState !== 'undefined' && typeof getAllowedLessonsByLevel === 'function') {
+            const allowedLessons = getAllowedLessonsByLevel();
+            currentLesson = allowedLessons[appState.currentLesson];
+            if (currentLesson) {
+                lessonSource = `lección actual: ${currentLesson.title}`;
+                console.log("📝 Usando gramática de lección actual:", currentLesson.title);
+            }
+        }
+        
         // Obtener nivel del usuario
         const userLevel = window.appState?.currentLevel || 1;
         const userMCER = getUserLevelMCER(userLevel);
@@ -1227,12 +1426,34 @@ function createGrammarExerciseContent() {
         const exerciseContainer = document.createElement('div');
         exerciseContainer.className = 'exercise-container';
         
+        // Agregar información de la lección actual
+        if (currentLesson) {
+            const lessonInfo = document.createElement('div');
+            lessonInfo.style.cssText = `
+                background: var(--background-color);
+                padding: 1rem;
+                border-radius: 8px;
+                margin-bottom: 1.5rem;
+                border-left: 4px solid var(--accent-color);
+            `;
+            lessonInfo.innerHTML = `
+                <h4 style="color: var(--accent-color); margin: 0 0 0.5rem 0;">
+                    <i class="fas fa-pen-fancy"></i> Practicando Gramática: ${currentLesson.title}
+                </h4>
+                <p style="margin: 0; color: var(--text-secondary);">
+                    Tema: ${currentLesson.grammar.title} | 
+                    Contenido: ${currentLesson.grammar.content}
+                </p>
+            `;
+            exerciseContainer.appendChild(lessonInfo);
+        }
+        
         // Crear múltiples ejercicios de gramática
         const exercises = [];
         const numExercises = 5;
         
         for (let i = 0; i < numExercises; i++) {
-            const exercise = createSingleGrammarExercise(userMCER, i);
+            const exercise = createSingleGrammarExercise(userMCER, i, currentLesson);
             if (exercise) {
                 exercises.push(exercise);
             }
@@ -1262,7 +1483,7 @@ function createGrammarExerciseContent() {
     }
 }
 
-function createSingleGrammarExercise(userMCER, exerciseIndex) {
+function createSingleGrammarExercise(userMCER, exerciseIndex, lesson) {
     try {
         // Obtener ejercicios de gramática según el nivel
         let grammarExercises = [];
@@ -1331,7 +1552,7 @@ function createSingleGrammarExercise(userMCER, exerciseIndex) {
             
             // Event listener para seleccionar opción
             optionBtn.onclick = function() {
-                selectGrammarOption(this, exerciseIndex);
+                selectGrammarOption(this, exerciseIndex, lesson);
             };
             
             optionsGrid.appendChild(optionBtn);
@@ -1434,7 +1655,7 @@ function createBasicGrammarExercises(userMCER) {
     return basicExercises[userMCER] || basicExercises['A1'];
 }
 
-function selectGrammarOption(selectedButton, exerciseIndex) {
+function selectGrammarOption(selectedButton, exerciseIndex, lesson) {
     try {
         const isCorrect = selectedButton.dataset.correct === 'true';
         const resultDiv = document.getElementById(`grammarResult${exerciseIndex}`);
@@ -1505,6 +1726,51 @@ function showGrammarResults(exercises) {
         
         const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
         
+        // Sumar XP basado en el rendimiento
+        let xpEarned = 0;
+        if (percentage >= 80) {
+            xpEarned = 20; // Excelente: +20 XP
+        } else if (percentage >= 60) {
+            xpEarned = 12; // Bueno: +12 XP
+        } else {
+            xpEarned = 5;  // Necesita mejorar: +5 XP
+        }
+        
+        // Sumar XP al usuario si está disponible el sistema global
+        if (typeof appState !== 'undefined' && typeof LEVEL_SYSTEM !== 'undefined') {
+            appState.currentXP += xpEarned;
+            console.log("✅ XP sumado por práctica de gramática:", xpEarned);
+            console.log("📊 XP total después de práctica:", appState.currentXP);
+            
+            // Verificar si subió de nivel
+            if (typeof checkLevelUp === 'function') {
+                const leveledUp = checkLevelUp();
+                if (leveledUp) {
+                    console.log("🎉 ¡Usuario subió de nivel por práctica de gramática!");
+                }
+            }
+            
+            // Actualizar la UI si está disponible
+            if (typeof updateUI === 'function') {
+                updateUI();
+            }
+            
+            // Actualizar el display del usuario si está disponible
+            if (typeof updateUserDisplay === 'function') {
+                // Obtener usuario del localStorage directamente
+                const userData = localStorage.getItem('englishLearningUser');
+                if (userData) {
+                    const currentUser = JSON.parse(userData);
+                    updateUserDisplay(currentUser);
+                }
+            }
+            
+            // Guardar progreso si está disponible
+            if (typeof saveProgress === 'function') {
+                saveProgress();
+            }
+        }
+        
         // Crear modal de resultados
         const resultsModal = document.createElement('div');
         resultsModal.style.cssText = `
@@ -1548,15 +1814,38 @@ function showGrammarResults(exercises) {
             resultColor = 'var(--error-color)';
         }
         
+        // Crear mensaje de XP ganado
+        const xpMessage = xpEarned > 0 ? 
+            `<div style="background: var(--accent-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; margin: 1rem 0; font-weight: bold;">
+                <i class="fas fa-star"></i> +${xpEarned} XP ganados!
+            </div>` : '';
+        
+        // Verificar si se puede activar el botón "siguiente lección"
+        let nextLessonMessage = '';
+        if (typeof appState !== 'undefined' && typeof getAllowedLessonsByLevel === 'function') {
+            const allowedLessons = getAllowedLessonsByLevel();
+            const hasNextLesson = appState.currentLesson < allowedLessons.length - 1;
+            
+            if (hasNextLesson) {
+                nextLessonMessage = `
+                    <div style="background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; margin: 1rem 0; font-weight: bold;">
+                        <i class="fas fa-arrow-right"></i> ¡Botón "Siguiente Lección" activado!
+                    </div>
+                `;
+            }
+        }
+        
         resultsContent.innerHTML = `
             <div style="font-size: 3rem; margin-bottom: 1rem;">${resultIcon}</div>
             <h3 style="color: ${resultColor}; margin-bottom: 1rem;">${resultMessage}</h3>
             <div style="font-size: 2rem; font-weight: bold; color: var(--primary-color); margin-bottom: 1rem;">
                 ${correct}/${total} correctas
             </div>
-            <div style="font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 2rem;">
+            <div style="font-size: 1.2rem; color: var(--text-secondary); margin-bottom: 1rem;">
                 ${percentage}% de acierto
             </div>
+            ${xpMessage}
+            ${nextLessonMessage}
             <button class="btn btn-primary" onclick="this.closest('.results-modal').remove()" style="margin-right: 1rem;">
                 <i class="fas fa-check"></i> Continuar
             </button>
@@ -1570,6 +1859,12 @@ function showGrammarResults(exercises) {
         document.body.appendChild(resultsModal);
         
         console.log("✅ Resultados de gramática mostrados:", correct, "de", total, "correctas (", percentage, "%)");
+        console.log("✅ XP ganado:", xpEarned);
+        
+        // Activar el botón "siguiente lección" si está disponible
+        if (typeof updateNextLessonButton === 'function') {
+            updateNextLessonButton();
+        }
         
     } catch (error) {
         console.error("❌ Error al mostrar resultados de gramática:", error);
@@ -4250,6 +4545,12 @@ class PracticeSystem {
             if (window.appState) {
                 window.appState.currentXP += totalXP;
                 this.checkLevelUp();
+                
+                // Guardar progreso inmediatamente
+                if (typeof window.saveProgress === 'function') {
+                    window.saveProgress();
+                    console.log("💾 Progreso guardado después de práctica");
+                }
             }
             
             // Guardar historial
@@ -5105,5 +5406,65 @@ class PracticeSystem {
     }
 }
 
+// Función para actualizar directamente los elementos del header
+function updateHeaderElements() {
+    try {
+        console.log("🎯 Actualizando elementos del header directamente...");
+        
+        // Actualizar XP en el header
+        const currentXPElement = document.getElementById('currentXP');
+        if (currentXPElement && typeof appState !== 'undefined') {
+            currentXPElement.textContent = appState.currentXP;
+            console.log("✅ XP del header actualizado:", appState.currentXP);
+        }
+        
+        // Actualizar nivel en el header
+        const currentLevelElement = document.getElementById('currentLevel');
+        if (currentLevelElement && typeof appState !== 'undefined') {
+            currentLevelElement.textContent = appState.currentLevel;
+            console.log("✅ Nivel del header actualizado:", appState.currentLevel);
+        }
+        
+        // Actualizar barra de progreso del nivel
+        if (typeof calculateLevelProgress === 'function') {
+            const levelProgress = calculateLevelProgress();
+            const progressFill = document.getElementById('levelProgressFill');
+            const progressText = document.getElementById('levelProgressText');
+            
+            if (progressFill) {
+                progressFill.style.width = `${levelProgress.percentage}%`;
+                console.log("✅ Barra de progreso actualizada:", levelProgress.percentage + "%");
+            }
+            
+            if (progressText) {
+                if (levelProgress.xpForNext > 0) {
+                    progressText.textContent = `${levelProgress.xpInLevel}/${levelProgress.xpForNext} XP`;
+                } else {
+                    progressText.textContent = "Nivel Máximo";
+                }
+                console.log("✅ Texto de progreso actualizado");
+            }
+        }
+        
+        // Actualizar nivel MCER en el header del usuario
+        if (typeof getUserLevelMCER === 'function') {
+            const mcerLevel = getUserLevelMCER();
+            const userLevelDisplay = document.getElementById('userLevelDisplay');
+            if (userLevelDisplay) {
+                userLevelDisplay.textContent = `Nivel ${mcerLevel}`;
+                console.log("✅ Nivel MCER del header actualizado:", mcerLevel);
+            }
+        }
+        
+        console.log("✅ Header actualizado completamente");
+        
+    } catch (error) {
+        console.error("❌ Error al actualizar header:", error);
+    }
+}
+
 // Instancia global del sistema de práctica
 window.practiceSystem = new PracticeSystem();
+
+// Exportar función de actualización del header
+window.updateHeaderElements = updateHeaderElements;
