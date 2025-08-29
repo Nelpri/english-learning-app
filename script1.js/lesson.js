@@ -543,6 +543,12 @@ function syncGlobalState() {
             appState.currentXP = storedProgress.xp;
         }
         
+        // Preservar diagnosticLevel si existe
+        if (storedProgress.diagnosticLevel && !appState.diagnosticLevel) {
+            console.log("🎯 Preservando nivel MCER del diagnóstico:", storedProgress.diagnosticLevel);
+            appState.diagnosticLevel = storedProgress.diagnosticLevel;
+        }
+        
         // 2. Actualizar UI global
         if (typeof updateUI === 'function') {
             console.log("🎨 Actualizando UI global...");
@@ -574,7 +580,8 @@ function syncGlobalState() {
         console.log("📊 Estado final:", {
             level: appState.currentLevel,
             xp: appState.currentXP,
-            lesson: appState.currentLesson
+            lesson: appState.currentLesson,
+            diagnosticLevel: appState.diagnosticLevel
         });
         
     } catch (error) {
@@ -604,6 +611,7 @@ function initializeFromDiagnostic(diagnosticLevel) {
         appState.currentLevel = diagnosticLevelNum;
         appState.currentXP = diagnosticXP;
         appState.currentLesson = 0;
+        appState.diagnosticLevel = diagnosticLevel; // Agregar el nivel MCER del diagnóstico
         
         // NO sobrescribir localStorage, solo sincronizar appState
         console.log("🔄 Sincronizando appState con valores del diagnóstico...");
@@ -614,7 +622,8 @@ function initializeFromDiagnostic(diagnosticLevel) {
         console.log("✅ Estado inicializado desde diagnóstico:", {
             diagnosticLevel: diagnosticLevel,
             appLevel: diagnosticLevelNum,
-            xp: diagnosticXP
+            xp: diagnosticXP,
+            appStateDiagnosticLevel: appState.diagnosticLevel
         });
         
     } catch (error) {

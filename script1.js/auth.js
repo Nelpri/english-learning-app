@@ -357,18 +357,26 @@ function updateUserDisplay(user) {
             const level = userProgress.currentLevel || 1;
             const xp = userProgress.currentXP || 0;
             
-            // Calcular nivel MCER basado en XP
+            // PRIORIZAR el nivel MCER del diagnóstico si existe
             let mcerLevel;
-            if (xp < 100) mcerLevel = 'A1';
-            else if (xp < 300) mcerLevel = 'A1+';
-            else if (xp < 600) mcerLevel = 'A2';
-            else if (xp < 1000) mcerLevel = 'A2+';
-            else if (xp < 1500) mcerLevel = 'B1';
-            else if (xp < 2500) mcerLevel = 'B1+';
-            else if (xp < 4000) mcerLevel = 'B2';
-            else if (xp < 6000) mcerLevel = 'B2+';
-            else if (xp < 9000) mcerLevel = 'C1';
-            else mcerLevel = 'C2';
+            if (userProgress.diagnosticLevel || (typeof appState !== 'undefined' && appState.diagnosticLevel)) {
+                // Si hay diagnóstico, usar ese nivel MCER (prioridad: appState > userProgress)
+                mcerLevel = appState?.diagnosticLevel || userProgress.diagnosticLevel;
+                console.log("🎯 Usando nivel MCER del diagnóstico:", mcerLevel);
+            } else {
+                // Solo calcular automáticamente si no hay diagnóstico
+                if (xp < 100) mcerLevel = 'A1';
+                else if (xp < 300) mcerLevel = 'A1+';
+                else if (xp < 600) mcerLevel = 'A2';
+                else if (xp < 1000) mcerLevel = 'A2+';
+                else if (xp < 1500) mcerLevel = 'B1';
+                else if (xp < 2500) mcerLevel = 'B1+';
+                else if (xp < 4000) mcerLevel = 'B2';
+                else if (xp < 6000) mcerLevel = 'B2+';
+                else if (xp < 9000) mcerLevel = 'C1';
+                else mcerLevel = 'C2';
+                console.log("📊 Nivel MCER calculado automáticamente:", mcerLevel);
+            }
             
             console.log("📊 Nivel calculado:", { level, xp, mcerLevel });
             
@@ -407,14 +415,50 @@ function updateUserDisplay(user) {
             // Actualizar barra de progreso si está disponible
             if (levelProgressFill && levelProgressText) {
                 try {
-                    // Calcular progreso del nivel actual
-                    const xpForNextLevel = level * 100; // XP requerido para el siguiente nivel
-                    const xpInCurrentLevel = xp % 100; // XP en el nivel actual
-                    const progressPercentage = Math.min((xpInCurrentLevel / 100) * 100, 100);
+                    // Calcular progreso del nivel actual CORRECTAMENTE usando LEVEL_SYSTEM
+                    let xpRequiredForNextLevel = 100; // Valor por defecto
+                    let xpForCurrentLevel = 0;
+                    
+                    // Buscar el nivel actual y siguiente en LEVEL_SYSTEM
+                    if (typeof LEVEL_SYSTEM !== 'undefined' && LEVEL_SYSTEM.levels) {
+                        const currentLevelData = LEVEL_SYSTEM.levels.find(l => l.level === level);
+                        const nextLevelData = LEVEL_SYSTEM.levels.find(l => l.level === level + 1);
+                        
+                        if (currentLevelData && nextLevelData) {
+                            xpForCurrentLevel = currentLevelData.xpRequired;
+                            xpRequiredForNextLevel = nextLevelData.xpRequired - currentLevelData.xpRequired;
+                        }
+                    } else {
+                        // Fallback al cálculo anterior
+                        xpForCurrentLevel = (level - 1) * 100;
+                        xpRequiredForNextLevel = 100;
+                    }
+                    
+                    const xpInCurrentLevel = Math.max(0, xp - xpForCurrentLevel);
+                    
+                    // Si ya se superó el XP del nivel actual, mostrar progreso completo
+                    let progressPercentage;
+                    if (xpInCurrentLevel >= xpRequiredForNextLevel) {
+                        progressPercentage = 100;
+                        // Verificar si debería subir de nivel
+                        if (typeof checkLevelUp === 'function') {
+                            checkLevelUp();
+                        }
+                    } else {
+                        progressPercentage = (xpInCurrentLevel / xpRequiredForNextLevel) * 100;
+                    }
                     
                     levelProgressFill.style.width = `${progressPercentage}%`;
-                    levelProgressText.textContent = `${xpInCurrentLevel} / 100 XP`;
-                    console.log("✅ Barra de progreso actualizada:", progressPercentage + "%");
+                    levelProgressText.textContent = `${xpInCurrentLevel} / ${xpRequiredForNextLevel} XP`;
+                    console.log("✅ Barra de progreso actualizada:", {
+                        xpTotal: xp,
+                        nivel: level,
+                        xpAcumulado: xpForCurrentLevel,
+                        xpEnNivel: xpInCurrentLevel,
+                        xpRequerido: xpRequiredForNextLevel,
+                        progreso: progressPercentage + "%",
+                        estado: progressPercentage >= 100 ? "NIVEL COMPLETADO" : "EN PROGRESO"
+                    });
                 } catch (error) {
                     console.warn("⚠️ No se pudo actualizar barra de progreso:", error);
                 }

@@ -173,7 +173,12 @@ const LEVEL_SYSTEM = {
         { level: 2, xpRequired: 100, title: "Básico" },
         { level: 3, xpRequired: 250, title: "Intermedio" },
         { level: 4, xpRequired: 500, title: "Avanzado" },
-        { level: 5, xpRequired: 1000, title: "Experto" }
+        { level: 5, xpRequired: 1000, title: "Experto" },
+        { level: 6, xpRequired: 2000, title: "Experto Avanzado" },
+        { level: 7, xpRequired: 3500, title: "Maestro" },
+        { level: 8, xpRequired: 5000, title: "Maestro Avanzado" },
+        { level: 9, xpRequired: 7000, title: "Gran Maestro" },
+        { level: 10, xpRequired: 10000, title: "Leyenda" }
     ]
 };
 

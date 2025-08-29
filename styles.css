@@ -3,7 +3,7 @@
     --primary-color: #4f46e5;
     --primary-light: #6366f1;
     --secondary-color: #10b981;
-    --accent-color: #f59e0b;
+    --accent-color: hsl(129, 95%, 53%);
     --background-color: #f1f5f9; /* Fondo moderno y sobrio */
     --surface-color: #ffffff;
     --text-primary: #1e293b;
@@ -617,7 +617,7 @@ body {
 }
 
 .scenario-card h3 {
-    background: linear-gradient(135deg, var(--accent-color), #d97706);
+    background: linear-gradient(135deg, var(--accent-color), #06d9c7);
     color: white;
     padding: 1.5rem;
     margin: 0;
