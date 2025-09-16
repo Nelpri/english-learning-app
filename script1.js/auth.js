@@ -204,27 +204,13 @@ function handleLogin(e) {
         userLevelDisplay.textContent = `Nivel ${level}`;
     }
     
-    // Verificar si el usuario ya tiene un nivel asignado
-    const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-    const hasLevel = userProgress.level && userProgress.level > 0;
-    
-    if (!hasLevel) {
-        console.log("🎯 Usuario nuevo, mostrando diagnóstico...");
-        // Mostrar modal de diagnóstico
-        if (typeof showDiagnosticModal === 'function') {
-            // Pequeño delay para asegurar que el DOM esté listo
-            setTimeout(() => {
-                showDiagnosticModal();
-                console.log("✅ Modal de diagnóstico mostrado");
-            }, 100);
-        } else {
-            console.warn("⚠️ showDiagnosticModal no está disponible");
-            // NO asignar nivel por defecto aquí
-            // El nivel se asignará DESPUÉS de completar el diagnóstico
-            console.log("⏸️ Saltando asignación de nivel hasta completar diagnóstico");
-        }
-    } else {
-        console.log("📊 Usuario existente, nivel actual:", userProgress.level);
+    // Verificar autenticación y progreso después del login
+    console.log("🔍 Verificando autenticación después del login...");
+    try {
+        checkAuth();
+        console.log("✅ checkAuth ejecutado exitosamente");
+    } catch (error) {
+        console.error("❌ Error en checkAuth:", error);
     }
     
     try {
@@ -258,7 +244,7 @@ function handleLogin(e) {
             const currentUser = {
                 email: user.email,
                 name: user.name,
-                currentLevel: userProgress.level || 1
+                currentLevel: 1 // Nivel por defecto, se actualizará después del diagnóstico
             };
             window.practiceSystem.initialize(currentUser);
             console.log("✅ Sistema de práctica inicializado");
@@ -329,6 +315,24 @@ function isAuthenticated() {
     return !!(session && session.email);
 }
 
+// Función para obtener el nivel correcto basado en XP
+function getCorrectLevelFromXP(xp) {
+    if (typeof LEVEL_SYSTEM === 'undefined' || !LEVEL_SYSTEM.levels) {
+        return 1; // Nivel por defecto
+    }
+    
+    // Buscar el nivel más alto que el usuario puede alcanzar con su XP
+    let correctLevel = 1;
+    for (let i = LEVEL_SYSTEM.levels.length - 1; i >= 0; i--) {
+        if (xp >= LEVEL_SYSTEM.levels[i].xpRequired) {
+            correctLevel = LEVEL_SYSTEM.levels[i].level;
+            break;
+        }
+    }
+    
+    return correctLevel;
+}
+
 function updateUserDisplay(user) {
     console.log("👤 Actualizando display del usuario...");
     try {
@@ -354,7 +358,7 @@ function updateUserDisplay(user) {
             }
             
             // Obtener nivel y XP
-            const level = userProgress.currentLevel || 1;
+            let level = userProgress.currentLevel || 1;
             const xp = userProgress.currentXP || 0;
             
             // PRIORIZAR el nivel MCER del diagnóstico si existe
@@ -410,6 +414,19 @@ function updateUserDisplay(user) {
                 console.log("✅ Nivel del header actualizado:", level);
             } else {
                 console.warn("⚠️ Elemento currentLevel no encontrado");
+            }
+            
+            // Sincronizar nivel con experiencia antes de calcular progreso
+            if (typeof LEVEL_SYSTEM !== 'undefined' && LEVEL_SYSTEM.levels) {
+                const correctLevel = getCorrectLevelFromXP(xp);
+                if (correctLevel !== level) {
+                    console.log(`🔄 Sincronizando nivel: ${level} → ${correctLevel} (XP: ${xp})`);
+                    level = correctLevel;
+                    // Actualizar el nivel en appState
+                    if (typeof appState !== 'undefined') {
+                        appState.currentLevel = level;
+                    }
+                }
             }
             
             // Actualizar barra de progreso si está disponible
@@ -490,6 +507,9 @@ function updateUserDisplay(user) {
 function checkAuth() {
     console.log("🔍 Verificando autenticación...");
     try {
+        // Debug del estado actual
+        debugLocalStorage();
+        
         // Verificar si ya se está mostrando el diagnóstico
         const diagnosticModal = document.getElementById('diagnosticModal');
         if (diagnosticModal && diagnosticModal.style.display === 'block') {
@@ -510,7 +530,47 @@ function checkAuth() {
             
             // Verificar si el usuario ya completó el diagnóstico
             const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-            const hasLevel = userProgress.level && userProgress.diagnosticCompleted;
+            const userSpecificProgress = userProgress[session.email] || {};
+            const hasLevel = userSpecificProgress.level && userSpecificProgress.diagnosticCompleted;
+            
+            console.log("🔍 Verificando progreso del usuario:", session.email);
+            console.log("📊 Progreso completo en localStorage:", userProgress);
+            console.log("📊 Progreso específico del usuario:", userSpecificProgress);
+            console.log("✅ Tiene nivel:", userSpecificProgress.level);
+            console.log("✅ Diagnóstico completado:", userSpecificProgress.diagnosticCompleted);
+            console.log("🎯 hasLevel evaluado como:", hasLevel);
+            
+            // También verificar en el nivel raíz por compatibilidad
+            const rootLevel = userProgress.level || userProgress.currentLevel;
+            const rootDiagnosticCompleted = userProgress.diagnosticCompleted;
+            console.log("🔍 Verificando también nivel raíz:");
+            console.log("📊 Nivel raíz:", rootLevel);
+            console.log("📊 Diagnóstico completado raíz:", rootDiagnosticCompleted);
+            
+            // Si no hay progreso específico pero sí en el nivel raíz, migrar
+            // También migrar si hay nivel pero no diagnosticCompleted (usuarios existentes)
+            if (!userSpecificProgress.level && rootLevel && (rootDiagnosticCompleted || rootLevel > 1)) {
+                console.log("🔄 Migrando progreso del nivel raíz al usuario específico...");
+                migrateUserProgress(session);
+                
+                // Re-verificar después de la migración
+                const updatedUserProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+                const updatedUserSpecificProgress = updatedUserProgress[session.email] || {};
+                const updatedHasLevel = updatedUserSpecificProgress.level && updatedUserSpecificProgress.diagnosticCompleted;
+                
+                console.log("📊 Progreso después de migración:", updatedUserSpecificProgress);
+                console.log("🎯 hasLevel después de migración:", updatedHasLevel);
+                
+                if (updatedHasLevel) {
+                    console.log("✅ Progreso migrado exitosamente, saltando diagnóstico");
+                    restoreUserProgress(session);
+                    setTimeout(() => {
+                        console.log("🔄 Sincronizando display del usuario migrado...");
+                        updateUserDisplay(session);
+                    }, 100);
+                    return true;
+                }
+            }
             
             if (!hasLevel) {
                 console.log("🎯 Usuario nuevo, mostrando diagnóstico...");
@@ -542,6 +602,9 @@ function checkAuth() {
                 }, 500);
             } else {
                 console.log("✅ Usuario ya tiene nivel asignado:", userProgress.level);
+                
+                // Restaurar progreso del usuario
+                restoreUserProgress(session);
                 
                 // Sincronizar automáticamente el display del usuario
                 setTimeout(() => {
@@ -794,7 +857,9 @@ function initAuth() {
             checkAuth();
             console.log("✅ Verificación de autenticación completada");
         } else {
-            console.log("✅ Sesión ya activa, saltando verificación de autenticación");
+            console.log("✅ Sesión ya activa, restaurando progreso del usuario...");
+            restoreUserProgress(session);
+            console.log("✅ Progreso del usuario restaurado");
         }
         
         console.log("✅ Módulo de autenticación inicializado correctamente");
@@ -838,6 +903,269 @@ function syncUserDisplay() {
     }
 }
 
+// Función para restaurar el progreso del usuario
+function restoreUserProgress(user) {
+    console.log("🔄 Restaurando progreso del usuario:", user.email);
+    
+    try {
+        // 1. Obtener progreso guardado del usuario
+        const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+        const userSpecificProgress = userProgress[user.email] || {};
+        
+        console.log("📊 Progreso encontrado para usuario:", user.email, userSpecificProgress);
+        
+        // 2. Restaurar appState si está disponible
+        if (typeof window.appState !== 'undefined') {
+            // Restaurar XP
+            if (userSpecificProgress.xp && userSpecificProgress.xp > 0) {
+                window.appState.currentXP = userSpecificProgress.xp;
+                console.log("✅ XP restaurado:", userSpecificProgress.xp);
+            }
+            
+            // Restaurar nivel
+            if (userSpecificProgress.level && userSpecificProgress.level > 0) {
+                window.appState.currentLevel = userSpecificProgress.level;
+                console.log("✅ Nivel restaurado:", userSpecificProgress.level);
+            }
+            
+            // Restaurar lecciones completadas
+            if (userSpecificProgress.lessonsCompleted !== undefined) {
+                window.appState.lessonsCompleted = userSpecificProgress.lessonsCompleted;
+                console.log("✅ Lecciones completadas restauradas:", userSpecificProgress.lessonsCompleted);
+            }
+            
+            // Restaurar racha
+            if (userSpecificProgress.streakDays !== undefined) {
+                window.appState.streakDays = userSpecificProgress.streakDays;
+                console.log("✅ Racha restaurada:", userSpecificProgress.streakDays);
+            }
+            
+            // Restaurar nivel MCER
+            if (userSpecificProgress.diagnosticLevel) {
+                window.appState.diagnosticLevel = userSpecificProgress.diagnosticLevel;
+                console.log("✅ Nivel MCER restaurado:", userSpecificProgress.diagnosticLevel);
+            }
+            
+            // Restaurar progreso semanal
+            if (userSpecificProgress.weeklyProgress) {
+                window.appState.weeklyProgress = userSpecificProgress.weeklyProgress;
+                console.log("✅ Progreso semanal restaurado");
+            }
+        } else {
+            console.log("⚠️ appState no disponible, esperando a que se inicialice...");
+        }
+        
+        // 3. Actualizar UI del header
+        if (typeof window.updateHeaderElements === 'function') {
+            window.updateHeaderElements();
+            console.log("✅ Header actualizado con progreso restaurado");
+        }
+        
+        // 4. Actualizar display del usuario
+        updateUserDisplay(user);
+        
+        console.log("✅ Progreso del usuario restaurado completamente");
+        
+    } catch (error) {
+        console.error("❌ Error al restaurar progreso del usuario:", error);
+    }
+}
+
+// Función para depurar el estado del localStorage
+function debugLocalStorage() {
+    console.log("🔍 === DEBUG LOCALSTORAGE ===");
+    try {
+        const session = localStorage.getItem('englishLearningSession');
+        const progress = localStorage.getItem('englishLearningProgress');
+        
+        console.log("📱 Sesión actual:", session ? JSON.parse(session) : "No hay sesión");
+        console.log("📊 Progreso completo:", progress ? JSON.parse(progress) : "No hay progreso");
+        
+        if (progress) {
+            const progressData = JSON.parse(progress);
+            console.log("🔑 Claves en progreso:", Object.keys(progressData));
+            
+            // Verificar si hay datos en el nivel raíz
+            if (progressData.level) {
+                console.log("📈 Datos en nivel raíz:", {
+                    level: progressData.level,
+                    xp: progressData.xp,
+                    diagnosticCompleted: progressData.diagnosticCompleted,
+                    diagnosticLevel: progressData.diagnosticLevel
+                });
+            }
+            
+            // Verificar datos por usuario
+            if (session) {
+                const sessionData = JSON.parse(session);
+                const userEmail = sessionData.email;
+                if (progressData[userEmail]) {
+                    console.log("👤 Datos del usuario específico:", progressData[userEmail]);
+                } else {
+                    console.log("❌ No hay datos específicos para el usuario:", userEmail);
+                }
+            }
+        }
+        console.log("🔍 === FIN DEBUG ===");
+    } catch (error) {
+        console.error("❌ Error en debug localStorage:", error);
+    }
+}
+
+// Función para migrar progreso del nivel raíz al usuario específico
+function migrateUserProgress(user) {
+    console.log("🔄 Migrando progreso del usuario:", user.email);
+    
+    try {
+        const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+        
+        console.log("📊 Estado antes de migración:", userProgress);
+        
+        // Si hay progreso en el nivel raíz pero no en el usuario específico, migrarlo
+        // También migrar si hay nivel pero no diagnosticCompleted (usuarios existentes)
+        const rootLevel = userProgress.level || userProgress.currentLevel;
+        const rootDiagnosticCompleted = userProgress.diagnosticCompleted;
+        
+        if (rootLevel && !userProgress[user.email] && (rootDiagnosticCompleted || rootLevel > 1)) {
+            console.log("📦 Migrando progreso del nivel raíz al usuario específico...");
+            
+            userProgress[user.email] = {
+                xp: userProgress.xp || userProgress.currentXP || 0,
+                level: userProgress.level || userProgress.currentLevel || 1,
+                lessonsCompleted: userProgress.lessonsCompleted || 0,
+                streakDays: userProgress.streakDays || 0,
+                diagnosticLevel: userProgress.diagnosticLevel || 'A1',
+                weeklyProgress: userProgress.weeklyProgress || {
+                    sunday: 0, monday: 0, tuesday: 0, wednesday: 0,
+                    thursday: 0, friday: 0, saturday: 0
+                },
+                vocabularyWordsLearned: userProgress.vocabularyWordsLearned || 0,
+                diagnosticCompleted: userProgress.diagnosticCompleted || (rootLevel > 1)
+            };
+            
+            localStorage.setItem('englishLearningProgress', JSON.stringify(userProgress));
+            console.log("✅ Progreso migrado exitosamente");
+            console.log("📊 Estado después de migración:", userProgress);
+        } else {
+            console.log("ℹ️ No se requiere migración");
+            console.log("📊 Razón:", {
+                hasRootLevel: !!userProgress.level,
+                hasRootDiagnostic: !!userProgress.diagnosticCompleted,
+                hasUserSpecific: !!userProgress[user.email]
+            });
+        }
+    } catch (error) {
+        console.error("❌ Error al migrar progreso del usuario:", error);
+    }
+}
+
+// Función para restaurar el progreso del usuario
+function restoreUserProgress(user) {
+    console.log("🔄 Restaurando progreso del usuario:", user.email);
+    
+    try {
+        // 0. Migrar progreso si es necesario
+        migrateUserProgress(user);
+        
+        // 1. Obtener progreso guardado del usuario
+        const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+        const userSpecificProgress = userProgress[user.email] || {};
+        
+        console.log("📊 Progreso encontrado para usuario:", userSpecificProgress);
+        
+        // 2. Restaurar en appState si está disponible
+        if (typeof window.appState !== 'undefined') {
+            // Restaurar XP
+            if (userSpecificProgress.xp !== undefined) {
+                window.appState.currentXP = userSpecificProgress.xp;
+                console.log("✅ XP restaurado:", userSpecificProgress.xp);
+            }
+            
+            // Restaurar nivel
+            if (userSpecificProgress.level !== undefined) {
+                window.appState.currentLevel = userSpecificProgress.level;
+                console.log("✅ Nivel restaurado:", userSpecificProgress.level);
+            }
+            
+            // Restaurar lecciones completadas
+            if (userSpecificProgress.lessonsCompleted !== undefined) {
+                window.appState.lessonsCompleted = userSpecificProgress.lessonsCompleted;
+                console.log("✅ Lecciones completadas restauradas:", userSpecificProgress.lessonsCompleted);
+            }
+            
+            // Restaurar racha
+            if (userSpecificProgress.streakDays !== undefined) {
+                window.appState.streakDays = userSpecificProgress.streakDays;
+                console.log("✅ Racha restaurada:", userSpecificProgress.streakDays);
+            }
+            
+            // Restaurar nivel del diagnóstico
+            if (userSpecificProgress.diagnosticLevel !== undefined) {
+                window.appState.diagnosticLevel = userSpecificProgress.diagnosticLevel;
+                console.log("✅ Nivel del diagnóstico restaurado:", userSpecificProgress.diagnosticLevel);
+            }
+            
+            // Restaurar progreso semanal
+            if (userSpecificProgress.weeklyProgress !== undefined) {
+                window.appState.weeklyProgress = userSpecificProgress.weeklyProgress;
+                console.log("✅ Progreso semanal restaurado");
+            }
+            
+            // Restaurar vocabulario aprendido
+            if (userSpecificProgress.vocabularyWordsLearned !== undefined) {
+                window.appState.vocabularyWordsLearned = userSpecificProgress.vocabularyWordsLearned;
+                console.log("✅ Vocabulario aprendido restaurado:", userSpecificProgress.vocabularyWordsLearned);
+            }
+            
+            console.log("✅ Estado de la app restaurado completamente");
+        }
+        
+        // 3. Actualizar UI del header
+        if (typeof updateHeaderElements === 'function') {
+            updateHeaderElements();
+            console.log("✅ Header actualizado con progreso restaurado");
+        }
+        
+        // 4. Guardar progreso actualizado por usuario específico
+        if (typeof window.appState !== 'undefined') {
+            const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+            
+            // Crear o actualizar progreso específico del usuario
+            if (!userProgress[user.email]) {
+                userProgress[user.email] = {};
+            }
+            
+            // Actualizar progreso específico del usuario
+            userProgress[user.email].xp = window.appState.currentXP;
+            userProgress[user.email].level = window.appState.currentLevel;
+            userProgress[user.email].lessonsCompleted = window.appState.lessonsCompleted;
+            userProgress[user.email].streakDays = window.appState.streakDays;
+            userProgress[user.email].diagnosticLevel = window.appState.diagnosticLevel;
+            userProgress[user.email].weeklyProgress = window.appState.weeklyProgress;
+            userProgress[user.email].vocabularyWordsLearned = window.appState.vocabularyWordsLearned;
+            
+            // Mantener compatibilidad en el nivel raíz
+            userProgress.xp = window.appState.currentXP;
+            userProgress.level = window.appState.currentLevel;
+            userProgress.lessonsCompleted = window.appState.lessonsCompleted;
+            userProgress.streakDays = window.appState.streakDays;
+            userProgress.diagnosticLevel = window.appState.diagnosticLevel;
+            userProgress.weeklyProgress = window.appState.weeklyProgress;
+            userProgress.vocabularyWordsLearned = window.appState.vocabularyWordsLearned;
+            
+            localStorage.setItem('englishLearningProgress', JSON.stringify(userProgress));
+            console.log("💾 Progreso actualizado y guardado para usuario:", user.email);
+        }
+        
+        // 5. Actualizar display del usuario
+        updateUserDisplay(user);
+        console.log("✅ Display del usuario actualizado");
+        
+    } catch (error) {
+        console.error("❌ Error al restaurar progreso del usuario:", error);
+    }
+}
+
 // Función para forzar la actualización del display
 function forceUpdateDisplay() {
     console.log("🔧 Forzando actualización del display...");
@@ -866,5 +1194,8 @@ window.showAuthModal = showAuthModal;
 window.hideAuthModal = hideAuthModal;
 window.initAuth = initAuth;
 window.syncUserDisplay = syncUserDisplay;
+window.debugLocalStorage = debugLocalStorage;
+window.migrateUserProgress = migrateUserProgress;
+window.restoreUserProgress = restoreUserProgress;
 window.forceUpdateDisplay = forceUpdateDisplay;
 window.getCurrentUser = getCurrentUser;

@@ -612,96 +612,207 @@ function nextPracticeLesson(mode) {
     }, 50);
 }
 
-// Función para reproducir audio del ejercicio de listening
-function playListeningAudio(text) {
+// Sistema de cola de audio para evitar conflictos
+let audioQueue = [];
+let isPlaying = false;
+
+// Función unificada para reproducir audio del ejercicio de listening
+function playListeningAudio(text, exerciseIndex = null) {
+    try {
+        console.log("🎵 Solicitando reproducción de audio:", text, exerciseIndex !== null ? `(ejercicio ${exerciseIndex})` : "(sin ejercicio específico)");
+        
     // Verificar si Web Speech API está disponible
     if (!window.speechSynthesis) {
         showNotification('Tu navegador no soporta audio. Intenta con Chrome o Edge.', 'error');
         return;
     }
     
-    // Cancelar audio anterior si existe
-    if (currentListeningAudio) {
-        speechSynthesis.cancel();
+        // Agregar a la cola de audio
+        const audioRequest = { text, exerciseIndex, timestamp: Date.now() };
+        audioQueue.push(audioRequest);
+        console.log("📋 Audio agregado a la cola. Cola actual:", audioQueue.length, "Ejercicio:", exerciseIndex);
+        
+        // Si no se está reproduciendo nada, procesar la cola
+        if (!isPlaying) {
+            processAudioQueue();
+        }
+        
+    } catch (error) {
+        console.error("❌ Error al solicitar audio:", error);
+        showNotification('Error al solicitar audio. Intenta nuevamente.', 'error');
+    }
+}
+
+// Función para procesar la cola de audio
+function processAudioQueue() {
+    if (audioQueue.length === 0 || isPlaying) {
+        return;
     }
     
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
-    utterance.rate = listeningAudioSpeed;
-    utterance.pitch = 1;
-    utterance.volume = 1;
+    isPlaying = true;
+    const audioRequest = audioQueue.shift();
+    console.log("🎵 Procesando audio de la cola:", audioRequest.text);
     
-    // Mostrar botón de pausa
+    // Detener audio anterior si existe
+    if (window.currentListeningAudio) {
+        speechSynthesis.cancel();
+        window.currentListeningAudio = null;
+    }
+    
+    // Crear nueva síntesis de voz
+    const utterance = new SpeechSynthesisUtterance(audioRequest.text);
+    
+    // Configurar voz en inglés
+    const voices = speechSynthesis.getVoices();
+    const englishVoice = voices.find(voice => 
+        voice.lang.startsWith('en') && voice.name.includes('Google')
+    ) || voices.find(voice => voice.lang.startsWith('en'));
+    
+    if (englishVoice) {
+        utterance.voice = englishVoice;
+        console.log("🗣️ Voz seleccionada:", englishVoice.name, englishVoice.lang);
+    }
+    
+    // Configurar parámetros de audio
+    utterance.lang = 'en-US';
+    utterance.rate = window.listeningAudioSpeed || 1.0;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+    
+    // Eventos de la síntesis
+            utterance.onstart = () => {
+            console.log("▶️ Audio iniciado para ejercicio:", audioRequest.exerciseIndex);
+            if (audioRequest.exerciseIndex !== null) {
+                // Cambiar botón a pausar para ejercicios específicos
+                const exerciseDiv = document.querySelector(`#listeningResult${audioRequest.exerciseIndex}`)?.closest('.listening-exercise');
+                if (exerciseDiv) {
+                    const playBtn = exerciseDiv.querySelector('.btn-primary');
+                    if (playBtn) {
+                        playBtn.innerHTML = '<i class="fas fa-pause"></i> Reproduciendo...';
+                        playBtn.disabled = true;
+                        console.log("✅ Botón del ejercicio", audioRequest.exerciseIndex, "actualizado a pausar");
+                    }
+                }
+            } else {
+                // Cambiar botón general de pausa
     const playBtn = document.querySelector('.play-btn');
     const pauseBtn = document.querySelector('.pause-btn');
     if (playBtn && pauseBtn) {
         playBtn.style.display = 'none';
         pauseBtn.style.display = 'inline-block';
     }
-    
-    // Simular progreso del audio
-    let progress = 0;
-    const progressFill = document.querySelector('.audio-progress .progress-fill');
-    const currentTimeSpan = document.querySelector('.current-time');
-    const totalTimeSpan = document.querySelector('.total-time');
-    
-    const progressInterval = setInterval(() => {
-        progress += 2;
-        if (progressFill) progressFill.style.width = `${progress}%`;
-        if (currentTimeSpan) currentTimeSpan.textContent = formatTime(Math.floor(progress / 2));
-        if (totalTimeSpan) totalTimeSpan.textContent = formatTime(Math.floor(100 / 2));
-        
-        if (progress >= 100) {
-            clearInterval(progressInterval);
-            if (playBtn && pauseBtn) {
-                playBtn.style.display = 'inline-block';
-                pauseBtn.style.display = 'none';
             }
-            if (progressFill) progressFill.style.width = '0%';
-            if (currentTimeSpan) currentTimeSpan.textContent = '0:00';
-        }
-    }, 100);
+        };
     
-    utterance.onend = () => {
-        clearInterval(progressInterval);
+            utterance.onend = () => {
+            console.log("⏹️ Audio terminado para ejercicio:", audioRequest.exerciseIndex);
+            isPlaying = false;
+            
+            if (audioRequest.exerciseIndex !== null) {
+                // Restaurar botón para ejercicios específicos
+                const exerciseDiv = document.querySelector(`#listeningResult${audioRequest.exerciseIndex}`)?.closest('.listening-exercise');
+                if (exerciseDiv) {
+                    const playBtn = exerciseDiv.querySelector('.btn-primary');
+                    if (playBtn) {
+                        playBtn.innerHTML = '<i class="fas fa-play"></i> Reproducir Audio';
+                        playBtn.disabled = false;
+                        console.log("✅ Botón del ejercicio", audioRequest.exerciseIndex, "restaurado a reproducir");
+                    }
+                }
+            } else {
+                // Restaurar botón general
+                const playBtn = document.querySelector('.play-btn');
+                const pauseBtn = document.querySelector('.pause-btn');
         if (playBtn && pauseBtn) {
             playBtn.style.display = 'inline-block';
             pauseBtn.style.display = 'none';
         }
-        if (progressFill) progressFill.style.width = '0%';
-        if (currentTimeSpan) currentTimeSpan.textContent = '0:00';
+            }
+            
+            // Procesar siguiente audio en la cola
+            setTimeout(() => {
+                processAudioQueue();
+            }, 100);
     };
     
     utterance.onerror = (event) => {
-        console.error('Error en audio:', event);
-        clearInterval(progressInterval);
+            console.error("❌ Error en síntesis de voz para ejercicio", audioRequest.exerciseIndex, ":", event);
+            isPlaying = false;
+            
+            if (audioRequest.exerciseIndex !== null) {
+                // Restaurar botón para ejercicios específicos
+                const exerciseDiv = document.querySelector(`#listeningResult${audioRequest.exerciseIndex}`)?.closest('.listening-exercise');
+                if (exerciseDiv) {
+                    const playBtn = exerciseDiv.querySelector('.btn-primary');
+                    if (playBtn) {
+                        playBtn.innerHTML = '<i class="fas fa-play"></i> Reproducir Audio';
+                        playBtn.disabled = false;
+                        console.log("✅ Botón del ejercicio", audioRequest.exerciseIndex, "restaurado por error");
+                    }
+                }
+            } else {
+                // Restaurar botón general
+                const playBtn = document.querySelector('.play-btn');
+                const pauseBtn = document.querySelector('.pause-btn');
         if (playBtn && pauseBtn) {
             playBtn.style.display = 'inline-block';
             pauseBtn.style.display = 'none';
         }
-        if (progressFill) progressFill.style.width = '0%';
-        if (currentTimeSpan) currentTimeSpan.textContent = '0:00';
+            }
+            
         showNotification('Error al reproducir audio. Intenta nuevamente.', 'error');
+            
+                    // Procesar siguiente audio en la cola
+        setTimeout(() => {
+            processAudioQueue();
+        }, 100);
     };
     
-    currentListeningAudio = utterance;
+    // Guardar referencia global
+    window.currentListeningAudio = utterance;
     
-    try {
+    // Reproducir audio
         speechSynthesis.speak(utterance);
-        console.log('Reproduciendo audio:', text);
+    console.log("✅ Audio enviado a reproducción:", audioRequest.text);
+}
+
+// Función para limpiar cola de audio cuando se cambie de ejercicio
+function clearAudioQueueForExercise(exerciseIndex) {
+    try {
+        // Filtrar la cola para mantener solo audios de otros ejercicios
+        audioQueue = audioQueue.filter(request => request.exerciseIndex !== exerciseIndex);
+        console.log("🗑️ Cola de audio limpiada para ejercicio", exerciseIndex, "Cola restante:", audioQueue.length);
+        
+        // Si el audio actual es del ejercicio que se está limpiando, detenerlo
+        if (window.currentListeningAudio && audioQueue.length === 0) {
+            speechSynthesis.cancel();
+            window.currentListeningAudio = null;
+            isPlaying = false;
+            console.log("⏹️ Audio detenido para ejercicio", exerciseIndex);
+        }
     } catch (error) {
-        console.error('Error al iniciar audio:', error);
-        showNotification('Error al reproducir audio. Intenta con otro navegador.', 'error');
+        console.error("❌ Error al limpiar cola de audio para ejercicio:", error);
     }
 }
 
-// Función para pausar audio del ejercicio de listening
+// Función unificada para pausar audio del ejercicio de listening
 function pauseListeningAudio() {
-    if (currentListeningAudio) {
+    try {
+        console.log("⏸️ Pausando audio...");
+        
+        // Detener audio actual si existe
+        if (window.currentListeningAudio) {
         speechSynthesis.cancel();
-        currentListeningAudio = null;
-    }
-    
+            window.currentListeningAudio = null;
+            console.log("✅ Audio pausado correctamente");
+        }
+        
+        // Limpiar cola de audio
+        audioQueue = [];
+        isPlaying = false;
+        console.log("🗑️ Cola de audio limpiada");
+        
+        // Restaurar botones generales
     const playBtn = document.querySelector('.play-btn');
     const pauseBtn = document.querySelector('.pause-btn');
     if (playBtn && pauseBtn) {
@@ -709,18 +820,59 @@ function pauseListeningAudio() {
         pauseBtn.style.display = 'none';
     }
     
+        // Restaurar barra de progreso
     const progressFill = document.querySelector('.audio-progress .progress-fill');
     const currentTimeSpan = document.querySelector('.current-time');
     if (progressFill) progressFill.style.width = '0%';
     if (currentTimeSpan) currentTimeSpan.textContent = '0:00';
+        
+        // Restaurar botones de ejercicios específicos
+        const exerciseButtons = document.querySelectorAll('.listening-exercise .btn-primary');
+        exerciseButtons.forEach(btn => {
+            if (btn.innerHTML.includes('Reproduciendo')) {
+                btn.innerHTML = '<i class="fas fa-play"></i> Reproducir Audio';
+                btn.disabled = false;
+            }
+        });
+        
+    } catch (error) {
+        console.error("❌ Error al pausar audio:", error);
+    }
 }
 
 // Función para cambiar velocidad del audio
 function changeListeningSpeed(speed) {
-    listeningAudioSpeed = parseFloat(speed);
-    if (currentListeningAudio) {
-        currentListeningAudio.rate = listeningAudioSpeed;
+    try {
+        window.listeningAudioSpeed = parseFloat(speed);
+        console.log("⚡ Velocidad de audio cambiada a:", speed);
+        
+        // Actualizar velocidad del audio actual si existe
+        if (window.currentListeningAudio) {
+            window.currentListeningAudio.rate = window.listeningAudioSpeed;
+        }
+    } catch (error) {
+        console.error("❌ Error al cambiar velocidad:", error);
     }
+}
+
+// Función para limpiar cola de audio
+function clearAudioQueue() {
+    try {
+        audioQueue = [];
+        isPlaying = false;
+        console.log("🗑️ Cola de audio limpiada manualmente");
+    } catch (error) {
+        console.error("❌ Error al limpiar cola de audio:", error);
+    }
+}
+
+// Función para obtener estado de la cola de audio
+function getAudioQueueStatus() {
+    return {
+        queueLength: audioQueue.length,
+        isPlaying: isPlaying,
+        currentAudio: window.currentListeningAudio ? 'playing' : 'stopped'
+    };
 }
 
 // Función para mostrar/ocultar transcripción
@@ -863,6 +1015,9 @@ window.completeLesson = completeLesson;
 window.reviewLesson = reviewLesson;
 window.playListeningAudio = playListeningAudio;
 window.pauseListeningAudio = pauseListeningAudio;
+window.clearAudioQueue = clearAudioQueue;
+window.clearAudioQueueForExercise = clearAudioQueueForExercise;
+window.getAudioQueueStatus = getAudioQueueStatus;
 window.changeListeningSpeed = changeListeningSpeed;
 window.toggleTranscript = toggleTranscript;
 window.handleListeningAnswer = handleListeningAnswer;
@@ -1984,7 +2139,10 @@ function createSingleListeningExercise(exerciseIndex) {
         playBtn.className = 'btn btn-primary';
         playBtn.innerHTML = '<i class="fas fa-play"></i> Reproducir Audio';
         playBtn.style.marginRight = '1rem';
-        playBtn.onclick = () => playListeningAudio(exercise.text, exerciseIndex);
+        playBtn.onclick = () => {
+            console.log("🎵 Reproduciendo audio para ejercicio", exerciseIndex, ":", exercise.text);
+            playListeningAudio(exercise.text, exerciseIndex);
+        };
         
         // Botón de pausar
         const pauseBtn = document.createElement('button');
@@ -2096,75 +2254,7 @@ function createSingleListeningExercise(exerciseIndex) {
     }
 }
 
-function playListeningAudio(text, exerciseIndex) {
-    try {
-        console.log("🎵 Reproduciendo audio para ejercicio", exerciseIndex, ":", text);
-        
-        // Detener audio anterior si existe
-        if (window.currentListeningAudio) {
-            window.currentListeningAudio.cancel();
-        }
-        
-        // Crear nueva síntesis de voz
-        const utterance = new SpeechSynthesisUtterance(text);
-        
-        // Configurar voz en inglés
-        const voices = speechSynthesis.getVoices();
-        const englishVoice = voices.find(voice => 
-            voice.lang.startsWith('en') && voice.name.includes('Google')
-        ) || voices.find(voice => voice.lang.startsWith('en'));
-        
-        if (englishVoice) {
-            utterance.voice = englishVoice;
-            console.log("🗣️ Voz seleccionada:", englishVoice.name, englishVoice.lang);
-        }
-        
-        // Configurar velocidad
-        utterance.rate = window.listeningAudioSpeed || 1.0;
-        utterance.pitch = 1.0;
-        utterance.volume = 1.0;
-        
-        // Eventos de la síntesis
-        utterance.onstart = () => {
-            console.log("▶️ Audio iniciado");
-            // Cambiar botón a pausar
-            const playBtn = document.querySelector(`#listeningResult${exerciseIndex}`)?.closest('.listening-exercise')?.querySelector('.btn-primary');
-            if (playBtn) {
-                playBtn.innerHTML = '<i class="fas fa-pause"></i> Reproduciendo...';
-                playBtn.disabled = true;
-            }
-        };
-        
-        utterance.onend = () => {
-            console.log("⏹️ Audio terminado");
-            // Restaurar botón
-            const playBtn = document.querySelector(`#listeningResult${exerciseIndex}`)?.closest('.listening-exercise')?.querySelector('.btn-primary');
-            if (playBtn) {
-                playBtn.innerHTML = '<i class="fas fa-play"></i> Reproducir Audio';
-                playBtn.disabled = false;
-            }
-        };
-        
-        utterance.onerror = (event) => {
-            console.error("❌ Error en síntesis de voz:", event);
-            // Restaurar botón
-            const playBtn = document.querySelector(`#listeningResult${exerciseIndex}`)?.closest('.listening-exercise')?.querySelector('.btn-primary');
-            if (playBtn) {
-                playBtn.innerHTML = '<i class="fas fa-play"></i> Reproducir Audio';
-                playBtn.disabled = false;
-            }
-        };
-        
-        // Guardar referencia global
-        window.currentListeningAudio = utterance;
-        
-        // Reproducir audio
-        speechSynthesis.speak(utterance);
-        
-    } catch (error) {
-        console.error("❌ Error al reproducir audio:", error);
-    }
-}
+// Esta función ha sido unificada con la función principal playListeningAudio
 
 function pauseListeningAudio() {
     try {
@@ -2225,12 +2315,40 @@ function selectListeningOption(selectedButton, exerciseIndex) {
             resultDiv.style.background = 'rgba(16, 185, 129, 0.1)';
             resultDiv.style.color = 'var(--success-color)';
             resultDiv.style.border = '1px solid var(--success-color)';
-            resultDiv.innerHTML = '<i class="fas fa-check-circle"></i> ¡Correcto!';
+            resultDiv.innerHTML = '<i class="fas fa-check-circle"></i> ¡Correcto! +10 XP';
         } else {
             resultDiv.style.background = 'rgba(239, 68, 68, 0.1)';
             resultDiv.style.color = 'var(--error-color)';
             resultDiv.style.border = '1px solid var(--error-color)';
             resultDiv.innerHTML = '<i class="fas fa-times-circle"></i> Incorrecto';
+        }
+        
+        // Actualizar progreso del usuario
+        if (isCorrect && typeof appState !== 'undefined') {
+            // Sumar XP por respuesta correcta
+            appState.currentXP += 10;
+            
+            // Actualizar racha de práctica
+            if (!appState.practiceStreak) appState.practiceStreak = 0;
+            appState.practiceStreak++;
+            
+            // Guardar progreso
+            if (typeof saveProgress === 'function') {
+                saveProgress();
+                console.log("💾 Progreso guardado después de respuesta correcta");
+            }
+            
+            // Actualizar UI del header
+            if (typeof updateHeaderElements === 'function') {
+                updateHeaderElements();
+            }
+            
+            console.log("✅ XP sumado:", appState.currentXP, "Racha:", appState.practiceStreak);
+        }
+        
+        // Limpiar cola de audio para este ejercicio
+        if (typeof clearAudioQueueForExercise === 'function') {
+            clearAudioQueueForExercise(exerciseIndex);
         }
         
         console.log("✅ Opción de listening seleccionada para ejercicio", exerciseIndex, "Correcta:", isCorrect);
@@ -2635,6 +2753,12 @@ function startRecording(exerciseIndex) {
     try {
         console.log("🎤 Iniciando grabación para ejercicio", exerciseIndex);
         
+        // Verificar si ya hay una grabación en curso
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+            console.log("⚠️ Ya hay una grabación en curso, cancelando...");
+            return;
+        }
+        
         // Verificar si MediaRecorder está disponible
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             showNotification('Tu navegador no soporta grabación de audio. Intenta con Chrome o Edge.', 'error');
@@ -2680,6 +2804,9 @@ function startRecording(exerciseIndex) {
                     }
                     
                     console.log("✅ Grabación completada para ejercicio", exerciseIndex);
+                    
+                    // Evaluar pronunciación automáticamente
+                    evaluatePronunciationFromRecording(exerciseIndex, audioBlob);
                 };
                 
                 // Iniciar grabación
@@ -2692,12 +2819,11 @@ function startRecording(exerciseIndex) {
                     recordingArea.style.display = 'block';
                 }
                 
-                // Ocultar botón de grabar y mostrar botón de detener
-                const recordBtn = document.querySelector(`#recordingArea${exerciseIndex}`)?.closest('.pronunciation-exercise')?.querySelector('.btn-primary');
-                const stopBtn = document.querySelector(`#recordingArea${exerciseIndex}`)?.closest('.pronunciation-exercise')?.querySelector('.btn-secondary:last-of-type');
-                
-                if (recordBtn) recordBtn.style.display = 'none';
-                if (stopBtn) stopBtn.style.display = 'inline-block';
+                // Ocultar controles iniciales y mostrar área de grabación
+                const initialControls = document.querySelector(`#recordingArea${exerciseIndex}`)?.previousElementSibling;
+                if (initialControls && initialControls.style) {
+                    initialControls.style.display = 'none';
+                }
                 
                 // Iniciar timer
                 recordingTimer = setInterval(() => {
@@ -2725,6 +2851,174 @@ function startRecording(exerciseIndex) {
     }
 }
 
+function playRecording(exerciseIndex) {
+    try {
+        const audioUrl = window[`recordingAudio${exerciseIndex}`];
+        if (audioUrl) {
+            const audio = new Audio(audioUrl);
+            audio.play().catch(error => {
+                console.error("❌ Error al reproducir grabación:", error);
+                showNotification('Error al reproducir la grabación', 'error');
+            });
+        } else {
+            showNotification('No hay grabación disponible', 'warning');
+        }
+    } catch (error) {
+        console.error("❌ Error al reproducir grabación:", error);
+        showNotification('Error al reproducir la grabación', 'error');
+    }
+}
+
+function evaluatePronunciationFromRecording(exerciseIndex, audioBlob) {
+    try {
+        console.log("🔍 Evaluando pronunciación para ejercicio", exerciseIndex);
+        
+        // Obtener el ejercicio actual de forma más robusta
+        let currentExercise = null;
+        
+        // Intentar obtener desde practiceSystem
+        if (window.practiceSystem?.currentSession?.exercises?.[exerciseIndex]) {
+            currentExercise = window.practiceSystem.currentSession.exercises[exerciseIndex];
+        }
+        
+        // Si no se encuentra, buscar en el DOM
+        if (!currentExercise) {
+            const exerciseElement = document.querySelector('.exercise-content');
+            if (exerciseElement) {
+                const wordElement = exerciseElement.querySelector('h5');
+                if (wordElement) {
+                    currentExercise = {
+                        word: wordElement.textContent.trim(),
+                        translation: exerciseElement.querySelector('p')?.textContent?.trim() || '',
+                        pronunciation: exerciseElement.querySelector('p:last-of-type')?.textContent?.trim() || ''
+                    };
+                }
+            }
+        }
+        
+        if (!currentExercise || !currentExercise.word) {
+            console.error("❌ No se encontró el ejercicio para evaluar");
+            showNotification('Error: No se pudo obtener la información del ejercicio', 'error');
+            return;
+        }
+        
+        const expectedWord = currentExercise.word.toLowerCase().trim();
+        console.log("📝 Palabra esperada:", expectedWord);
+        
+        // Mostrar indicador de evaluación
+        showNotification('🔍 Evaluando tu pronunciación...', 'info', 2000);
+        
+        // Simular análisis de pronunciación (en una implementación real usarías Web Speech API o servicios de reconocimiento)
+        setTimeout(() => {
+            const pronunciationScore = analyzePronunciation(expectedWord);
+            handlePronunciationResult(exerciseIndex, pronunciationScore, expectedWord);
+        }, 2000);
+        
+    } catch (error) {
+        console.error("❌ Error al evaluar pronunciación:", error);
+        showNotification('Error al evaluar la pronunciación', 'error');
+    }
+}
+
+function analyzePronunciation(expectedWord) {
+    // Simulación de análisis de pronunciación
+    // En una implementación real, aquí usarías Web Speech API o servicios de reconocimiento de voz
+    
+    // Generar puntuación aleatoria entre 60-95 para simular variabilidad
+    const baseScore = Math.random() * 35 + 60;
+    
+    // Ajustar según la longitud de la palabra (palabras más largas son más difíciles)
+    const lengthFactor = Math.max(0.8, 1 - (expectedWord.length - 3) * 0.05);
+    
+    // Ajustar según complejidad de la palabra
+    const complexityFactor = expectedWord.includes('th') || expectedWord.includes('ch') || 
+                           expectedWord.includes('sh') ? 0.85 : 1.0;
+    
+    const finalScore = Math.round(baseScore * lengthFactor * complexityFactor);
+    
+    console.log(`📊 Puntuación de pronunciación: ${finalScore}/100`);
+    return Math.min(100, Math.max(0, finalScore));
+}
+
+function handlePronunciationResult(exerciseIndex, score, expectedWord) {
+    try {
+        const isCorrect = score >= 75; // Umbral de 75% para considerar correcto
+        
+        if (isCorrect) {
+            // Pronunciación correcta
+            showNotification(`🎉 ¡Excelente! Pronunciación correcta (${score}%)`, 'success', 3000);
+            
+            // Otorgar XP por pronunciación correcta
+            if (typeof window.practiceSystem?.addXP === 'function') {
+                window.practiceSystem.addXP(15); // 15 XP por pronunciación correcta
+            }
+            
+            // Avanzar al siguiente ejercicio después de 2 segundos
+            setTimeout(() => {
+                if (typeof window.practiceSystem?.nextExercise === 'function') {
+                    window.practiceSystem.nextExercise();
+                }
+            }, 2000);
+            
+        } else {
+            // Pronunciación necesita mejora
+            showNotification(`📚 Inténtalo de nuevo. Puntuación: ${score}%. Intenta pronunciar más claramente.`, 'warning', 4000);
+            
+            // Mostrar sugerencias de mejora
+            setTimeout(() => {
+                showPronunciationTips(expectedWord);
+            }, 1000);
+        }
+        
+        // Actualizar la interfaz con el resultado
+        updatePronunciationResult(exerciseIndex, score, isCorrect);
+        
+    } catch (error) {
+        console.error("❌ Error al manejar resultado de pronunciación:", error);
+        showNotification('Error al procesar el resultado', 'error');
+    }
+}
+
+function showPronunciationTips(word) {
+    const tips = {
+        'beautiful': 'Pronuncia "beau-ti-ful" con énfasis en la primera sílaba',
+        'hello': 'Pronuncia "he-llo" con la "h" aspirada',
+        'thank you': 'Pronuncia "thank you" con la "th" suave',
+        'good morning': 'Pronuncia "good mor-ning" con pausa entre palabras',
+        'how are you': 'Pronuncia "how are you" con entonación ascendente al final'
+    };
+    
+    const tip = tips[word.toLowerCase()] || `Intenta pronunciar "${word}" más despacio y con claridad`;
+    showNotification(`💡 Consejo: ${tip}`, 'info', 5000);
+}
+
+function updatePronunciationResult(exerciseIndex, score, isCorrect) {
+    try {
+        const playbackArea = document.getElementById(`playbackArea${exerciseIndex}`);
+        if (playbackArea) {
+            // Agregar indicador de resultado
+            const resultIndicator = document.createElement('div');
+            resultIndicator.style.cssText = `
+                margin-top: 1rem;
+                padding: 0.5rem;
+                border-radius: 6px;
+                text-align: center;
+                font-weight: bold;
+                background: ${isCorrect ? 'var(--success-color)' : 'var(--warning-color)'};
+                color: white;
+            `;
+            resultIndicator.innerHTML = `
+                <i class="fas ${isCorrect ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i>
+                ${isCorrect ? '¡Correcto!' : 'Inténtalo de nuevo'} (${score}%)
+            `;
+            
+            playbackArea.appendChild(resultIndicator);
+        }
+    } catch (error) {
+        console.error("❌ Error al actualizar resultado de pronunciación:", error);
+    }
+}
+
 function stopRecording(exerciseIndex) {
     try {
         if (mediaRecorder && mediaRecorder.state === 'recording') {
@@ -2733,12 +3027,7 @@ function stopRecording(exerciseIndex) {
             // Detener stream de audio
             mediaRecorder.stream.getTracks().forEach(track => track.stop());
             
-            // Mostrar botón de grabar y ocultar botón de detener
-            const recordBtn = document.querySelector(`#recordingArea${exerciseIndex}`)?.closest('.pronunciation-exercise')?.querySelector('.btn-primary');
-            const stopBtn = document.querySelector(`#recordingArea${exerciseIndex}`)?.closest('.pronunciation-exercise')?.querySelector('.btn-secondary:last-of-type');
-            
-            if (recordBtn) recordBtn.style.display = 'inline-block';
-            if (stopBtn) stopBtn.style.display = 'none';
+            // La transición de estados se maneja en el evento onstop del MediaRecorder
             
             console.log("⏹️ Grabación detenida");
         }
@@ -2747,18 +3036,6 @@ function stopRecording(exerciseIndex) {
     }
 }
 
-function playRecording(exerciseIndex) {
-    try {
-        const audioUrl = window[`recordingAudio${exerciseIndex}`];
-        if (audioUrl) {
-            const audio = new Audio(audioUrl);
-            audio.play();
-            console.log("▶️ Reproduciendo grabación del ejercicio", exerciseIndex);
-        }
-    } catch (error) {
-        console.error("❌ Error al reproducir grabación:", error);
-    }
-}
 
 function deleteRecording(exerciseIndex) {
     try {
@@ -2782,9 +3059,12 @@ function deleteRecording(exerciseIndex) {
 
 function playCorrectPronunciation(word) {
     try {
+        // Obtener el índice del ejercicio actual
+        const exerciseIndex = window.practiceSystem?.currentSession?.currentExercise || 0;
+        
         // Detener audio anterior si existe
         if (window.currentListeningAudio) {
-            window.currentListeningAudio.cancel();
+            speechSynthesis.cancel();
         }
         
         // Crear nueva síntesis de voz
@@ -2800,18 +3080,19 @@ function playCorrectPronunciation(word) {
             utterance.voice = englishVoice;
         }
         
-        // Configurar velocidad lenta para pronunciación
-        utterance.rate = 0.8;
-        utterance.pitch = 1.0;
-        utterance.volume = 1.0;
+        // Usar el sistema de cola de audio con el índice correcto
+        if (typeof window.playListeningAudio === 'function') {
+            window.playListeningAudio(word, exerciseIndex);
+        } else {
+            // Fallback al método directo
+            utterance.rate = 0.8;
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+            window.currentListeningAudio = utterance;
+            speechSynthesis.speak(utterance);
+        }
         
-        // Guardar referencia global
-        window.currentListeningAudio = utterance;
-        
-        // Reproducir audio
-        speechSynthesis.speak(utterance);
-        
-        console.log("🔊 Reproduciendo pronunciación correcta:", word);
+        console.log("🔊 Reproduciendo pronunciación correcta:", word, "ejercicio:", exerciseIndex);
         
     } catch (error) {
         console.error("❌ Error al reproducir pronunciación correcta:", error);
@@ -3559,6 +3840,18 @@ class ConversationAI {
         return 'C1';
     }
     
+    updateUserLevel() {
+        try {
+            if (window.appState) {
+                this.userLevel = window.appState.currentLevel || 1;
+                this.userMCER = this.getUserLevelMCER(this.userLevel);
+                console.log("🔄 Nivel actualizado:", this.userLevel, "MCER:", this.userMCER);
+            }
+        } catch (error) {
+            console.error("❌ Error al actualizar nivel del usuario:", error);
+        }
+    }
+    
     generateConversationContext() {
         const contexts = {
             'A1': "You are a friendly English teacher helping a beginner student. Use simple vocabulary and short sentences. Be encouraging and patient.",
@@ -4193,6 +4486,18 @@ class PracticeSystem {
         return 'C1';
     }
     
+    updateUserLevel() {
+        try {
+            if (window.appState) {
+                this.userLevel = window.appState.currentLevel || 1;
+                this.userMCER = this.getUserLevelMCER(this.userLevel);
+                console.log("🔄 Nivel actualizado:", this.userLevel, "MCER:", this.userMCER);
+            }
+        } catch (error) {
+            console.error("❌ Error al actualizar nivel del usuario:", error);
+        }
+    }
+    
     unlockCategoriesByLevel() {
         // Limpiar categorías desbloqueadas
         this.unlockedCategories.clear();
@@ -4249,7 +4554,17 @@ class PracticeSystem {
     
     startPracticeSession(mode, categoryKey = null) {
         try {
+            // Actualizar nivel del usuario antes de iniciar
+            this.updateUserLevel();
+            
             console.log("🎯 Iniciando sesión de práctica:", mode, "categoría:", categoryKey);
+            console.log("📊 Nivel del usuario:", this.userMCER || 'A1');
+            
+            // Limpiar cola de audio anterior
+            if (typeof window.clearAudioQueue === 'function') {
+                window.clearAudioQueue();
+                console.log("🗑️ Cola de audio limpiada al iniciar nueva sesión");
+            }
             
             this.currentSession = {
                 id: Date.now(),
@@ -4325,18 +4640,21 @@ class PracticeSystem {
                 vocabulary = this.getDefaultVocabulary();
             }
             
+            // Mezclar el vocabulario disponible
+            const shuffledVocabulary = [...vocabulary].sort(() => Math.random() - 0.5);
+            
             // Crear 5 ejercicios de vocabulario
             const exercises = [];
-            const numExercises = Math.min(5, vocabulary.length);
+            const numExercises = Math.min(5, shuffledVocabulary.length);
             
             for (let i = 0; i < numExercises; i++) {
-                const wordIndex = i % vocabulary.length;
-                const word = vocabulary[wordIndex];
+                const word = shuffledVocabulary[i];
                 
-                // Obtener opciones incorrectas
-                const incorrectOptions = vocabulary
-                    .filter((_, index) => index !== wordIndex)
-                    .sort(() => Math.random() - 0.5)
+                // Obtener opciones incorrectas únicas
+                const otherWords = shuffledVocabulary.filter((_, index) => index !== i);
+                const shuffledOtherWords = otherWords.sort(() => Math.random() - 0.5);
+                
+                const incorrectOptions = shuffledOtherWords
                     .slice(0, 3)
                     .map(w => w.english);
                 
@@ -4353,6 +4671,8 @@ class PracticeSystem {
                 });
             }
             
+            console.log("📖 Ejercicios de vocabulario generados:", exercises.length, "ejercicios únicos");
+            
             return exercises;
             
         } catch (error) {
@@ -4366,8 +4686,14 @@ class PracticeSystem {
             const exercises = [];
             const grammarExercises = this.getGrammarExercisesByLevel();
             
-            for (let i = 0; i < 5; i++) {
-                const exercise = grammarExercises[i % grammarExercises.length];
+            // Mezclar los ejercicios disponibles
+            const shuffledExercises = [...grammarExercises].sort(() => Math.random() - 0.5);
+            
+            // Tomar hasta 5 ejercicios diferentes
+            const numExercises = Math.min(5, shuffledExercises.length);
+            
+            for (let i = 0; i < numExercises; i++) {
+                const exercise = shuffledExercises[i];
                 exercises.push({
                     type: 'grammar',
                     question: exercise.question,
@@ -4378,6 +4704,7 @@ class PracticeSystem {
                 });
             }
             
+            console.log("📚 Ejercicios de gramática generados:", exercises.length, "ejercicios únicos");
             return exercises;
             
         } catch (error) {
@@ -4391,8 +4718,14 @@ class PracticeSystem {
             const exercises = [];
             const listeningExercises = this.getListeningExercisesByLevel();
             
-            for (let i = 0; i < 3; i++) {
-                const exercise = listeningExercises[i % listeningExercises.length];
+            // Mezclar los ejercicios disponibles
+            const shuffledExercises = [...listeningExercises].sort(() => Math.random() - 0.5);
+            
+            // Tomar hasta 3 ejercicios diferentes
+            const numExercises = Math.min(3, shuffledExercises.length);
+            
+            for (let i = 0; i < numExercises; i++) {
+                const exercise = shuffledExercises[i];
                 exercises.push({
                     type: 'listening',
                     question: exercise.question,
@@ -4403,6 +4736,7 @@ class PracticeSystem {
                 });
             }
             
+            console.log("🎧 Ejercicios de listening generados:", exercises.length, "ejercicios únicos");
             return exercises;
             
         } catch (error) {
@@ -4416,8 +4750,14 @@ class PracticeSystem {
             const exercises = [];
             const pronunciationExercises = this.getPronunciationExercisesByLevel();
             
-            for (let i = 0; i < 3; i++) {
-                const exercise = pronunciationExercises[i % pronunciationExercises.length];
+            // Mezclar los ejercicios disponibles
+            const shuffledExercises = [...pronunciationExercises].sort(() => Math.random() - 0.5);
+            
+            // Tomar hasta 3 ejercicios diferentes
+            const numExercises = Math.min(3, shuffledExercises.length);
+            
+            for (let i = 0; i < numExercises; i++) {
+                const exercise = shuffledExercises[i];
                 exercises.push({
                     type: 'pronunciation',
                     word: exercise.word,
@@ -4428,6 +4768,7 @@ class PracticeSystem {
                 });
             }
             
+            console.log("🎤 Ejercicios de pronunciación generados:", exercises.length, "ejercicios únicos");
             return exercises;
             
         } catch (error) {
@@ -4507,6 +4848,17 @@ class PracticeSystem {
                 this.currentSession.xpEarned += exercise.xpValue;
                 this.sessionXP += exercise.xpValue;
                 this.practiceStreak++;
+                
+                // Actualizar XP del usuario en appState
+                if (window.appState) {
+                    window.appState.currentXP += exercise.xpValue;
+                    console.log("✅ XP sumado en appState:", window.appState.currentXP);
+                    
+                    // Actualizar UI del header inmediatamente
+                    if (typeof window.updateHeaderElements === 'function') {
+                        window.updateHeaderElements();
+                    }
+                }
             } else {
                 this.practiceStreak = 0;
             }
@@ -4516,7 +4868,7 @@ class PracticeSystem {
                 this.completePracticeSession();
             }
             
-            console.log("✅ Respuesta registrada. XP ganado:", exercise.xpValue);
+            console.log("✅ Respuesta registrada. XP ganado:", exercise.xpValue, "Ejercicio:", exerciseIndex);
             
         } catch (error) {
             console.error("❌ Error al registrar respuesta:", error);
@@ -4551,6 +4903,18 @@ class PracticeSystem {
                     window.saveProgress();
                     console.log("💾 Progreso guardado después de práctica");
                 }
+                
+                // Actualizar UI del header
+                if (typeof window.updateHeaderElements === 'function') {
+                    window.updateHeaderElements();
+                    console.log("✅ Header actualizado después de práctica");
+                }
+            }
+            
+            // Limpiar cola de audio completa
+            if (typeof window.clearAudioQueue === 'function') {
+                window.clearAudioQueue();
+                console.log("🗑️ Cola de audio limpiada al completar sesión");
             }
             
             // Guardar historial
@@ -5028,6 +5392,13 @@ class PracticeSystem {
             const exerciseContent = this.createExerciseContent(currentExercise);
             practiceArea.appendChild(exerciseContent);
             
+            console.log("✅ Ejercicio cargado:", this.currentSession.currentExercise, "Tipo:", currentExercise.type);
+            
+            // Limpiar cola de audio del ejercicio anterior
+            if (this.currentSession.currentExercise > 0 && typeof window.clearAudioQueueForExercise === 'function') {
+                window.clearAudioQueueForExercise(this.currentSession.currentExercise - 1);
+            }
+            
         } catch (error) {
             console.error("❌ Error al cargar ejercicio actual:", error);
         }
@@ -5125,6 +5496,7 @@ class PracticeSystem {
     
     createPronunciationContent(exercise) {
         try {
+            const exerciseIndex = this.currentSession.currentExercise || 0;
             const container = document.createElement('div');
             container.style.cssText = `
                 background: var(--background-color);
@@ -5140,12 +5512,38 @@ class PracticeSystem {
                     <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">${exercise.translation}</p>
                     <p style="color: var(--pronunciation-color); font-family: monospace;">${exercise.pronunciation}</p>
                 </div>
+                
+                <!-- Área de grabación -->
+                <div id="recordingArea${exerciseIndex}" style="text-align: center; margin-bottom: 1rem; display: none;">
+                    <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                        <i class="fas fa-microphone"></i> Grabando... 
+                        <span id="recordingTimer${exerciseIndex}" style="font-weight: bold; color: var(--accent-color);">00:00</span>
+                    </p>
+                    <button class="btn btn-danger" onclick="window.stopRecording(${exerciseIndex})">
+                        <i class="fas fa-stop"></i> Detener Grabación
+                    </button>
+                </div>
+                
+                <!-- Área de reproducción -->
+                <div id="playbackArea${exerciseIndex}" style="text-align: center; margin-bottom: 1rem; display: none;">
+                    <p style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                        <i class="fas fa-check-circle" style="color: var(--success-color);"></i> Grabación completada
+                    </p>
+                    <button class="btn btn-info" onclick="window.playRecording(${exerciseIndex})" style="margin-right: 1rem;">
+                        <i class="fas fa-play"></i> Escuchar Mi Grabación
+                    </button>
+                    <button class="btn btn-secondary" onclick="window.startRecording(${exerciseIndex})">
+                        <i class="fas fa-microphone"></i> Grabar Nuevamente
+                    </button>
+                </div>
+                
+                <!-- Controles iniciales -->
                 <div style="text-align: center;">
                     <button class="btn btn-primary" onclick="window.practiceSystem.playCorrectPronunciation('${exercise.word}')" style="margin-right: 1rem;">
-                        <i class="fas fa-volume-up"></i> Escuchar
+                        <i class="fas fa-volume-up"></i> Escuchar Pronunciación
                     </button>
-                    <button class="btn btn-secondary" onclick="window.practiceSystem.startRecording()">
-                        <i class="fas fa-microphone"></i> Grabar
+                    <button class="btn btn-secondary" onclick="window.practiceSystem.startRecording(${exerciseIndex})">
+                        <i class="fas fa-microphone"></i> Grabar Mi Pronunciación
                     </button>
                 </div>
             `;
@@ -5171,7 +5569,7 @@ class PracticeSystem {
             
             container.innerHTML = `
                 <div style="text-align: center; margin-bottom: 1rem;">
-                    <button class="btn btn-primary" onclick="window.practiceSystem.playListeningAudio('${exercise.audioText}')">
+                    <button class="btn btn-primary" onclick="window.practiceSystem.playListeningAudio('${exercise.audioText}', ${this.currentSession.currentExercise})">
                         <i class="fas fa-play"></i> Reproducir Audio
                     </button>
                 </div>
@@ -5187,11 +5585,18 @@ class PracticeSystem {
     
     handleExerciseAnswer(answer, isCorrect) {
         try {
+            console.log("🎯 PracticeSystem: Procesando respuesta, ejercicio actual:", this.currentSession.currentExercise);
+            
             // Registrar respuesta
             this.submitAnswer(this.currentSession.currentExercise, answer, isCorrect);
             
             // Mostrar feedback
             this.showExerciseFeedback(isCorrect);
+            
+            // Limpiar cola de audio para este ejercicio
+            if (typeof window.clearAudioQueueForExercise === 'function') {
+                window.clearAudioQueueForExercise(this.currentSession.currentExercise);
+            }
             
             // Avanzar al siguiente ejercicio o completar sesión
             setTimeout(() => {
@@ -5242,6 +5647,11 @@ class PracticeSystem {
     nextExercise() {
         try {
             if (!this.currentSession) return;
+            
+            // Limpiar cola de audio del ejercicio anterior
+            if (typeof window.clearAudioQueueForExercise === 'function') {
+                window.clearAudioQueueForExercise(this.currentSession.currentExercise);
+            }
             
             this.currentSession.currentExercise++;
             
@@ -5307,17 +5717,67 @@ class PracticeSystem {
     
     getDefaultVocabulary() {
         // Vocabulario por defecto si no hay categoría específica
-        return [
+        const vocabulary = {
+            'A1': [
             { english: "Hello", spanish: "Hola", pronunciation: "/həˈloʊ/" },
             { english: "Good", spanish: "Bueno", pronunciation: "/ɡʊd/" },
             { english: "Bad", spanish: "Malo", pronunciation: "/bæd/" },
             { english: "Yes", spanish: "Sí", pronunciation: "/jes/" },
-            { english: "No", spanish: "No", pronunciation: "/noʊ/" }
-        ];
+                { english: "No", spanish: "No", pronunciation: "/noʊ/" },
+                { english: "Big", spanish: "Grande", pronunciation: "/bɪɡ/" },
+                { english: "Small", spanish: "Pequeño", pronunciation: "/smɔːl/" },
+                { english: "Hot", spanish: "Caliente", pronunciation: "/hɒt/" },
+                { english: "Cold", spanish: "Frío", pronunciation: "/kəʊld/" },
+                { english: "Fast", spanish: "Rápido", pronunciation: "/fɑːst/" }
+            ],
+            'A2': [
+                { english: "Beautiful", spanish: "Hermoso/a", pronunciation: "/ˈbjuːtɪfʊl/" },
+                { english: "Interesting", spanish: "Interesante", pronunciation: "/ˈɪntrəstɪŋ/" },
+                { english: "Important", spanish: "Importante", pronunciation: "/ɪmˈpɔːtənt/" },
+                { english: "Difficult", spanish: "Difícil", pronunciation: "/ˈdɪfɪkəlt/" },
+                { english: "Easy", spanish: "Fácil", pronunciation: "/ˈiːzi/" },
+                { english: "Expensive", spanish: "Caro", pronunciation: "/ɪkˈspensɪv/" },
+                { english: "Cheap", spanish: "Barato", pronunciation: "/tʃiːp/" },
+                { english: "Modern", spanish: "Moderno", pronunciation: "/ˈmɒdn/" },
+                { english: "Traditional", spanish: "Tradicional", pronunciation: "/trəˈdɪʃənl/" },
+                { english: "Professional", spanish: "Profesional", pronunciation: "/prəˈfeʃənl/" }
+            ],
+            'B1': [
+                { english: "Accomplish", spanish: "Lograr", pronunciation: "/əˈkʌmplɪʃ/" },
+                { english: "Achievement", spanish: "Logro", pronunciation: "/əˈtʃiːvmənt/" },
+                { english: "Opportunity", spanish: "Oportunidad", pronunciation: "/ˌɒpəˈtjuːnəti/" },
+                { english: "Responsibility", spanish: "Responsabilidad", pronunciation: "/rɪˌspɒnsəˈbɪləti/" },
+                { english: "Experience", spanish: "Experiencia", pronunciation: "/ɪkˈspɪəriəns/" },
+                { english: "Knowledge", spanish: "Conocimiento", pronunciation: "/ˈnɒlɪdʒ/" },
+                { english: "Development", spanish: "Desarrollo", pronunciation: "/dɪˈveləpmənt/" },
+                { english: "Improvement", spanish: "Mejora", pronunciation: "/ɪmˈpruːvmənt/" },
+                { english: "Challenge", spanish: "Desafío", pronunciation: "/ˈtʃælɪndʒ/" },
+                { english: "Success", spanish: "Éxito", pronunciation: "/səkˈses/" }
+            ],
+            'B2': [
+                { english: "Sophisticated", spanish: "Sofisticado/a", pronunciation: "/səˈfɪstɪkeɪtɪd/" },
+                { english: "Extraordinary", spanish: "Extraordinario/a", pronunciation: "/ɪkˈstrɔːdɪnəri/" },
+                { english: "Phenomenal", spanish: "Fenomenal", pronunciation: "/fəˈnɒmɪnl/" },
+                { english: "Magnificent", spanish: "Magnífico/a", pronunciation: "/mæɡˈnɪfɪsnt/" },
+                { english: "Remarkable", spanish: "Notable", pronunciation: "/rɪˈmɑːkəbəl/" },
+                { english: "Outstanding", spanish: "Destacado/a", pronunciation: "/aʊtˈstændɪŋ/" },
+                { english: "Exceptional", spanish: "Excepcional", pronunciation: "/ɪkˈsepʃənl/" },
+                { english: "Incredible", spanish: "Increíble", pronunciation: "/ɪnˈkredəbəl/" },
+                { english: "Amazing", spanish: "Asombroso/a", pronunciation: "/əˈmeɪzɪŋ/" },
+                { english: "Wonderful", spanish: "Maravilloso/a", pronunciation: "/ˈwʌndəfʊl/" }
+            ]
+        };
+        
+        // Retornar vocabulario según el nivel del usuario
+        const userLevel = this.userMCER || 'A1';
+        const levelVocabulary = vocabulary[userLevel] || vocabulary['A1'];
+        
+        console.log("📖 Vocabulario por defecto generado para nivel", userLevel, ":", levelVocabulary.length, "palabras");
+        return levelVocabulary;
     }
     
     getGrammarExercisesByLevel() {
-        // Ejercicios de gramática según el nivel
+        // Ejercicios de gramática según el nivel del usuario
         const exercises = {
             'A1': [
                 {
@@ -5331,6 +5791,24 @@ class PracticeSystem {
                     options: ["speak", "speaks", "speaking", "spoke"],
                     correct: "speaks",
                     explanation: "Se usa 'speaks' con 'she' en presente simple"
+                },
+                {
+                    question: "Complete: They ___ in the park.",
+                    options: ["is", "are", "am", "be"],
+                    correct: "are",
+                    explanation: "Se usa 'are' con 'they' en presente simple"
+                },
+                {
+                    question: "Complete: We ___ happy.",
+                    options: ["is", "are", "am", "be"],
+                    correct: "are",
+                    explanation: "Se usa 'are' con 'we' en presente simple"
+                },
+                {
+                    question: "Complete: He ___ a car.",
+                    options: ["have", "has", "having", "had"],
+                    correct: "has",
+                    explanation: "Se usa 'has' con 'he' en presente simple"
                 }
             ],
             'A2': [
@@ -5339,35 +5817,344 @@ class PracticeSystem {
                     options: ["go", "went", "going", "goes"],
                     correct: "went",
                     explanation: "Se usa 'went' (pasado simple) para acciones pasadas"
+                },
+                {
+                    question: "Complete: She ___ to school every day.",
+                    options: ["go", "goes", "going", "went"],
+                    correct: "goes",
+                    explanation: "Se usa 'goes' con 'she' en presente simple"
+                },
+                {
+                    question: "Complete: I ___ a book right now.",
+                    options: ["read", "am reading", "reads", "reading"],
+                    correct: "am reading",
+                    explanation: "Se usa presente continuo para acciones en progreso"
+                },
+                {
+                    question: "Complete: They ___ in London.",
+                    options: ["live", "lives", "living", "lived"],
+                    correct: "live",
+                    explanation: "Se usa 'live' con 'they' en presente simple"
+                },
+                {
+                    question: "Complete: We ___ dinner at 8 PM.",
+                    options: ["have", "has", "having", "had"],
+                    correct: "have",
+                    explanation: "Se usa 'have' con 'we' en presente simple"
+                }
+            ],
+            'B1': [
+                {
+                    question: "Complete: I ___ English for three years.",
+                    options: ["study", "am studying", "have been studying", "studied"],
+                    correct: "have been studying",
+                    explanation: "Se usa presente perfecto continuo para duración"
+                },
+                {
+                    question: "Complete: If I ___ rich, I would travel the world.",
+                    options: ["am", "was", "were", "will be"],
+                    correct: "were",
+                    explanation: "Se usa 'were' en condicionales hipotéticas"
+                },
+                {
+                    question: "Complete: She ___ to Paris next month.",
+                    options: ["go", "goes", "will go", "going"],
+                    correct: "will go",
+                    explanation: "Se usa 'will' para planes futuros"
+                },
+                {
+                    question: "Complete: The movie ___ when I arrived.",
+                    options: ["start", "starts", "had started", "will start"],
+                    correct: "had started",
+                    explanation: "Se usa pasado perfecto para acciones anteriores"
+                },
+                {
+                    question: "Complete: I wish I ___ speak French.",
+                    options: ["can", "could", "will", "would"],
+                    correct: "could",
+                    explanation: "Se usa 'could' en 'wish' para deseos imposibles"
+                }
+            ],
+            'B2': [
+                {
+                    question: "Complete: Despite ___ tired, she continued working.",
+                    options: ["being", "to be", "was", "is"],
+                    correct: "being",
+                    explanation: "Se usa gerundio después de 'despite'"
+                },
+                {
+                    question: "Complete: The book ___ by many students.",
+                    options: ["read", "reads", "is read", "is reading"],
+                    correct: "is read",
+                    explanation: "Se usa voz pasiva para enfatizar la acción"
+                },
+                {
+                    question: "Complete: I would have called you if I ___ your number.",
+                    options: ["had", "have", "would have", "will have"],
+                    correct: "had",
+                    explanation: "Se usa pasado perfecto en condicionales del tercer tipo"
+                },
+                {
+                    question: "Complete: Not only ___ she speak English, but also French.",
+                    options: ["does", "do", "did", "will"],
+                    correct: "does",
+                    explanation: "Se usa inversión con 'not only'"
+                },
+                {
+                    question: "Complete: The more you practice, ___ you become.",
+                    options: ["the better", "better", "more better", "the best"],
+                    correct: "the better",
+                    explanation: "Se usa estructura comparativa 'the more... the better'"
                 }
             ]
         };
         
-        return exercises[this.userMCER] || exercises['A1'];
+        // Retornar ejercicios según el nivel del usuario
+        const userLevel = this.userMCER || 'A1';
+        const levelExercises = exercises[userLevel] || exercises['A1'];
+        
+        console.log("📚 Ejercicios de gramática generados para nivel", userLevel, ":", levelExercises.length);
+        return levelExercises;
     }
     
     getListeningExercisesByLevel() {
-        // Ejercicios de listening según el nivel
-        return [
+        // Ejercicios de listening según el nivel del usuario
+        const exercises = {
+            'A1': [
             {
                 text: "Hello",
                 question: "¿Qué palabra escuchaste?",
                 options: ["Hello", "Hi", "Goodbye", "Thanks"],
                 correct: "Hello"
-            }
-        ];
+                },
+                {
+                    text: "Good morning",
+                    question: "¿Qué frase escuchaste?",
+                    options: ["Good morning", "Good afternoon", "Good evening", "Good night"],
+                    correct: "Good morning"
+                },
+                {
+                    text: "Thank you",
+                    question: "¿Qué expresión escuchaste?",
+                    options: ["Thank you", "You're welcome", "Please", "Sorry"],
+                    correct: "Thank you"
+                },
+                {
+                    text: "How are you?",
+                    question: "¿Qué pregunta escuchaste?",
+                    options: ["How are you?", "What's your name?", "Where are you from?", "How old are you?"],
+                    correct: "How are you?"
+                },
+                {
+                    text: "My name is",
+                    question: "¿Qué frase escuchaste?",
+                    options: ["My name is", "I am", "I have", "I like"],
+                    correct: "My name is"
+                }
+            ],
+            'A2': [
+                {
+                    text: "I would like a coffee",
+                    question: "¿Qué oración escuchaste?",
+                    options: ["I would like a coffee", "I want a coffee", "I need a coffee", "I have a coffee"],
+                    correct: "I would like a coffee"
+                },
+                {
+                    text: "What time is it?",
+                    question: "¿Qué pregunta escuchaste?",
+                    options: ["What time is it?", "What day is it?", "What date is it?", "What month is it?"],
+                    correct: "What time is it?"
+                },
+                {
+                    text: "I'm going to the store",
+                    question: "¿Qué oración escuchaste?",
+                    options: ["I'm going to the store", "I went to the store", "I go to the store", "I will go to the store"],
+                    correct: "I'm going to the store"
+                },
+                {
+                    text: "Can you help me?",
+                    question: "¿Qué pregunta escuchaste?",
+                    options: ["Can you help me?", "Do you help me?", "Will you help me?", "Are you helping me?"],
+                    correct: "Can you help me?"
+                },
+                {
+                    text: "I don't understand",
+                    question: "¿Qué oración escuchaste?",
+                    options: ["I don't understand", "I don't know", "I don't like", "I don't have"],
+                    correct: "I don't understand"
+                }
+            ],
+            'B1': [
+                {
+                    text: "I've been studying English for two years",
+                    question: "¿Qué oración escuchaste?",
+                    options: [
+                        "I've been studying English for two years",
+                        "I studied English for two years",
+                        "I will study English for two years",
+                        "I study English for two years"
+                    ],
+                    correct: "I've been studying English for two years"
+                },
+                {
+                    text: "If I had more time, I would travel more",
+                    question: "¿Qué oración escuchaste?",
+                    options: [
+                        "If I had more time, I would travel more",
+                        "If I have more time, I will travel more",
+                        "If I had more time, I will travel more",
+                        "If I have more time, I would travel more"
+                    ],
+                    correct: "If I had more time, I would travel more"
+                },
+                {
+                    text: "The movie was so interesting that I watched it twice",
+                    question: "¿Qué oración escuchaste?",
+                    options: [
+                        "The movie was so interesting that I watched it twice",
+                        "The movie was very interesting and I watched it twice",
+                        "The movie was interesting so I watched it twice",
+                        "The movie was interesting but I watched it twice"
+                    ],
+                    correct: "The movie was so interesting that I watched it twice"
+                }
+            ],
+            'B2': [
+                {
+                    text: "Despite the weather being terrible, we decided to go hiking",
+                    question: "¿Qué oración escuchaste?",
+                    options: [
+                        "Despite the weather being terrible, we decided to go hiking",
+                        "Although the weather was terrible, we decided to go hiking",
+                        "Even though the weather was terrible, we decided to go hiking",
+                        "The weather was terrible but we decided to go hiking"
+                    ],
+                    correct: "Despite the weather being terrible, we decided to go hiking"
+                },
+                {
+                    text: "I would have attended the meeting if I had known about it earlier",
+                    question: "¿Qué oración escuchaste?",
+                    options: [
+                        "I would have attended the meeting if I had known about it earlier",
+                        "I will attend the meeting if I know about it earlier",
+                        "I would attend the meeting if I knew about it earlier",
+                        "I attended the meeting because I knew about it earlier"
+                    ],
+                    correct: "I would have attended the meeting if I had known about it earlier"
+                },
+                {
+                    text: "The research findings suggest that climate change is accelerating",
+                    question: "¿Qué oración escuchaste?",
+                    options: [
+                        "The research findings suggest that climate change is accelerating",
+                        "The research shows that climate change is getting worse",
+                        "The study indicates that climate change is speeding up",
+                        "The evidence proves that climate change is happening faster"
+                    ],
+                    correct: "The research findings suggest that climate change is accelerating"
+                }
+            ]
+        };
+        
+        // Retornar ejercicios según el nivel del usuario
+        const userLevel = this.userMCER || 'A1';
+        const levelExercises = exercises[userLevel] || exercises['A1'];
+        
+        console.log("🎧 Ejercicios de listening generados para nivel", userLevel, ":", levelExercises.length);
+        return levelExercises;
     }
     
     getPronunciationExercisesByLevel() {
-        // Ejercicios de pronunciación según el nivel
-        return [
+        // Ejercicios de pronunciación según el nivel del usuario
+        const exercises = {
+            'A1': [
             {
                 word: "Hello",
                 translation: "Hola",
                 pronunciation: "/həˈloʊ/",
                 tips: "Enfoca en la 'h' aspirada y la 'o' larga"
-            }
-        ];
+                },
+                {
+                    word: "Beautiful",
+                    translation: "Hermoso/a",
+                    pronunciation: "/ˈbjuːtɪfʊl/",
+                    tips: "Enfoca en la 'u' larga y la 'l' final"
+                },
+                {
+                    word: "Thank you",
+                    translation: "Gracias",
+                    pronunciation: "/ˈθæŋk juː/",
+                    tips: "Enfoca en el sonido 'th' y la 'u' larga"
+                }
+            ],
+            'A2': [
+                {
+                    word: "International",
+                    translation: "Internacional",
+                    pronunciation: "/ˌɪntərˈnæʃənəl/",
+                    tips: "Enfoca en el acento en 'na' y la 'l' final"
+                },
+                {
+                    word: "Comfortable",
+                    translation: "Cómodo/a",
+                    pronunciation: "/ˈkʌmftəbəl/",
+                    tips: "Enfoca en la 'o' silenciosa y la 'a' final"
+                },
+                {
+                    word: "Interesting",
+                    translation: "Interesante",
+                    pronunciation: "/ˈɪntrəstɪŋ/",
+                    tips: "Enfoca en el acento en 'in' y la 'ng' final"
+                }
+            ],
+            'B1': [
+                {
+                    word: "Nevertheless",
+                    translation: "Sin embargo",
+                    pronunciation: "/ˌnevərðəˈles/",
+                    tips: "Enfoca en el acento en 'less' y la 'th'"
+                },
+                {
+                    word: "Responsibility",
+                    translation: "Responsabilidad",
+                    pronunciation: "/rɪˌspɒnsəˈbɪləti/",
+                    tips: "Enfoca en el acento en 'bil' y la 'ty' final"
+                },
+                {
+                    word: "Opportunity",
+                    translation: "Oportunidad",
+                    pronunciation: "/ˌɒpəˈtjuːnəti/",
+                    tips: "Enfoca en el acento en 'tu' y la 'ty' final"
+                }
+            ],
+            'B2': [
+                {
+                    word: "Sophisticated",
+                    translation: "Sofisticado/a",
+                    pronunciation: "/səˈfɪstɪkeɪtɪd/",
+                    tips: "Enfoca en el acento en 'sti' y la 'ed' final"
+                },
+                {
+                    word: "Accomplishment",
+                    translation: "Logro",
+                    pronunciation: "/əˈkʌmplɪʃmənt/",
+                    tips: "Enfoca en el acento en 'plish' y la 'ment' final"
+                },
+                {
+                    word: "Extraordinary",
+                    translation: "Extraordinario/a",
+                    pronunciation: "/ɪkˈstrɔːdɪnəri/",
+                    tips: "Enfoca en el acento en 'tra' y la 'ry' final"
+                }
+            ]
+        };
+        
+        // Retornar ejercicios según el nivel del usuario
+        const userLevel = this.userMCER || 'A1';
+        const levelExercises = exercises[userLevel] || exercises['A1'];
+        
+        console.log("🎤 Ejercicios de pronunciación generados para nivel", userLevel, ":", levelExercises.length);
+        return levelExercises;
     }
     
     getWordsForSpacedRepetition() {
@@ -5378,27 +6165,31 @@ class PracticeSystem {
     playCorrectPronunciation(word) {
         try {
             if (typeof window.playListeningAudio === 'function') {
-                window.playListeningAudio(word);
+                const exerciseIndex = this.currentSession?.currentExercise || 0;
+                window.playListeningAudio(word, exerciseIndex);
             }
         } catch (error) {
             console.error("❌ Error al reproducir pronunciación:", error);
         }
     }
     
-    playListeningAudio(text) {
+    playListeningAudio(text, exerciseIndex = null) {
         try {
+            console.log("🎵 PracticeSystem: Reproduciendo audio:", text, "ejercicio:", exerciseIndex);
             if (typeof window.playListeningAudio === 'function') {
-                window.playListeningAudio(text);
+                window.playListeningAudio(text, exerciseIndex);
+            } else {
+                console.error("❌ Función playListeningAudio no encontrada");
             }
         } catch (error) {
             console.error("❌ Error al reproducir audio:", error);
         }
     }
     
-    startRecording() {
+    startRecording(exerciseIndex = 0) {
         try {
             if (typeof window.startRecording === 'function') {
-                window.startRecording();
+                window.startRecording(exerciseIndex);
             }
         } catch (error) {
             console.error("❌ Error al iniciar grabación:", error);

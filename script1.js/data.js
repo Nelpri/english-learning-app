@@ -53,12 +53,14 @@ const LESSONS_DATABASE = {
                 title: "Adjetivos de Color",
                 content: "Los colores son adjetivos que describen la apariencia de los objetos"
             }
-        },
+        }
+    ],
+    level2: [
         {
             id: 4,
             title: "Familia Básica",
-            difficulty: "Principiante",
-            mcer: "A1",
+            difficulty: "Básico",
+            mcer: "A2",
             vocabulary: [
                 { english: "Mother", spanish: "Madre", pronunciation: "/ˈmʌðər/" },
                 { english: "Father", spanish: "Padre", pronunciation: "/ˈfɑːðər/" },
@@ -74,8 +76,8 @@ const LESSONS_DATABASE = {
         {
             id: 5,
             title: "Animales Domésticos",
-            difficulty: "Principiante",
-            mcer: "A1",
+            difficulty: "Básico",
+            mcer: "A2",
             vocabulary: [
                 { english: "Dog", spanish: "Perro", pronunciation: "/dɔːɡ/" },
                 { english: "Cat", spanish: "Gato", pronunciation: "/kæt/" },
@@ -91,8 +93,8 @@ const LESSONS_DATABASE = {
         {
             id: 6,
             title: "Comida Básica",
-            difficulty: "Principiante",
-            mcer: "A1",
+            difficulty: "Básico",
+            mcer: "A2",
             vocabulary: [
                 { english: "Bread", spanish: "Pan", pronunciation: "/bred/" },
                 { english: "Milk", spanish: "Leche", pronunciation: "/mɪlk/" },
@@ -106,12 +108,12 @@ const LESSONS_DATABASE = {
             }
         }
     ],
-    level2: [
+    level3: [
         {
             id: 7,
             title: "Colores Avanzados",
-            difficulty: "Básico",
-            mcer: "A2",
+            difficulty: "Intermedio",
+            mcer: "B1",
             vocabulary: [
                 { english: "Purple", spanish: "Morado", pronunciation: "/ˈpɜːrpl/" },
                 { english: "Orange", spanish: "Naranja", pronunciation: "/ˈɔːrɪndʒ/" },
@@ -123,11 +125,135 @@ const LESSONS_DATABASE = {
                 title: "Adjetivos Comparativos",
                 content: "Para comparar usamos: big - bigger, small - smaller, beautiful - more beautiful"
             }
+        },
+        {
+            id: 8,
+            title: "Tiempo y Fechas",
+            difficulty: "Intermedio",
+            mcer: "B1",
+            vocabulary: [
+                { english: "Today", spanish: "Hoy", pronunciation: "/təˈdeɪ/" },
+                { english: "Yesterday", spanish: "Ayer", pronunciation: "/ˈjestərdeɪ/" },
+                { english: "Tomorrow", spanish: "Mañana", pronunciation: "/təˈmɒroʊ/" },
+                { english: "Week", spanish: "Semana", pronunciation: "/wiːk/" },
+                { english: "Month", spanish: "Mes", pronunciation: "/mʌnθ/" }
+            ],
+            grammar: {
+                title: "Presente Simple",
+                content: "I work, you work, he/she/it works, we work, they work"
+            }
+        },
+        {
+            id: 9,
+            title: "Tecnología Básica",
+            difficulty: "Intermedio",
+            mcer: "B1",
+            vocabulary: [
+                { english: "Computer", spanish: "Computadora", pronunciation: "/kəmˈpjuːtər/" },
+                { english: "Phone", spanish: "Teléfono", pronunciation: "/foʊn/" },
+                { english: "Internet", spanish: "Internet", pronunciation: "/ˈɪntərnet/" },
+                { english: "Email", spanish: "Correo electrónico", pronunciation: "/ˈiːmeɪl/" },
+                { english: "Website", spanish: "Sitio web", pronunciation: "/ˈwebsaɪt/" }
+            ],
+            grammar: {
+                title: "Verbos Regulares en Pasado",
+                content: "Para verbos regulares agregamos -ed: work → worked, play → played"
+            }
+        }
+    ],
+    level4: [
+        {
+            id: 10,
+            title: "Deportes y Actividades",
+            difficulty: "Intermedio Alto",
+            mcer: "B1+",
+            vocabulary: [
+                { english: "Football", spanish: "Fútbol", pronunciation: "/ˈfʊtbɔːl/" },
+                { english: "Basketball", spanish: "Baloncesto", pronunciation: "/ˈbæskɪtbɔːl/" },
+                { english: "Swimming", spanish: "Natación", pronunciation: "/ˈswɪmɪŋ/" },
+                { english: "Running", spanish: "Correr", pronunciation: "/ˈrʌnɪŋ/" },
+                { english: "Cycling", spanish: "Ciclismo", pronunciation: "/ˈsaɪklɪŋ/" }
+            ],
+            grammar: {
+                title: "Presente Continuo",
+                content: "I am working, you are working, he/she/it is working"
+            }
+        },
+        {
+            id: 11,
+            title: "Viajes y Transporte",
+            difficulty: "Intermedio Alto",
+            mcer: "B1+",
+            vocabulary: [
+                { english: "Airport", spanish: "Aeropuerto", pronunciation: "/ˈeəpɔːt/" },
+                { english: "Train station", spanish: "Estación de tren", pronunciation: "/treɪn ˈsteɪʃn/" },
+                { english: "Bus stop", spanish: "Parada de autobús", pronunciation: "/bʌs stɒp/" },
+                { english: "Passport", spanish: "Pasaporte", pronunciation: "/ˈpæspɔːt/" },
+                { english: "Ticket", spanish: "Boleto", pronunciation: "/ˈtɪkɪt/" }
+            ],
+            grammar: {
+                title: "Futuro con 'Going to'",
+                content: "I am going to travel, you are going to visit, he is going to arrive"
+            }
+        },
+        {
+            id: 12,
+            title: "Emociones y Sentimientos",
+            difficulty: "Intermedio Alto",
+            mcer: "B1+",
+            vocabulary: [
+                { english: "Happy", spanish: "Feliz", pronunciation: "/ˈhæpi/" },
+                { english: "Sad", spanish: "Triste", pronunciation: "/sæd/" },
+                { english: "Excited", spanish: "Emocionado", pronunciation: "/ɪkˈsaɪtɪd/" },
+                { english: "Nervous", spanish: "Nervioso", pronunciation: "/ˈnɜːvəs/" },
+                { english: "Proud", spanish: "Orgulloso", pronunciation: "/praʊd/" }
+            ],
+            grammar: {
+                title: "Adjetivos con 'Feel'",
+                content: "I feel happy, you feel sad, he feels excited, they feel proud"
+            }
         }
     ]
 };
 
-// Escenarios de conversación para la sección "Aplicar"
+// Sistema de conversaciones coordinadas por lección
+const LESSON_CONVERSATIONS = {
+    // Lección 1: Saludos Básicos
+    1: {
+        title: "Saludos en la Oficina",
+        description: "Practica saludar a colegas en inglés",
+        messages: [
+            { type: "bot", text: "Good morning! How are you today?" },
+            { type: "user", text: "Good morning! I'm fine, thank you. How are you?" },
+            { type: "bot", text: "I'm very well, thank you. Nice to meet you!" }
+        ],
+        vocabulary: ["Hello", "Good morning", "How are you?", "I'm fine", "Thank you", "Nice to meet you"]
+    },
+    // Lección 2: Números del 1 al 10
+    2: {
+        title: "Contando en la Tienda",
+        description: "Practica contar objetos en inglés",
+        messages: [
+            { type: "bot", text: "Hello! How many apples would you like?" },
+            { type: "user", text: "I would like five apples, please." },
+            { type: "bot", text: "Great! Five apples. That will be $2.50." }
+        ],
+        vocabulary: ["How many", "One", "Two", "Three", "Four", "Five", "Apples", "Please"]
+    },
+    // Lección 3: Colores Básicos
+    3: {
+        title: "Describiendo Objetos",
+        description: "Practica describir colores en inglés",
+        messages: [
+            { type: "bot", text: "What color is your car?" },
+            { type: "user", text: "My car is blue. What about yours?" },
+            { type: "bot", text: "My car is red. Blue is a nice color!" }
+        ],
+        vocabulary: ["What color", "My car", "Blue", "Red", "Nice color", "What about yours"]
+    }
+};
+
+// Escenarios de conversación para la sección "Aplicar" (conversaciones generales)
 const CONVERSATION_SCENARIOS = [
     {
         id: 1,
@@ -151,6 +277,44 @@ const CONVERSATION_SCENARIOS = [
     }
 ];
 
+// Sistema de ejercicios coordinados por lección
+const LESSON_EXERCISES = {
+    // Lección 1: Saludos Básicos
+    1: {
+        vocabulary: [
+            { question: "¿Cómo se dice 'Hola' en inglés?", answer: "Hello", options: ["Hello", "Good morning", "Goodbye", "Thank you"] },
+            { question: "¿Cómo se dice 'Buenos días' en inglés?", answer: "Good morning", options: ["Hello", "Good morning", "Good afternoon", "Good evening"] },
+            { question: "¿Cómo se dice '¿Cómo estás?' en inglés?", answer: "How are you?", options: ["What is your name?", "How are you?", "Where are you from?", "How old are you?"] }
+        ],
+        grammar: [
+            { question: "Complete: ___ am a student", answer: "I", options: ["I", "You", "He", "She"] },
+            { question: "Complete: ___ are my friend", answer: "You", options: ["I", "You", "He", "She"] }
+        ]
+    },
+    // Lección 2: Números del 1 al 10
+    2: {
+        vocabulary: [
+            { question: "¿Cómo se dice 'Uno' en inglés?", answer: "One", options: ["One", "Two", "Three", "Four"] },
+            { question: "¿Cómo se dice 'Cinco' en inglés?", answer: "Five", options: ["Four", "Five", "Six", "Seven"] }
+        ],
+        grammar: [
+            { question: "Complete: ___ apple", answer: "an", options: ["a", "an", "the", "none"] },
+            { question: "Complete: ___ book", answer: "a", options: ["a", "an", "the", "none"] }
+        ]
+    },
+    // Lección 3: Colores Básicos
+    3: {
+        vocabulary: [
+            { question: "¿Cómo se dice 'Rojo' en inglés?", answer: "Red", options: ["Red", "Blue", "Green", "Yellow"] },
+            { question: "¿Cómo se dice 'Azul' en inglés?", answer: "Blue", options: ["Red", "Blue", "Green", "Yellow"] }
+        ],
+        grammar: [
+            { question: "Complete: The car is ___", answer: "red", options: ["red", "reds", "redly", "redder"] },
+            { question: "Complete: The sky is ___", answer: "blue", options: ["blue", "blues", "bluely", "bluer"] }
+        ]
+    }
+};
+
 // Pools de gramática por nivel MCER para ampliar ejercicios en todas las lecciones
 const GRAMMAR_POOLS = {
     A1: [
@@ -159,7 +323,7 @@ const GRAMMAR_POOLS = {
     ],
     A2: [
         { type: "present_simple", question: "She ___ English", options: ["speak", "speaks", "speaking", "spoke"], correct: "speaks" },
-        { type: "adjectives", question: "The car is ___", options: ["fast", "fastly", "fasting", "faster"], correct: "fast" }
+        { type: "adjectives", question: "The car is ___", answer: "fast", options: ["fast", "fastly", "fasting", "faster"], correct: "fast" }
     ]
 };
 
@@ -1565,6 +1729,14 @@ function initData() {
             console.log("📖 Niveles disponibles en LESSONS_DATABASE:", Object.keys(LESSONS_DATABASE));
         }
         
+        if (typeof LESSON_EXERCISES !== 'undefined') {
+            console.log("🎯 Ejercicios por lección disponibles:", Object.keys(LESSON_EXERCISES).length);
+        }
+        
+        if (typeof LESSON_CONVERSATIONS !== 'undefined') {
+            console.log("💬 Conversaciones por lección disponibles:", Object.keys(LESSON_CONVERSATIONS).length);
+        }
+        
         if (typeof appState !== 'undefined') {
             console.log("📊 Estado inicial de la app:", appState);
         }
@@ -1578,6 +1750,8 @@ function initData() {
 // Exportar variables y funciones globalmente
 window.LESSONS_DATABASE = LESSONS_DATABASE;
 window.CONVERSATION_SCENARIOS = CONVERSATION_SCENARIOS;
+window.LESSON_EXERCISES = LESSON_EXERCISES;
+window.LESSON_CONVERSATIONS = LESSON_CONVERSATIONS;
 window.GRAMMAR_POOLS = GRAMMAR_POOLS;
 window.LEVEL_SYSTEM = LEVEL_SYSTEM;
 window.appState = appState;

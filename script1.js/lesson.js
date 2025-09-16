@@ -137,16 +137,24 @@ function updateNextLessonButton() {
     const allowedLessons = getAllowedLessonsByLevel();
     const hasNextLesson = appState.currentLesson < allowedLessons.length - 1;
     
+    console.log("🔘 Actualizando botón siguiente lección:", {
+        leccionActual: appState.currentLesson,
+        totalLecciones: allowedLessons.length,
+        haySiguiente: hasNextLesson
+    });
+    
     if (hasNextLesson) {
         nextLessonBtn.disabled = false;
         nextLessonBtn.classList.remove('btn-disabled');
         nextLessonBtn.classList.add('btn-primary');
-        nextLessonBtn.title = 'Avanzar a la siguiente lección';
+        nextLessonBtn.title = `Siguiente: ${allowedLessons[appState.currentLesson + 1].title}`;
+        console.log("✅ Botón habilitado para:", allowedLessons[appState.currentLesson + 1].title);
     } else {
         nextLessonBtn.disabled = true;
         nextLessonBtn.classList.remove('btn-primary');
         nextLessonBtn.classList.add('btn-disabled');
-        nextLessonBtn.title = 'No hay más lecciones disponibles';
+        nextLessonBtn.title = '¡Felicidades! Has completado todas las lecciones de este nivel';
+        console.log("🏁 No hay más lecciones disponibles en este nivel");
     }
 }
 
@@ -244,21 +252,51 @@ function nextLesson() {
     console.log("🔄 Sincronizando estado global...");
     syncGlobalState();
     
+    // Guardar progreso en localStorage
+    if (typeof saveProgress === 'function') {
+        console.log("💾 Guardando progreso de lección...");
+        saveProgress();
+    }
+    
     console.log("✅ Avance de lección completado exitosamente");
 }
 
 // Función para verificar si una lección está completada
 function isLessonCompleted(lessonId) {
+    // Usar el sistema unificado de appState
+    if (typeof appState !== 'undefined' && appState.userProgress) {
+        return appState.userProgress[lessonId]?.completed || false;
+    }
+    
+    // Fallback al sistema anterior
     const completedLessons = JSON.parse(localStorage.getItem('completedLessons') || '[]');
     return completedLessons.includes(lessonId);
 }
 
 // Función para marcar una lección como completada
 function markLessonCompleted(lessonId) {
+    // Usar el sistema unificado de appState
+    if (typeof appState !== 'undefined') {
+        if (!appState.userProgress) {
+            appState.userProgress = {};
+        }
+        appState.userProgress[lessonId] = {
+            completed: true,
+            completedAt: new Date().toISOString(),
+            xpEarned: LEVEL_SYSTEM.xpPerLesson
+        };
+        console.log("✅ Lección marcada como completada en appState:", lessonId);
+        return;
+    }
+    
+    // Fallback al sistema anterior
     const completedLessons = JSON.parse(localStorage.getItem('completedLessons') || '[]');
     if (!completedLessons.includes(lessonId)) {
         completedLessons.push(lessonId);
         localStorage.setItem('completedLessons', JSON.stringify(completedLessons));
+        console.log("✅ Lección marcada como completada en localStorage:", lessonId);
+    } else {
+        console.log("ℹ️ Lección ya estaba marcada como completada:", lessonId);
     }
 }
 
@@ -308,59 +346,10 @@ function checkLevelUp() {
 }
 
 
+// Función unificada para completar lección (reemplaza a completeLesson)
 function completeLesson() {
-    const currentLessonId = appState.currentLesson;
-    
-    // Verificar si la lección ya fue completada
-    if (isLessonCompleted(currentLessonId)) {
-        if (typeof showNotification === 'function') {
-            showNotification('Esta lección ya fue completada anteriormente.', 'info');
-        } else {
-            alert('Esta lección ya fue completada anteriormente.');
-        }
-        // Solo avanzar a la siguiente lección sin sumar XP
-        appState.currentLesson++;
-        if (appState.currentLesson >= LESSONS_DATABASE.level1.length) {
-            appState.currentLesson = 0; // Volver al inicio si se completaron todas
-        }
-        loadCurrentLesson();
-        return;
-    }
-    
-    // Marcar lección como completada y sumar XP
-    markLessonCompleted(currentLessonId);
-    appState.lessonsCompleted++;
-    appState.currentXP += LEVEL_SYSTEM.xpPerLesson;
-    appState.vocabularyWordsLearned += LESSONS_DATABASE.level1[currentLessonId].vocabulary.length;
-    
-    // Actualizar progreso semanal
-    const today = new Date().getDay();
-    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    const currentDay = dayNames[today];
-    appState.weeklyProgress[currentDay] += LEVEL_SYSTEM.xpPerLesson;
-    
-    // Verificar si subió de nivel
-    const leveledUp = checkLevelUp();
-    
-    // Mostrar notificación
-    const xpMessage = leveledUp ? 
-        `¡Lección completada! +${LEVEL_SYSTEM.xpPerLesson} XP` : 
-        `¡Lección completada! +${LEVEL_SYSTEM.xpPerLesson} XP`;
-    if (typeof showNotification === 'function') {
-        showNotification(xpMessage, 'success');
-    } else {
-        alert(xpMessage);
-    }
-    
-    // Avanzar a la siguiente lección
-    appState.currentLesson++;
-    if (appState.currentLesson >= LESSONS_DATABASE.level1.length) {
-        appState.currentLesson = 0; // Volver al inicio si se completaron todas
-    }
-    loadCurrentLesson();
-    
-    // Actualizar el estado del botón "siguiente lección"
-    updateNextLessonButton();
+    console.log("🎯 Completando lección actual...");
+    nextLesson(); // Usar la función unificada
 }
 
 function reviewLesson() {
@@ -392,12 +381,14 @@ function getAllowedLessonsByLevel() {
         
         // Mapear nivel del usuario a nivel de lecciones
         let lessonLevel;
-        if (userLevel >= 5) {
-            lessonLevel = 'level3'; // B1 y superior
+        if (userLevel >= 7) {
+            lessonLevel = 'level4'; // B1+ y superior (niveles 7-10)
+        } else if (userLevel >= 5) {
+            lessonLevel = 'level3'; // B1 (niveles 5-6)
         } else if (userLevel >= 3) {
-            lessonLevel = 'level2'; // A2
+            lessonLevel = 'level2'; // A2 (niveles 3-4)
         } else {
-            lessonLevel = 'level1'; // A1
+            lessonLevel = 'level1'; // A1 (niveles 1-2)
         }
         
         console.log("🎯 Nivel del usuario:", userLevel, "→ Lecciones del nivel:", lessonLevel);

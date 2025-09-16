@@ -502,18 +502,121 @@ function showDiagnosticResult(level, score) {
             
             const percentage = Math.round((score / DIAGNOSTIC_QUESTIONS.length) * 100);
             
-            // Guardar el nivel MCER en localStorage
+            // Guardar el nivel MCER en localStorage por usuario específico
             const mcerLevel = mcerLevels[level];
             const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+            
+            // Obtener usuario actual
+            const currentUser = window.getCurrentUser ? window.getCurrentUser() : null;
+            if (!currentUser || !currentUser.email) {
+                console.error("❌ No se pudo obtener usuario actual para guardar progreso");
+                return;
+            }
+            
+            // Crear o actualizar progreso específico del usuario
+            if (!userProgress[currentUser.email]) {
+                userProgress[currentUser.email] = {};
+            }
+            
+            userProgress[currentUser.email].diagnosticLevel = mcerLevel;
+            userProgress[currentUser.email].currentLevel = level;
+            userProgress[currentUser.email].currentXP = userProgress[currentUser.email].currentXP || 0;
+            userProgress[currentUser.email].level = level; // Mantener compatibilidad
+            userProgress[currentUser.email].xp = userProgress[currentUser.email].currentXP; // Mantener compatibilidad
+            userProgress[currentUser.email].diagnosticCompleted = true;
+            
+            // También mantener compatibilidad en el nivel raíz para usuarios existentes
             userProgress.diagnosticLevel = mcerLevel;
             userProgress.currentLevel = level;
-            userProgress.currentXP = userProgress.currentXP || 0;
-            userProgress.level = level; // Mantener compatibilidad
-            userProgress.xp = userProgress.currentXP; // Mantener compatibilidad
+            userProgress.currentXP = userProgress[currentUser.email].currentXP;
+            userProgress.level = level;
+            userProgress.xp = userProgress[currentUser.email].currentXP;
             userProgress.diagnosticCompleted = true;
+            
             localStorage.setItem('englishLearningProgress', JSON.stringify(userProgress));
             
+            console.log("💾 Nivel MCER guardado para usuario:", currentUser.email, "Nivel:", mcerLevel);
+            
             console.log("💾 Nivel MCER guardado:", mcerLevel);
+            
+            // Restaurar progreso en appState si está disponible
+            if (typeof window.appState !== 'undefined') {
+                window.appState.diagnosticLevel = mcerLevel;
+                window.appState.currentLevel = level;
+                window.appState.currentXP = userProgress.currentXP || 0;
+                console.log("✅ appState actualizado con nivel del diagnóstico");
+                
+                // Actualizar UI del header
+                if (typeof window.updateHeaderElements === 'function') {
+                    window.updateHeaderElements();
+                    console.log("✅ Header actualizado después del diagnóstico");
+                }
+            }
+            
+            // Restaurar progreso completo del usuario si está autenticado
+            if (typeof window.restoreUserProgress === 'function' && typeof window.getCurrentUser === 'function') {
+                const currentUser = window.getCurrentUser();
+                if (currentUser) {
+                    window.restoreUserProgress(currentUser);
+                    console.log("✅ Progreso completo del usuario restaurado después del diagnóstico");
+                }
+            }
+            
+            // Actualizar display del usuario
+            if (typeof window.updateUserDisplay === 'function' && typeof window.getCurrentUser === 'function') {
+                const currentUser = window.getCurrentUser();
+                if (currentUser) {
+                    window.updateUserDisplay(currentUser);
+                    console.log("✅ Display del usuario restaurado después del diagnóstico");
+                }
+            }
+            
+            // Cerrar modal de diagnóstico después de un delay
+            setTimeout(() => {
+                hideDiagnosticModal();
+                console.log("✅ Modal de diagnóstico cerrado");
+            }, 3000);
+            
+            // Restaurar progreso en appState si está disponible
+            if (typeof window.appState !== 'undefined') {
+                window.appState.diagnosticLevel = mcerLevel;
+                window.appState.currentLevel = level;
+                window.appState.currentXP = userProgress.currentXP || 0;
+                console.log("✅ appState actualizado con nivel del diagnóstico");
+                
+                // Actualizar UI del header
+                if (typeof window.updateHeaderElements === 'function') {
+                    window.updateHeaderElements();
+                    console.log("✅ Header actualizado después del diagnóstico");
+                }
+            }
+            
+            // Restaurar progreso completo del usuario si está autenticado
+            if (typeof window.restoreUserProgress === 'function' && typeof window.getCurrentUser === 'function') {
+                const currentUser = window.getCurrentUser();
+                if (currentUser) {
+                    window.restoreUserProgress(currentUser);
+                    console.log("✅ Progreso completo del usuario restaurado después del diagnóstico");
+                }
+            }
+            
+            // Actualizar display del usuario
+            if (typeof window.updateUserDisplay === 'function' && typeof window.getCurrentUser === 'function') {
+                const currentUser = window.getCurrentUser();
+                if (currentUser) {
+                    window.updateUserDisplay(currentUser);
+                    console.log("✅ Display del usuario restaurado después del diagnóstico");
+                }
+            }
+            
+            // Cerrar modal de diagnóstico después de un delay
+            setTimeout(() => {
+                const diagnosticModal = document.getElementById('diagnosticModal');
+                if (diagnosticModal) {
+                    diagnosticModal.style.display = 'none';
+                    console.log("✅ Modal de diagnóstico cerrado automáticamente");
+                }
+            }, 3000);
             
             diagnosticResult.innerHTML = `
                 <div style="text-align: center; padding: 2rem;">

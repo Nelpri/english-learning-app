@@ -381,28 +381,78 @@ function getXPForNextLevel(currentLevel) {
     return LEVEL_SYSTEM.xpPerLevel; // Valor por defecto
 }
 
+// Función para obtener el nivel correcto basado en XP (copiada de auth.js)
+function getCorrectLevelFromXP(xp) {
+    if (typeof LEVEL_SYSTEM === 'undefined' || !LEVEL_SYSTEM.levels) {
+        return 1; // Nivel por defecto
+    }
+    
+    // Buscar el nivel más alto que el usuario puede alcanzar con su XP
+    let correctLevel = 1;
+    for (let i = LEVEL_SYSTEM.levels.length - 1; i >= 0; i--) {
+        if (xp >= LEVEL_SYSTEM.levels[i].xpRequired) {
+            correctLevel = LEVEL_SYSTEM.levels[i].level;
+            break;
+        }
+    }
+    
+    return correctLevel;
+}
+
 // Función para calcular el progreso hacia el siguiente nivel
 function calculateLevelProgress() {
-    const currentLevel = appState.currentLevel || 1;
     const currentXP = appState.currentXP || 0;
     
-    // Encontrar el nivel actual y el siguiente
-    const currentLevelData = LEVEL_SYSTEM.levels.find(level => level.level === currentLevel);
-    const nextLevelData = LEVEL_SYSTEM.levels.find(level => level.level === currentLevel + 1);
+    // Sincronizar nivel con XP (usar la misma lógica que auth.js)
+    let currentLevel = appState.currentLevel || 1;
+    if (typeof LEVEL_SYSTEM !== 'undefined' && LEVEL_SYSTEM.levels) {
+        const correctLevel = getCorrectLevelFromXP(currentXP);
+        if (correctLevel !== currentLevel) {
+            console.log(`🔄 Progress.js: Sincronizando nivel: ${currentLevel} → ${correctLevel} (XP: ${currentXP})`);
+            currentLevel = correctLevel;
+            appState.currentLevel = currentLevel;
+        }
+    }
     
-    if (!currentLevelData) return { percentage: 0, xpInLevel: 0, xpForNext: 0 };
+    // Encontrar el nivel correcto basado en el XP actual
+    let currentLevelData = null;
+    let nextLevelData = null;
+    
+    // Buscar el nivel más alto que el usuario puede alcanzar con su XP actual
+    for (let i = LEVEL_SYSTEM.levels.length - 1; i >= 0; i--) {
+        if (currentXP >= LEVEL_SYSTEM.levels[i].xpRequired) {
+            currentLevelData = LEVEL_SYSTEM.levels[i];
+            nextLevelData = LEVEL_SYSTEM.levels[i + 1] || null;
+            break;
+        }
+    }
+    
+    // Si no se encuentra nivel, usar el nivel 1
+    if (!currentLevelData) {
+        currentLevelData = LEVEL_SYSTEM.levels[0];
+        nextLevelData = LEVEL_SYSTEM.levels[1];
+    }
     
     const xpInCurrentLevel = currentXP - currentLevelData.xpRequired;
     const xpForNextLevel = nextLevelData ? nextLevelData.xpRequired - currentLevelData.xpRequired : 0;
     
     if (xpForNextLevel === 0) return { percentage: 100, xpInLevel: xpInCurrentLevel, xpForNext: 0 };
     
-    const percentage = Math.min((xpInCurrentLevel / xpForNextLevel) * 100, 100);
+    const percentage = Math.max(0, Math.min((xpInCurrentLevel / xpForNextLevel) * 100, 100));
+    
+    console.log("📊 Progress.js: Cálculo de progreso:", {
+        currentXP,
+        currentLevel: currentLevelData.level,
+        xpInCurrentLevel,
+        xpForNextLevel,
+        percentage: Math.round(percentage) + "%"
+    });
     
     return {
         percentage: Math.round(percentage),
-        xpInLevel: xpInCurrentLevel,
-        xpForNext: xpForNextLevel
+        xpInLevel: Math.max(0, xpInCurrentLevel),
+        xpForNext: xpForNextLevel,
+        currentLevel: currentLevelData.level
     };
 }
 
