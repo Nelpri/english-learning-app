@@ -379,26 +379,48 @@ function getAllowedLessonsByLevel() {
             console.log("📊 Nivel obtenido desde localStorage:", userLevel);
         }
         
-        // Mapear nivel del usuario a nivel de lecciones
-        let lessonLevel;
-        if (userLevel >= 7) {
-            lessonLevel = 'level4'; // B1+ y superior (niveles 7-10)
-        } else if (userLevel >= 5) {
-            lessonLevel = 'level3'; // B1 (niveles 5-6)
-        } else if (userLevel >= 3) {
-            lessonLevel = 'level2'; // A2 (niveles 3-4)
-        } else {
-            lessonLevel = 'level1'; // A1 (niveles 1-2)
+        // Obtener todas las lecciones disponibles hasta el nivel del usuario
+        const allLessons = [];
+        
+        // Incluir lecciones de todos los niveles hasta el nivel actual
+        if (LESSONS_DATABASE) {
+            // Siempre incluir level1 (A1)
+            if (LESSONS_DATABASE.level1) {
+                allLessons.push(...LESSONS_DATABASE.level1);
+                console.log("📖 Agregando lecciones level1:", LESSONS_DATABASE.level1.length);
+            }
+            
+            // Incluir level2 (A2) para niveles 3+
+            if (userLevel >= 3 && LESSONS_DATABASE.level2) {
+                allLessons.push(...LESSONS_DATABASE.level2);
+                console.log("📖 Agregando lecciones level2:", LESSONS_DATABASE.level2.length);
+            }
+            
+            // Incluir level3 (B1) para niveles 4+
+            if (userLevel >= 4 && LESSONS_DATABASE.level3) {
+                allLessons.push(...LESSONS_DATABASE.level3);
+                console.log("📖 Agregando lecciones level3:", LESSONS_DATABASE.level3.length);
+            }
+            
+            // Incluir level4 (B2) para niveles 6+
+            if (userLevel >= 6 && LESSONS_DATABASE.level4) {
+                allLessons.push(...LESSONS_DATABASE.level4);
+                console.log("📖 Agregando lecciones level4:", LESSONS_DATABASE.level4.length);
+            }
+            
+            // Incluir level5 (B2+) para niveles 8+
+            if (userLevel >= 8 && LESSONS_DATABASE.level5) {
+                allLessons.push(...LESSONS_DATABASE.level5);
+                console.log("📖 Agregando lecciones level5:", LESSONS_DATABASE.level5.length);
+            }
         }
         
-        console.log("🎯 Nivel del usuario:", userLevel, "→ Lecciones del nivel:", lessonLevel);
+        console.log("🎯 Nivel del usuario:", userLevel, "→ Total lecciones disponibles:", allLessons.length);
         
-        // Obtener lecciones del nivel correspondiente
-        if (LESSONS_DATABASE && LESSONS_DATABASE[lessonLevel]) {
-            console.log("📖 Usando lecciones del", lessonLevel + ":", LESSONS_DATABASE[lessonLevel].length, "lecciones");
-            return LESSONS_DATABASE[lessonLevel];
+        if (allLessons.length > 0) {
+            return allLessons;
         } else if (LESSONS_DATABASE && LESSONS_DATABASE.level1) {
-            console.log("⚠️ Nivel", lessonLevel, "no disponible, usando level1 como fallback");
+            console.log("⚠️ No se encontraron lecciones, usando level1 como fallback");
             return LESSONS_DATABASE.level1;
         }
         

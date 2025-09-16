@@ -1,5 +1,44 @@
 // Módulo de vocabulario: categorías, palabras difíciles, detalle
 
+// Función para obtener categorías desbloqueadas según el nivel del usuario
+function getUnlockedCategoriesByLevel(userLevel) {
+    const categoryUnlockLevels = {
+        'greetings': 1,
+        'numbers': 1,
+        'colors': 1,
+        'family': 2,
+        'time': 2,
+        'food': 3,
+        'animals': 3,
+        'weather': 3,
+        'body': 4,
+        'clothes': 4,
+        'house': 4,
+        'transport': 5,
+        'shopping': 5,
+        'work': 6,
+        'school': 6,
+        'health': 7,
+        'technology': 7,
+        'sports': 8,
+        'entertainment': 8,
+        'emotions': 8,
+        'business': 9,
+        'politics': 9,
+        'science': 10,
+        'art': 10
+    };
+    
+    const unlocked = [];
+    for (const [category, requiredLevel] of Object.entries(categoryUnlockLevels)) {
+        if (userLevel >= requiredLevel) {
+            unlocked.push(category);
+        }
+    }
+    
+    return unlocked;
+}
+
 // Función para obtener vocabulario por categoría
 function getVocabularyByCategory(categoryKey) {
     console.log("📚 Obteniendo vocabulario para categoría:", categoryKey);
@@ -99,6 +138,11 @@ function loadVocabularyCategories() {
             return;
         }
         
+        // Obtener categorías desbloqueadas según el nivel del usuario
+        const userLevel = appState?.currentLevel || 1;
+        const unlockedCategories = getUnlockedCategoriesByLevel(userLevel);
+        console.log("🎯 Nivel del usuario:", userLevel, "Categorías desbloqueadas:", unlockedCategories);
+        
         // Agregar sección de palabras difíciles al inicio
         const difficultWords = getDifficultWords();
         if (difficultWords.length > 0) {
@@ -125,9 +169,15 @@ function loadVocabularyCategories() {
         const stats = getVocabularyStats();
         console.log("📊 Estadísticas obtenidas:", stats);
         
-        // Crear tarjetas para cada categoría
+        // Crear tarjetas para cada categoría desbloqueada
         window.VOCABULARY_CATEGORIES.forEach(category => {
-            console.log("🎯 Procesando categoría:", category.key);
+            // Verificar si la categoría está desbloqueada
+            if (!unlockedCategories.includes(category.key)) {
+                console.log("🔒 Categoría bloqueada:", category.key);
+                return; // Saltar esta categoría
+            }
+            
+            console.log("🎯 Procesando categoría desbloqueada:", category.key);
             
             // Obtener vocabulario para esta categoría
             const vocabulary = getVocabularyByCategory(category.key);
@@ -175,6 +225,56 @@ function loadVocabularyCategories() {
             }
         });
         
+        // Mostrar categorías bloqueadas al final
+        const lockedCategories = window.VOCABULARY_CATEGORIES.filter(category => 
+            !unlockedCategories.includes(category.key)
+        );
+        
+        if (lockedCategories.length > 0) {
+            const lockedSection = document.createElement('div');
+            lockedSection.className = 'locked-categories-section';
+            lockedSection.style.cssText = `
+                grid-column: 1 / -1;
+                margin-top: 2rem;
+                padding: 1.5rem;
+                background: var(--surface-color);
+                border-radius: 12px;
+                border: 2px dashed var(--border-color);
+            `;
+            
+            lockedSection.innerHTML = `
+                <h3 style="color: var(--text-primary); margin-bottom: 1rem; text-align: center;">
+                    <i class="fas fa-lock"></i> Categorías Bloqueadas
+                </h3>
+                <p style="color: var(--text-secondary); text-align: center; margin-bottom: 1.5rem;">
+                    Desbloquea más categorías subiendo de nivel
+                </p>
+                <div class="locked-categories-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    ${lockedCategories.map(category => {
+                        const requiredLevel = getRequiredLevelForCategory(category.key);
+                        return `
+                            <div class="locked-category-card" style="
+                                padding: 1rem;
+                                background: var(--background-color);
+                                border-radius: 8px;
+                                border: 1px solid var(--border-color);
+                                text-align: center;
+                                opacity: 0.6;
+                            ">
+                                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔒</div>
+                                <h4 style="color: var(--text-primary); margin-bottom: 0.5rem;">${category.title}</h4>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem;">
+                                    Nivel ${requiredLevel} requerido
+                                </p>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+            
+            categoriesGrid.appendChild(lockedSection);
+        }
+        
         console.log("✅ Categorías de vocabulario cargadas correctamente");
         
     } catch (error) {
@@ -183,6 +283,24 @@ function loadVocabularyCategories() {
             categoriesGrid.innerHTML = '<p>Error al cargar categorías de vocabulario</p>';
         }
     }
+}
+
+// Función auxiliar para obtener el nivel requerido para una categoría
+function getRequiredLevelForCategory(categoryKey) {
+    const categoryUnlockLevels = {
+        'greetings': 1, 'numbers': 1, 'colors': 1,
+        'family': 2, 'time': 2,
+        'food': 3, 'animals': 3, 'weather': 3,
+        'body': 4, 'clothes': 4, 'house': 4,
+        'transport': 5, 'shopping': 5,
+        'work': 6, 'school': 6,
+        'health': 7, 'technology': 7,
+        'sports': 8, 'entertainment': 8, 'emotions': 8,
+        'business': 9, 'politics': 9,
+        'science': 10, 'art': 10
+    };
+    
+    return categoryUnlockLevels[categoryKey] || 1;
 }
 
 function loadVocabularyDetail(categoryKey) {

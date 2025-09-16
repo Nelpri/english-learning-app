@@ -1044,7 +1044,24 @@ window.getModeTitle = getModeTitle;
 
 // Funciones de conversación
 function loadConversationScenario() {
-    const scenario = CONVERSATION_SCENARIOS[0]; // Por ahora usamos el primero
+    // Obtener el escenario basado en el progreso del usuario
+    const currentLesson = appState?.currentLesson || 0;
+    const userLevel = appState?.currentLevel || 1;
+    
+    // Determinar qué escenario mostrar según el progreso
+    let scenario;
+    
+    // Si hay conversación específica para la lección actual, usarla
+    if (LESSON_CONVERSATIONS && LESSON_CONVERSATIONS[currentLesson + 1]) {
+        scenario = LESSON_CONVERSATIONS[currentLesson + 1];
+        console.log("📚 Usando conversación específica de la lección:", currentLesson + 1);
+    } else {
+        // Usar escenario general basado en el nivel del usuario
+        const scenarioIndex = Math.min(Math.floor(userLevel / 2), CONVERSATION_SCENARIOS.length - 1);
+        scenario = CONVERSATION_SCENARIOS[scenarioIndex];
+        console.log("🎯 Usando escenario general para nivel:", userLevel, "índice:", scenarioIndex);
+    }
+    
     const chatMessages = document.getElementById('chatMessages');
     
     document.getElementById('scenarioTitle').textContent = scenario.title;
@@ -1057,6 +1074,58 @@ function loadConversationScenario() {
     scenario.messages.forEach(message => {
         addMessageToChat(message.text, message.type);
     });
+    
+    console.log("✅ Escenario de conversación cargado:", scenario.title);
+}
+
+// Función para avanzar al siguiente escenario de conversación
+function nextConversationScenario() {
+    try {
+        console.log("🚀 Avanzando al siguiente escenario de conversación...");
+        
+        // Obtener el escenario actual
+        const currentLesson = appState?.currentLesson || 0;
+        const userLevel = appState?.currentLevel || 1;
+        
+        // Verificar si hay siguiente escenario
+        let nextScenario = null;
+        
+        // Primero verificar si hay conversación específica para la siguiente lección
+        if (LESSON_CONVERSATIONS && LESSON_CONVERSATIONS[currentLesson + 2]) {
+            nextScenario = LESSON_CONVERSATIONS[currentLesson + 2];
+            console.log("📚 Siguiente conversación específica de lección:", currentLesson + 2);
+        } else {
+            // Usar siguiente escenario general
+            const currentScenarioIndex = Math.min(Math.floor(userLevel / 2), CONVERSATION_SCENARIOS.length - 1);
+            const nextScenarioIndex = currentScenarioIndex + 1;
+            
+            if (nextScenarioIndex < CONVERSATION_SCENARIOS.length) {
+                nextScenario = CONVERSATION_SCENARIOS[nextScenarioIndex];
+                console.log("🎯 Siguiente escenario general:", nextScenarioIndex);
+            } else {
+                console.log("🏁 No hay más escenarios disponibles");
+                showNotification('¡Felicidades! Has completado todos los escenarios de conversación disponibles. 🎓', 'success');
+                return;
+            }
+        }
+        
+        if (nextScenario) {
+            // Cargar el nuevo escenario
+            loadConversationScenario();
+            
+            // Mostrar notificación de avance
+            showNotification(`Avanzando a: ${nextScenario.title} 🚀`, 'success');
+            
+            // Actualizar UI
+            if (typeof updateUI === 'function') {
+                updateUI();
+            }
+        }
+        
+    } catch (error) {
+        console.error("❌ Error al avanzar escenario de conversación:", error);
+        showNotification('Error al avanzar al siguiente escenario', 'error');
+    }
 }
 
 function addMessageToChat(text, type) {
@@ -4498,6 +4567,32 @@ class PracticeSystem {
         }
     }
     
+    syncWithGlobalProgress() {
+        try {
+            if (window.appState) {
+                // Sincronizar con la lección actual del sistema global
+                const currentLesson = window.appState.currentLesson || 0;
+                const currentLevel = window.appState.currentLevel || 1;
+                
+                console.log("🔄 Sincronizando práctica con progreso global:");
+                console.log("📚 Lección actual:", currentLesson);
+                console.log("📊 Nivel actual:", currentLevel);
+                
+                // Actualizar el contexto de práctica con la lección actual
+                this.currentSession = {
+                    ...this.currentSession,
+                    currentLesson: currentLesson,
+                    userLevel: currentLevel,
+                    userMCER: this.userMCER
+                };
+                
+                console.log("✅ Práctica sincronizada con progreso global");
+            }
+        } catch (error) {
+            console.error("❌ Error al sincronizar con progreso global:", error);
+        }
+    }
+    
     unlockCategoriesByLevel() {
         // Limpiar categorías desbloqueadas
         this.unlockedCategories.clear();
@@ -4559,6 +4654,9 @@ class PracticeSystem {
             
             console.log("🎯 Iniciando sesión de práctica:", mode, "categoría:", categoryKey);
             console.log("📊 Nivel del usuario:", this.userMCER || 'A1');
+            
+            // Sincronizar con el progreso global de lecciones
+            this.syncWithGlobalProgress();
             
             // Limpiar cola de audio anterior
             if (typeof window.clearAudioQueue === 'function') {

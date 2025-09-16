@@ -213,6 +213,42 @@ const LESSONS_DATABASE = {
                 content: "I feel happy, you feel sad, he feels excited, they feel proud"
             }
         }
+    ],
+    level5: [
+        {
+            id: 13,
+            title: "Negocios y Trabajo",
+            difficulty: "Avanzado",
+            mcer: "B2",
+            vocabulary: [
+                { english: "Meeting", spanish: "Reunión", pronunciation: "/ˈmiːtɪŋ/" },
+                { english: "Presentation", spanish: "Presentación", pronunciation: "/ˌprezənˈteɪʃən/" },
+                { english: "Deadline", spanish: "Fecha límite", pronunciation: "/ˈdedlaɪn/" },
+                { english: "Project", spanish: "Proyecto", pronunciation: "/ˈprɑːdʒekt/" },
+                { english: "Budget", spanish: "Presupuesto", pronunciation: "/ˈbʌdʒɪt/" }
+            ],
+            grammar: {
+                title: "Vocabulario de Negocios",
+                content: "Términos formales para el entorno laboral y profesional"
+            }
+        },
+        {
+            id: 14,
+            title: "Ciencia y Tecnología",
+            difficulty: "Avanzado",
+            mcer: "B2",
+            vocabulary: [
+                { english: "Research", spanish: "Investigación", pronunciation: "/rɪˈsɜːrtʃ/" },
+                { english: "Experiment", spanish: "Experimento", pronunciation: "/ɪkˈsperɪmənt/" },
+                { english: "Innovation", spanish: "Innovación", pronunciation: "/ˌɪnəˈveɪʃən/" },
+                { english: "Analysis", spanish: "Análisis", pronunciation: "/əˈnæləsɪs/" },
+                { english: "Discovery", spanish: "Descubrimiento", pronunciation: "/dɪˈskʌvəri/" }
+            ],
+            grammar: {
+                title: "Términos Científicos",
+                content: "Vocabulario especializado para campos científicos y tecnológicos"
+            }
+        }
     ]
 };
 
