@@ -96,6 +96,27 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("❌ initVocab no encontrado");
     }
 
+    console.log("📊 Inicializando sistema de progreso de módulos...");
+    if (typeof ModuleProgressSystem !== "undefined") {
+        console.log("✅ Sistema de progreso de módulos cargado");
+    } else {
+        console.error("❌ Sistema de progreso de módulos no encontrado");
+    }
+
+    console.log("🎯 Inicializando sistema de pruebas de nivel...");
+    if (typeof LevelTestSystem !== "undefined") {
+        console.log("✅ Sistema de pruebas de nivel cargado");
+    } else {
+        console.error("❌ Sistema de pruebas de nivel no encontrado");
+    }
+
+    console.log("🖥️ Inicializando interfaz de pruebas...");
+    if (typeof TestInterface !== "undefined") {
+        console.log("✅ Interfaz de pruebas cargada");
+    } else {
+        console.error("❌ Interfaz de pruebas no encontrada");
+    }
+
     console.log("🚀 Todos los módulos fueron llamados");
     console.log("🎉 Inicialización completada");
 });

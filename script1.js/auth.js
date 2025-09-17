@@ -361,25 +361,34 @@ function updateUserDisplay(user) {
             let level = userProgress.currentLevel || 1;
             const xp = userProgress.currentXP || 0;
             
-            // PRIORIZAR el nivel MCER del diagnóstico si existe
+            // Calcular nivel MCER basado en XP
             let mcerLevel;
-            if (userProgress.diagnosticLevel || (typeof appState !== 'undefined' && appState.diagnosticLevel)) {
-                // Si hay diagnóstico, usar ese nivel MCER (prioridad: appState > userProgress)
-                mcerLevel = appState?.diagnosticLevel || userProgress.diagnosticLevel;
-                console.log("🎯 Usando nivel MCER del diagnóstico:", mcerLevel);
-            } else {
-                // Solo calcular automáticamente si no hay diagnóstico
-                if (xp < 100) mcerLevel = 'A1';
-                else if (xp < 300) mcerLevel = 'A1+';
-                else if (xp < 600) mcerLevel = 'A2';
-                else if (xp < 1000) mcerLevel = 'A2+';
-                else if (xp < 1500) mcerLevel = 'B1';
-                else if (xp < 2500) mcerLevel = 'B1+';
-                else if (xp < 4000) mcerLevel = 'B2';
-                else if (xp < 6000) mcerLevel = 'B2+';
-                else if (xp < 9000) mcerLevel = 'C1';
-                else mcerLevel = 'C2';
-                console.log("📊 Nivel MCER calculado automáticamente:", mcerLevel);
+            if (xp < 100) mcerLevel = 'A1';
+            else if (xp < 300) mcerLevel = 'A1+';
+            else if (xp < 600) mcerLevel = 'A2';
+            else if (xp < 1000) mcerLevel = 'A2+';
+            else if (xp < 1500) mcerLevel = 'B1';
+            else if (xp < 2500) mcerLevel = 'B1+';
+            else if (xp < 4000) mcerLevel = 'B2';
+            else if (xp < 6000) mcerLevel = 'B2+';
+            else if (xp < 9000) mcerLevel = 'C1';
+            else mcerLevel = 'C2';
+            
+            console.log("📊 Nivel MCER calculado automáticamente:", mcerLevel);
+            
+            // Si hay diagnóstico, usar el nivel más alto entre diagnóstico y cálculo automático
+            const diagnosticLevel = appState?.diagnosticLevel || userProgress.diagnosticLevel;
+            if (diagnosticLevel) {
+                const mcerLevels = ['A1', 'A1+', 'A2', 'A2+', 'B1', 'B1+', 'B2', 'B2+', 'C1', 'C2'];
+                const diagnosticIndex = mcerLevels.indexOf(diagnosticLevel);
+                const calculatedIndex = mcerLevels.indexOf(mcerLevel);
+                
+                if (diagnosticIndex > calculatedIndex) {
+                    mcerLevel = diagnosticLevel;
+                    console.log("🎯 Usando nivel MCER del diagnóstico (más alto):", mcerLevel);
+                } else {
+                    console.log("🎯 Usando nivel MCER calculado (más alto):", mcerLevel);
+                }
             }
             
             console.log("📊 Nivel calculado:", { level, xp, mcerLevel });

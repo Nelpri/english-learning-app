@@ -575,6 +575,20 @@ function startCategoryPractice(categoryKey) {
             practiceTab.click();
         }
         
+        // Actualizar progreso del módulo "Vocabulario"
+        if (window.moduleProgressSystem && window.appState) {
+            const currentLevel = window.appState.currentLevel || 1;
+            const vocabularyProgress = {
+                progress: 50, // 50% por iniciar práctica
+                totalTasks: 1,
+                completedTasks: 0,
+                completed: false
+            };
+            
+            window.moduleProgressSystem.updateModuleProgress('vocabulary', currentLevel, vocabularyProgress);
+            console.log("📚 Progreso de módulo 'Vocabulario' actualizado:", vocabularyProgress);
+        }
+        
         // Esperar un momento para que se cargue la sección de práctica
         setTimeout(() => {
             // Cargar ejercicio de vocabulario para esta categoría

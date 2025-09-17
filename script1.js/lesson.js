@@ -189,6 +189,21 @@ function nextLesson() {
         // Verificar si subió de nivel
         const leveledUp = checkLevelUp();
         
+        // Actualizar progreso del módulo "Aprender"
+        if (window.moduleProgressSystem) {
+            const currentLevel = appState.currentLevel || 1;
+            const allowedLessons = getAllowedLessonsByLevel();
+            const learnProgress = {
+                progress: Math.round(((appState.currentLesson + 1) / allowedLessons.length) * 100),
+                totalTasks: allowedLessons.length,
+                completedTasks: appState.currentLesson + 1,
+                completed: (appState.currentLesson + 1) >= allowedLessons.length
+            };
+            
+            window.moduleProgressSystem.updateModuleProgress('learn', currentLevel, learnProgress);
+            console.log("📚 Progreso de módulo 'Aprender' actualizado:", learnProgress);
+        }
+        
         // Mostrar notificación de XP
         if (typeof showNotification === 'function') {
             const xpMessage = leveledUp ? 

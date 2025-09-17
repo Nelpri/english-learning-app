@@ -913,28 +913,44 @@ function checkListeningAnswers() {
     const resultDiv = document.querySelector('.exercise-result');
     const resultMessage = resultDiv.querySelector('.result-message');
     
+    // Bloquear todos los botones inmediatamente
+    const allButtons = document.querySelectorAll('.option-btn');
+    allButtons.forEach(btn => {
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        btn.style.cursor = 'not-allowed';
+    });
+    
     if (isCorrect) {
         resultMessage.innerHTML = '<span style="color: var(--success-color);">✅ ¡Correcto! Has identificado bien el audio.</span>';
         playSuccessSound();
         addXP(15);
         showNotification('¡Excelente comprensión auditiva! +15 XP', 'success');
+        
+        // Marcar botón seleccionado como correcto
+        selectedListeningAnswer.style.background = 'var(--success-color)';
+        selectedListeningAnswer.style.color = 'white';
+        selectedListeningAnswer.style.borderColor = 'var(--success-color)';
     } else {
         resultMessage.innerHTML = '<span style="color: var(--error-color);">❌ Incorrecto. Intenta escuchar el audio nuevamente.</span>';
         playFailSound();
         showNotification('Sigue practicando tu comprensión auditiva', 'info');
+        
+        // Marcar botón seleccionado como incorrecto
+        selectedListeningAnswer.style.background = 'var(--error-color)';
+        selectedListeningAnswer.style.color = 'white';
+        selectedListeningAnswer.style.borderColor = 'var(--error-color)';
+        
+        // Marcar la opción correcta
+        const correctButton = document.querySelector('[data-correct="true"]');
+        if (correctButton) {
+            correctButton.style.background = 'var(--success-color)';
+            correctButton.style.color = 'white';
+            correctButton.style.borderColor = 'var(--success-color)';
+        }
     }
     
     resultDiv.style.display = 'block';
-    
-    // Deshabilitar botones de opciones
-    const allButtons = document.querySelectorAll('.option-btn');
-    allButtons.forEach(btn => {
-        btn.disabled = true;
-        if (btn.getAttribute('data-correct') === 'true') {
-            btn.style.background = 'var(--success-color)';
-            btn.style.color = 'white';
-        }
-    });
 }
 
 // Función para resetear ejercicio
@@ -3063,6 +3079,17 @@ function showPronunciationTips(word) {
 
 function updatePronunciationResult(exerciseIndex, score, isCorrect) {
     try {
+        // Bloquear todos los botones de grabación y reproducción para este ejercicio
+        const exerciseContainer = document.querySelector('.exercise-content');
+        if (exerciseContainer) {
+            const allButtons = exerciseContainer.querySelectorAll('button');
+            allButtons.forEach(btn => {
+                btn.disabled = true;
+                btn.style.opacity = '0.6';
+                btn.style.cursor = 'not-allowed';
+            });
+        }
+        
         const playbackArea = document.getElementById(`playbackArea${exerciseIndex}`);
         if (playbackArea) {
             // Agregar indicador de resultado
@@ -4371,6 +4398,20 @@ function sendAIMessage() {
         // Limpiar input
         chatInput.value = '';
         
+        // Actualizar progreso del módulo "Aplicar"
+        if (window.moduleProgressSystem && window.appState) {
+            const currentLevel = window.appState.currentLevel || 1;
+            const applyProgress = {
+                progress: 75, // 75% por participar en conversación
+                totalTasks: 1,
+                completedTasks: 0,
+                completed: false
+            };
+            
+            window.moduleProgressSystem.updateModuleProgress('apply', currentLevel, applyProgress);
+            console.log("💬 Progreso de módulo 'Aplicar' actualizado:", applyProgress);
+        }
+        
         // Generar respuesta de la IA
         setTimeout(() => {
             if (window.conversationAI) {
@@ -4996,6 +5037,21 @@ class PracticeSystem {
                 window.appState.currentXP += totalXP;
                 this.checkLevelUp();
                 
+                // Actualizar progreso del módulo de práctica
+                if (window.moduleProgressSystem) {
+                    const currentLevel = window.appState.currentLevel || 1;
+                    const practiceProgress = this.calculatePracticeProgress();
+                    
+                    window.moduleProgressSystem.updateModuleProgress('practice', currentLevel, {
+                        progress: practiceProgress.percentage,
+                        totalTasks: practiceProgress.totalExercises,
+                        completedTasks: practiceProgress.completedExercises,
+                        completed: practiceProgress.percentage >= 80 // 80% para considerar completado
+                    });
+                    
+                    console.log("📊 Progreso de práctica actualizado:", practiceProgress);
+                }
+                
                 // Guardar progreso inmediatamente
                 if (typeof window.saveProgress === 'function') {
                     window.saveProgress();
@@ -5062,6 +5118,27 @@ class PracticeSystem {
         } catch (error) {
             console.error("❌ Error al verificar subida de nivel:", error);
         }
+    }
+
+    // Calcular progreso de práctica
+    calculatePracticeProgress() {
+        if (!this.currentSession) {
+            return {
+                totalExercises: 0,
+                completedExercises: 0,
+                percentage: 0
+            };
+        }
+
+        const totalExercises = this.currentSession.exercises.length;
+        const completedExercises = this.currentSession.completedExercises || 0;
+        const percentage = totalExercises > 0 ? Math.round((completedExercises / totalExercises) * 100) : 0;
+
+        return {
+            totalExercises,
+            completedExercises,
+            percentage
+        };
     }
     
     showSessionResults() {
@@ -5684,6 +5761,34 @@ class PracticeSystem {
     handleExerciseAnswer(answer, isCorrect) {
         try {
             console.log("🎯 PracticeSystem: Procesando respuesta, ejercicio actual:", this.currentSession.currentExercise);
+            
+            // BLOQUEAR TODOS LOS BOTONES INMEDIATAMENTE
+            const exerciseContainer = document.querySelector('.exercise-content');
+            if (exerciseContainer) {
+                const allButtons = exerciseContainer.querySelectorAll('button');
+                allButtons.forEach(btn => {
+                    btn.disabled = true;
+                    btn.style.opacity = '0.6';
+                    btn.style.cursor = 'not-allowed';
+                });
+                
+                // Marcar visualmente la respuesta correcta/incorrecta
+                const optionButtons = exerciseContainer.querySelectorAll('.option-btn');
+                optionButtons.forEach(btn => {
+                    const isCorrectOption = btn.textContent.trim() === answer;
+                    if (isCorrectOption) {
+                        if (isCorrect) {
+                            btn.style.background = 'var(--success-color)';
+                            btn.style.color = 'white';
+                            btn.style.borderColor = 'var(--success-color)';
+                        } else {
+                            btn.style.background = 'var(--error-color)';
+                            btn.style.color = 'white';
+                            btn.style.borderColor = 'var(--error-color)';
+                        }
+                    }
+                });
+            }
             
             // Registrar respuesta
             this.submitAnswer(this.currentSession.currentExercise, answer, isCorrect);

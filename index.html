@@ -245,6 +245,39 @@
                             <canvas id="weeklyChart"></canvas>
                         </div>
                     </div>
+                    
+                    <!-- Sección de Pruebas de Nivel -->
+                    <div class="level-tests-section" style="
+                        background: var(--surface-color);
+                        padding: 2rem;
+                        border-radius: 12px;
+                        margin-top: 2rem;
+                        border: 2px solid var(--border-color);
+                    ">
+                        <h3 style="color: var(--primary-color); margin-bottom: 1rem;">
+                            <i class="fas fa-graduation-cap"></i> Pruebas de Nivel
+                        </h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                            Completa todos los módulos de un nivel para desbloquear la prueba y avanzar al siguiente nivel.
+                        </p>
+                        
+                        <div id="levelTestStatus" class="test-status">
+                            <!-- El estado de las pruebas se cargará aquí dinámicamente -->
+                        </div>
+                        
+                        <button id="takeLevelTest" class="btn btn-primary" style="
+                            background: var(--primary-color);
+                            color: white;
+                            border: none;
+                            padding: 1rem 2rem;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-size: 1.1rem;
+                            display: none;
+                        " onclick="window.testInterface.startTest(window.moduleProgressSystem.getCurrentLevel())">
+                            <i class="fas fa-play"></i> Tomar Prueba de Nivel
+                        </button>
+                    </div>
                 </div>
             </section>
 
@@ -281,6 +314,10 @@
     <script src="script1.js/practice.js"></script>
     <script src="script1.js/progress.js"></script>
     <script src="script1.js/achievements.js"></script>
+    <script src="script1.js/module-progress.js"></script>
+    <script src="script1.js/level-tests.js"></script>
+    <script src="script1.js/test-interface.js"></script>
+    <script src="script1.js/level-test-manager.js"></script>
     <script src="script.js"></script>
 </body>
 </html> 
