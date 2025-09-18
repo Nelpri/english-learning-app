@@ -354,3 +354,26 @@ window.testAudio = testAudio;
 window.testListeningExercise = testListeningExercise;
 window.createSound = createSound;
 window.initUtils = initUtils;
+
+// Función para ajustar dificultad de palabras basada en respuestas
+function adjustDifficulty(word, isCorrect) {
+    if (!window.appState.wordDifficulty) {
+        window.appState.wordDifficulty = {};
+    }
+    const currentDifficulty = window.appState.wordDifficulty[word] || 2.5; // Dificultad inicial media (1=fácil, 5=difícil)
+    let newDifficulty = currentDifficulty;
+    if (isCorrect) {
+        newDifficulty = Math.max(1, currentDifficulty - 0.5); // Reducir dificultad si correcto
+    } else {
+        newDifficulty = Math.min(5, currentDifficulty + 0.5); // Aumentar dificultad si incorrecto
+    }
+    window.appState.wordDifficulty[word] = newDifficulty;
+    // Guardar en localStorage si está disponible
+    if (typeof saveProgress === 'function') {
+        saveProgress();
+    }
+    console.log(`🔄 Dificultad ajustada para "${word}": ${currentDifficulty} → ${newDifficulty}`);
+    return newDifficulty;
+}
+
+window.adjustDifficulty = adjustDifficulty;

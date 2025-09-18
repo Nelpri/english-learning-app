@@ -98,6 +98,9 @@ function loadCurrentLesson() {
         // Actualizar estado del botón "siguiente lección"
         updateNextLessonButton();
         
+        // Asegurar que la sección de aprender esté visible
+        ensureLearnSectionVisible();
+        
         // Sincronizar con el estado global y actualizar UI
         console.log("🔄 Sincronizando estado global...");
         
@@ -132,7 +135,10 @@ function loadCurrentLesson() {
 // Función para actualizar el estado del botón "siguiente lección"
 function updateNextLessonButton() {
     const nextLessonBtn = document.getElementById('nextLessonBtn');
-    if (!nextLessonBtn) return;
+    if (!nextLessonBtn) {
+        console.log("❌ Botón 'nextLessonBtn' no encontrado en el DOM");
+        return;
+    }
     
     const allowedLessons = getAllowedLessonsByLevel();
     const hasNextLesson = appState.currentLesson < allowedLessons.length - 1;
@@ -140,7 +146,10 @@ function updateNextLessonButton() {
     console.log("🔘 Actualizando botón siguiente lección:", {
         leccionActual: appState.currentLesson,
         totalLecciones: allowedLessons.length,
-        haySiguiente: hasNextLesson
+        haySiguiente: hasNextLesson,
+        botonEncontrado: !!nextLessonBtn,
+        botonVisible: nextLessonBtn.offsetParent !== null,
+        botonDisplay: window.getComputedStyle(nextLessonBtn).display
     });
     
     if (hasNextLesson) {
@@ -148,13 +157,74 @@ function updateNextLessonButton() {
         nextLessonBtn.classList.remove('btn-disabled');
         nextLessonBtn.classList.add('btn-primary');
         nextLessonBtn.title = `Siguiente: ${allowedLessons[appState.currentLesson + 1].title}`;
+        nextLessonBtn.style.display = 'inline-block'; // Asegurar que sea visible
         console.log("✅ Botón habilitado para:", allowedLessons[appState.currentLesson + 1].title);
+        console.log("🔍 Estado del botón después de habilitar:", {
+            disabled: nextLessonBtn.disabled,
+            classes: nextLessonBtn.className,
+            display: nextLessonBtn.style.display,
+            visible: nextLessonBtn.offsetParent !== null
+        });
     } else {
         nextLessonBtn.disabled = true;
         nextLessonBtn.classList.remove('btn-primary');
         nextLessonBtn.classList.add('btn-disabled');
         nextLessonBtn.title = '¡Felicidades! Has completado todas las lecciones de este nivel';
         console.log("🏁 No hay más lecciones disponibles en este nivel");
+    }
+}
+
+// Función para asegurar que la sección de aprender esté visible
+function ensureLearnSectionVisible() {
+    try {
+        // Verificar si estamos en la sección de aprender
+        const learnSection = document.getElementById('learn');
+        const learnTab = document.querySelector('.nav-tab[data-tab="learn"]');
+        
+        if (!learnSection || !learnTab) {
+            console.log("⚠️ Sección de aprender no encontrada");
+            return;
+        }
+        
+        // Verificar si la sección está activa
+        const isLearnActive = learnSection.classList.contains('active');
+        const isTabActive = learnTab.classList.contains('active');
+        
+        console.log("🔍 Estado de la sección aprender:", {
+            seccionActiva: isLearnActive,
+            tabActivo: isTabActive,
+            seccionVisible: learnSection.style.display !== 'none'
+        });
+        
+        // Si no está activa, activarla
+        if (!isLearnActive || !isTabActive) {
+            console.log("🔄 Activando sección de aprender...");
+            
+            // Desactivar todas las secciones
+            const allSections = document.querySelectorAll('.content-section');
+            allSections.forEach(section => section.classList.remove('active'));
+            
+            // Desactivar todas las tabs
+            const allTabs = document.querySelectorAll('.nav-tab');
+            allTabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Activar sección de aprender
+            learnSection.classList.add('active');
+            learnTab.classList.add('active');
+            
+            console.log("✅ Sección de aprender activada");
+        }
+        
+        // Asegurar que el botón esté visible
+        const nextLessonBtn = document.getElementById('nextLessonBtn');
+        if (nextLessonBtn) {
+            nextLessonBtn.style.display = 'inline-block';
+            nextLessonBtn.style.visibility = 'visible';
+            console.log("✅ Botón siguiente lección forzado a ser visible");
+        }
+        
+    } catch (error) {
+        console.error("❌ Error al asegurar visibilidad de la sección aprender:", error);
     }
 }
 
@@ -204,15 +274,22 @@ function nextLesson() {
             console.log("📚 Progreso de módulo 'Aprender' actualizado:", learnProgress);
         }
         
+        // Debug: Mostrar estado antes de guardar
+        console.log("🔍 Estado antes de guardar:", {
+            currentXP: appState.currentXP,
+            currentLevel: appState.currentLevel,
+            currentLesson: appState.currentLesson
+        });
+        
         // Mostrar notificación de XP
         if (typeof showNotification === 'function') {
-            const xpMessage = leveledUp ? 
-                `🎉 ¡Subiste de nivel! +${LEVEL_SYSTEM.xpPerLesson} XP` : 
+            const xpMessage = leveledUp ?
+                `🎉 ¡Subiste de nivel! +${LEVEL_SYSTEM.xpPerLesson} XP` :
                 `✅ Lección completada! +${LEVEL_SYSTEM.xpPerLesson} XP`;
             showNotification(xpMessage, 'success');
         } else {
-            const xpMessage = leveledUp ? 
-                `🎉 ¡Subiste de nivel! +${LEVEL_SYSTEM.xpPerLesson} XP` : 
+            const xpMessage = leveledUp ?
+                `🎉 ¡Subiste de nivel! +${LEVEL_SYSTEM.xpPerLesson} XP` :
                 `✅ Lección completada! +${LEVEL_SYSTEM.xpPerLesson} XP`;
             alert(xpMessage);
         }
@@ -259,19 +336,19 @@ function nextLesson() {
     console.log("📚 Nueva lección actual:", appState.currentLesson);
     console.log("📚 Título de la nueva lección:", allowedLessons[appState.currentLesson].title);
     
-    // Cargar la nueva lección
+    // Guardar progreso ANTES de cargar la nueva lección
+    if (typeof saveProgress === 'function') {
+        console.log("💾 Guardando progreso de lección...");
+        saveProgress();
+    }
+    
+    // Cargar la nueva lección sin interrupciones
     console.log("🔄 Llamando a loadCurrentLesson...");
     loadCurrentLesson();
     
     // Sincronizar estado global después de cargar la lección
     console.log("🔄 Sincronizando estado global...");
     syncGlobalState();
-    
-    // Guardar progreso en localStorage
-    if (typeof saveProgress === 'function') {
-        console.log("💾 Guardando progreso de lección...");
-        saveProgress();
-    }
     
     console.log("✅ Avance de lección completado exitosamente");
 }
@@ -546,7 +623,15 @@ function setupLessonEventListeners() {
     // Event listener para el botón "repasar"
     const reviewLessonBtn = document.getElementById('reviewLessonBtn');
     if (reviewLessonBtn) {
+        reviewLessonBtn.setAttribute('aria-label', 'Repasar la lección actual');
         reviewLessonBtn.addEventListener('click', reviewLesson);
+        // Asegurar navegación por teclado
+        reviewLessonBtn.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                reviewLesson();
+            }
+        });
         console.log("✅ Event listener agregado al botón 'repasar'");
     } else {
         console.warn("⚠️ Botón 'repasar' no encontrado");
@@ -561,14 +646,23 @@ function syncGlobalState() {
         // 1. Sincronizar appState con localStorage
         const storedProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
         
+        console.log("🔍 Estado almacenado en localStorage:", {
+            storedXP: storedProgress.xp,
+            storedLevel: storedProgress.level,
+            currentXP: appState.currentXP,
+            currentLevel: appState.currentLevel
+        });
+        
         if (storedProgress.level && storedProgress.level !== appState.currentLevel) {
             console.log("📊 Sincronizando nivel desde localStorage:", storedProgress.level);
             appState.currentLevel = storedProgress.level;
         }
         
-        if (storedProgress.xp && storedProgress.xp !== appState.currentXP) {
+        if (storedProgress.xp && storedProgress.xp > appState.currentXP) {
             console.log("📊 Sincronizando XP desde localStorage:", storedProgress.xp);
             appState.currentXP = storedProgress.xp;
+        } else if (appState.currentXP > 0) {
+            console.log("📊 Preservando XP actual del appState:", appState.currentXP);
         }
         
         // Preservar diagnosticLevel si existe
@@ -689,5 +783,6 @@ window.markLessonCompleted = markLessonCompleted;
 window.checkLevelUp = checkLevelUp;
 window.initLessons = initLessons;
 window.updateNextLessonButton = updateNextLessonButton;
+window.ensureLearnSectionVisible = ensureLearnSectionVisible;
 window.nextLesson = nextLesson;
 window.setupLessonEventListeners = setupLessonEventListeners;

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Corrección de XP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .test-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: rgba(76, 175, 80, 0.3); }
+        .error { background: rgba(244, 67, 54, 0.3); }
+        .info { background: rgba(33, 150, 243, 0.3); }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #45a049; }
+        .log {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test - Corrección de XP</h1>
+    
+    <div class="test-container">
+        <h2>📊 Estado Actual del Usuario</h2>
+        <div id="userStatus" class="status info">Cargando...</div>
+        
+        <h2>🔧 Acciones de Prueba</h2>
+        <button onclick="testXPAccumulation()">Probar Acumulación de XP</button>
+        <button onclick="testLessonProgression()">Probar Progresión de Lecciones</button>
+        <button onclick="clearProgress()">Limpiar Progreso</button>
+        <button onclick="showDetailedLogs()">Mostrar Logs Detallados</button>
+    </div>
+    
+    <div class="test-container">
+        <h2>📝 Logs del Sistema</h2>
+        <div id="systemLogs" class="log">Esperando acciones...</div>
+    </div>
+
+    <!-- Incluir todos los módulos necesarios -->
+    <script src="script1.js/data.js"></script>
+    <script src="script1.js/auth.js"></script>
+    <script src="script1.js/lesson.js"></script>
+    <script src="script1.js/practice.js"></script>
+    <script src="script1.js/vocabulary.js"></script>
+    <script src="script1.js/progress.js"></script>
+    <script src="script1.js/achievements.js"></script>
+    <script src="script1.js/diagnostic.js"></script>
+    <script src="script1.js/navigation.js"></script>
+    <script src="script1.js/storage.js"></script>
+    <script src="script1.js/utils.js"></script>
+    <script src="script1.js/module-progress.js"></script>
+    <script src="script1.js/level-tests.js"></script>
+    <script src="script1.js/test-interface.js"></script>
+    <script src="script1.js/level-test-manager.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        // Interceptar console.log para mostrar en la página
+        const originalLog = console.log;
+        const logContainer = document.getElementById('systemLogs');
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const logEntry = document.createElement('div');
+            logEntry.textContent = args.join(' ');
+            logEntry.style.marginBottom = '5px';
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        };
+
+        // Función para mostrar el estado del usuario
+        function updateUserStatus() {
+            const statusDiv = document.getElementById('userStatus');
+            
+            if (window.appState) {
+                statusDiv.innerHTML = `
+                    <strong>Usuario:</strong> ${window.appState.currentUser || 'No registrado'}<br>
+                    <strong>Nivel:</strong> ${window.appState.currentLevel || 1}<br>
+                    <strong>XP:</strong> ${window.appState.currentXP || 0}<br>
+                    <strong>Lección:</strong> ${window.appState.currentLesson || 0}<br>
+                    <strong>MCER:</strong> ${window.appState.diagnosticLevel || 'No evaluado'}
+                `;
+            } else {
+                statusDiv.innerHTML = '❌ appState no disponible';
+            }
+        }
+
+        // Función para probar la acumulación de XP
+        function testXPAccumulation() {
+            console.log("🧪 Iniciando test de acumulación de XP...");
+            
+            if (!window.appState) {
+                console.log("❌ appState no disponible");
+                return;
+            }
+
+            const initialXP = window.appState.currentXP || 0;
+            console.log("📊 XP inicial:", initialXP);
+
+            // Simular completar una lección
+            if (typeof window.nextLesson === 'function') {
+                console.log("🚀 Llamando a nextLesson()...");
+                window.nextLesson();
+                
+                setTimeout(() => {
+                    const finalXP = window.appState.currentXP || 0;
+                    console.log("📊 XP final:", finalXP);
+                    
+                    if (finalXP > initialXP) {
+                        console.log("✅ Test exitoso: XP se acumuló correctamente");
+                    } else {
+                        console.log("❌ Test fallido: XP no se acumuló");
+                    }
+                    
+                    updateUserStatus();
+                }, 1000);
+            } else {
+                console.log("❌ Función nextLesson no disponible");
+            }
+        }
+
+        // Función para probar la progresión de lecciones
+        function testLessonProgression() {
+            console.log("🧪 Iniciando test de progresión de lecciones...");
+            
+            if (!window.appState) {
+                console.log("❌ appState no disponible");
+                return;
+            }
+
+            const initialLesson = window.appState.currentLesson || 0;
+            console.log("📚 Lección inicial:", initialLesson);
+
+            // Simular completar varias lecciones
+            let completedLessons = 0;
+            const maxLessons = 3;
+
+            function completeNextLesson() {
+                if (completedLessons >= maxLessons) {
+                    console.log("✅ Test completado: Se probaron", maxLessons, "lecciones");
+                    updateUserStatus();
+                    return;
+                }
+
+                console.log("🚀 Completando lección", completedLessons + 1, "...");
+                
+                if (typeof window.nextLesson === 'function') {
+                    window.nextLesson();
+                    completedLessons++;
+                    
+                    setTimeout(() => {
+                        const currentLesson = window.appState.currentLesson || 0;
+                        const currentXP = window.appState.currentXP || 0;
+                        console.log("📊 Después de lección", completedLessons, "- Lección:", currentLesson, "XP:", currentXP);
+                        completeNextLesson();
+                    }, 1500);
+                } else {
+                    console.log("❌ Función nextLesson no disponible");
+                }
+            }
+
+            completeNextLesson();
+        }
+
+        // Función para limpiar el progreso
+        function clearProgress() {
+            console.log("🧹 Limpiando progreso...");
+            localStorage.removeItem('englishLearningProgress');
+            localStorage.removeItem('englishLearningSession');
+            localStorage.removeItem('englishLearningUser');
+            
+            if (window.appState) {
+                window.appState.currentXP = 0;
+                window.appState.currentLevel = 1;
+                window.appState.currentLesson = 0;
+            }
+            
+            console.log("✅ Progreso limpiado");
+            updateUserStatus();
+        }
+
+        // Función para mostrar logs detallados
+        function showDetailedLogs() {
+            console.log("📋 Mostrando logs detallados...");
+            console.log("🔍 localStorage keys:", Object.keys(localStorage));
+            console.log("🔍 appState:", window.appState);
+            console.log("🔍 LEVEL_SYSTEM:", window.LEVEL_SYSTEM);
+        }
+
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("🚀 Página de test cargada");
+            updateUserStatus();
+        });
+    </script>
+</body>
+</html>

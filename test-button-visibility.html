@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Visibilidad del Botón</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .test-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: rgba(76, 175, 80, 0.3); }
+        .error { background: rgba(244, 67, 54, 0.3); }
+        .info { background: rgba(33, 150, 243, 0.3); }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #45a049; }
+        .log {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .button-test {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test - Visibilidad del Botón "Siguiente Lección"</h1>
+    
+    <div class="test-container">
+        <h2>📊 Estado Actual del Usuario</h2>
+        <div id="userStatus" class="status info">Cargando...</div>
+        
+        <h2>🔧 Test del Botón</h2>
+        <div class="button-test">
+            <button onclick="testButtonVisibility()">Verificar Visibilidad del Botón</button>
+            <button onclick="forceButtonVisible()">Forzar Botón Visible</button>
+            <button onclick="testButtonFunctionality()">Probar Funcionalidad del Botón</button>
+            <button onclick="checkLearnSection()">Verificar Sección Aprender</button>
+        </div>
+        
+        <div id="buttonStatus" class="status info">Esperando verificación...</div>
+    </div>
+    
+    <div class="test-container">
+        <h2>📝 Logs del Sistema</h2>
+        <div id="systemLogs" class="log">Esperando acciones...</div>
+    </div>
+
+    <!-- Incluir todos los módulos necesarios -->
+    <script src="script1.js/data.js"></script>
+    <script src="script1.js/auth.js"></script>
+    <script src="script1.js/lesson.js"></script>
+    <script src="script1.js/practice.js"></script>
+    <script src="script1.js/vocabulary.js"></script>
+    <script src="script1.js/progress.js"></script>
+    <script src="script1.js/achievements.js"></script>
+    <script src="script1.js/diagnostic.js"></script>
+    <script src="script1.js/navigation.js"></script>
+    <script src="script1.js/storage.js"></script>
+    <script src="script1.js/utils.js"></script>
+    <script src="script1.js/module-progress.js"></script>
+    <script src="script1.js/level-tests.js"></script>
+    <script src="script1.js/test-interface.js"></script>
+    <script src="script1.js/level-test-manager.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        // Interceptar console.log para mostrar en la página
+        const originalLog = console.log;
+        const logContainer = document.getElementById('systemLogs');
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const logEntry = document.createElement('div');
+            logEntry.textContent = args.join(' ');
+            logEntry.style.marginBottom = '5px';
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        };
+
+        // Función para mostrar el estado del usuario
+        function updateUserStatus() {
+            const statusDiv = document.getElementById('userStatus');
+            
+            if (window.appState) {
+                statusDiv.innerHTML = `
+                    <strong>Usuario:</strong> ${window.appState.currentUser || 'No registrado'}<br>
+                    <strong>Nivel:</strong> ${window.appState.currentLevel || 1}<br>
+                    <strong>XP:</strong> ${window.appState.currentXP || 0}<br>
+                    <strong>Lección:</strong> ${window.appState.currentLesson || 0}<br>
+                    <strong>MCER:</strong> ${window.appState.diagnosticLevel || 'No evaluado'}
+                `;
+            } else {
+                statusDiv.innerHTML = '❌ appState no disponible';
+            }
+        }
+
+        // Función para verificar la visibilidad del botón
+        function testButtonVisibility() {
+            console.log("🧪 Verificando visibilidad del botón...");
+            
+            const nextLessonBtn = document.getElementById('nextLessonBtn');
+            const statusDiv = document.getElementById('buttonStatus');
+            
+            if (!nextLessonBtn) {
+                console.log("❌ Botón 'nextLessonBtn' no encontrado en el DOM");
+                statusDiv.innerHTML = "❌ Botón no encontrado en el DOM";
+                statusDiv.className = "status error";
+                return;
+            }
+            
+            const buttonInfo = {
+                encontrado: !!nextLessonBtn,
+                visible: nextLessonBtn.offsetParent !== null,
+                display: window.getComputedStyle(nextLessonBtn).display,
+                visibility: window.getComputedStyle(nextLessonBtn).visibility,
+                opacity: window.getComputedStyle(nextLessonBtn).opacity,
+                disabled: nextLessonBtn.disabled,
+                classes: nextLessonBtn.className,
+                textContent: nextLessonBtn.textContent,
+                title: nextLessonBtn.title
+            };
+            
+            console.log("🔍 Información del botón:", buttonInfo);
+            
+            if (buttonInfo.visible && !buttonInfo.disabled) {
+                statusDiv.innerHTML = "✅ Botón visible y habilitado";
+                statusDiv.className = "status success";
+            } else if (buttonInfo.visible && buttonInfo.disabled) {
+                statusDiv.innerHTML = "⚠️ Botón visible pero deshabilitado";
+                statusDiv.className = "status info";
+            } else {
+                statusDiv.innerHTML = "❌ Botón no visible";
+                statusDiv.className = "status error";
+            }
+        }
+
+        // Función para forzar la visibilidad del botón
+        function forceButtonVisible() {
+            console.log("🔧 Forzando visibilidad del botón...");
+            
+            const nextLessonBtn = document.getElementById('nextLessonBtn');
+            if (!nextLessonBtn) {
+                console.log("❌ Botón no encontrado");
+                return;
+            }
+            
+            // Forzar visibilidad
+            nextLessonBtn.style.display = 'inline-block';
+            nextLessonBtn.style.visibility = 'visible';
+            nextLessonBtn.style.opacity = '1';
+            nextLessonBtn.disabled = false;
+            nextLessonBtn.classList.remove('btn-disabled');
+            nextLessonBtn.classList.add('btn-primary');
+            
+            console.log("✅ Botón forzado a ser visible");
+            testButtonVisibility();
+        }
+
+        // Función para probar la funcionalidad del botón
+        function testButtonFunctionality() {
+            console.log("🧪 Probando funcionalidad del botón...");
+            
+            if (typeof window.updateNextLessonButton === 'function') {
+                console.log("🔄 Llamando a updateNextLessonButton()...");
+                window.updateNextLessonButton();
+                
+                setTimeout(() => {
+                    console.log("🔄 Llamando a ensureLearnSectionVisible()...");
+                    if (typeof window.ensureLearnSectionVisible === 'function') {
+                        window.ensureLearnSectionVisible();
+                    }
+                    
+                    setTimeout(() => {
+                        testButtonVisibility();
+                    }, 500);
+                }, 500);
+            } else {
+                console.log("❌ Función updateNextLessonButton no disponible");
+            }
+        }
+
+        // Función para verificar la sección de aprender
+        function checkLearnSection() {
+            console.log("🧪 Verificando sección de aprender...");
+            
+            const learnSection = document.getElementById('learn');
+            const learnTab = document.querySelector('.nav-tab[data-tab="learn"]');
+            
+            if (!learnSection || !learnTab) {
+                console.log("❌ Sección de aprender no encontrada");
+                return;
+            }
+            
+            const sectionInfo = {
+                seccionEncontrada: !!learnSection,
+                tabEncontrado: !!learnTab,
+                seccionActiva: learnSection.classList.contains('active'),
+                tabActivo: learnTab.classList.contains('active'),
+                seccionVisible: learnSection.style.display !== 'none'
+            };
+            
+            console.log("🔍 Información de la sección:", sectionInfo);
+            
+            if (sectionInfo.seccionActiva && sectionInfo.tabActivo) {
+                console.log("✅ Sección de aprender está activa");
+            } else {
+                console.log("⚠️ Sección de aprender no está activa");
+                
+                // Intentar activarla
+                if (typeof window.ensureLearnSectionVisible === 'function') {
+                    console.log("🔄 Intentando activar sección...");
+                    window.ensureLearnSectionVisible();
+                }
+            }
+        }
+
+        // Inicializar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("🚀 Página de test de botón cargada");
+            updateUserStatus();
+            
+            // Verificar botón inmediatamente
+            setTimeout(() => {
+                testButtonVisibility();
+                checkLearnSection();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

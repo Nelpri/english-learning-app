@@ -107,20 +107,20 @@
         </header>
 
         <!-- Navigation -->
-        <nav class="nav-tabs">
-            <button class="nav-tab active" data-tab="learn">
+        <nav class="nav-tabs" role="tablist" aria-label="Navegación principal de la aplicación">
+            <button class="nav-tab active" data-tab="learn" role="tab" aria-selected="true" tabindex="0" aria-controls="learn" id="learn-tab">
                 <i class="fas fa-book"></i> Aprender
             </button>
-            <button class="nav-tab" data-tab="practice">
+            <button class="nav-tab" data-tab="practice" role="tab" aria-selected="false" tabindex="-1" aria-controls="practice" id="practice-tab">
                 <i class="fas fa-dumbbell"></i> Practicar
             </button>
-            <button class="nav-tab" data-tab="apply">
+            <button class="nav-tab" data-tab="apply" role="tab" aria-selected="false" tabindex="-1" aria-controls="apply" id="apply-tab">
                 <i class="fas fa-comments"></i> Aplicar
             </button>
-            <button class="nav-tab" data-tab="progress">
+            <button class="nav-tab" data-tab="progress" role="tab" aria-selected="false" tabindex="-1" aria-controls="progress" id="progress-tab">
                 <i class="fas fa-chart-line"></i> Progreso
             </button>
-            <button class="nav-tab" data-tab="vocabulary">
+            <button class="nav-tab" data-tab="vocabulary" role="tab" aria-selected="false" tabindex="-1" aria-controls="vocabulary" id="vocabulary-tab">
                 <i class="fas fa-book-open"></i> Vocabulario
             </button>
         </nav>
@@ -130,6 +130,12 @@
             <!-- Learn Section -->
             <section id="learn" class="content-section active">
                 <div class="lesson-container">
+                    <div class="lesson-progress-container" style="margin-bottom: 1rem;">
+                        <div class="progress-bar-container" style="background: var(--border-color); height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem;">
+                            <div class="progress-fill" id="lessonProgressBar" style="height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); width: 0%; transition: width 0.5s ease;"></div>
+                        </div>
+                        <span id="lessonProgressText" style="font-size: 0.9rem; color: var(--text-secondary);">Lección 1 de 10</span>
+                    </div>
                     <h2>Lección del Día</h2>
                     <div class="lesson-card">
                         <div class="lesson-header">
@@ -151,10 +157,10 @@
                             </div>
                         </div>
                         <div class="lesson-actions">
-                            <button class="btn btn-primary" id="nextLessonBtn">
+                            <button class="btn btn-primary" id="nextLessonBtn" aria-label="Avanzar a la siguiente lección">
                                 <i class="fas fa-arrow-right"></i> Siguiente Lección
                             </button>
-                            <button class="btn btn-secondary" id="reviewLessonBtn">
+                            <button class="btn btn-secondary" id="reviewLessonBtn" aria-label="Repasar la lección actual">
                                 <i class="fas fa-redo"></i> Repasar
                             </button>
                         </div>

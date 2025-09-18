@@ -771,3 +771,133 @@ window.toggleDifficultWord = toggleDifficultWord;
 window.startCategoryPractice = startCategoryPractice;
 window.createVocabularyHTML = createVocabularyHTML;
 window.initVocab = initVocab;
+
+// Sistema SRS Completo para Repetición Espaciada
+// Función para obtener palabras listas para repaso SRS
+function getWordsForReview() {
+    try {
+        const wordsForReview = [];
+        const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+        const reviewData = userProgress.srsReviews || {};
+
+        Object.keys(reviewData).forEach(wordEnglish => {
+            const wordData = reviewData[wordEnglish];
+            if (new Date(wordData.nextReview) <= new Date()) {
+                // Obtener info completa de la palabra desde VOCABULARY_DATABASE
+                let fullWord = null;
+                Object.values(window.VOCABULARY_DATABASE).forEach(category => {
+                    fullWord = category.find(w => w.english === wordEnglish);
+                    if (fullWord) return;
+                });
+                if (fullWord) {
+                    wordsForReview.push({
+                        ...fullWord,
+                        srs: {
+                            ...wordData,
+                            difficulty: wordData.difficulty || 2.5
+                        }
+                    });
+                }
+            }
+        });
+
+        // Ordenar por dificultad (más difíciles primero)
+        wordsForReview.sort((a, b) => b.srs.difficulty - a.srs.difficulty);
+        console.log(`📚 Palabras listas para repaso SRS: ${wordsForReview.length}`);
+        return wordsForReview.slice(0, 20); // Limitar a 20 palabras por sesión
+    } catch (error) {
+        console.error("❌ Error al obtener palabras para repaso SRS:", error);
+        return [];
+    }
+}
+
+// Función para programar próxima revisión basado en calidad (1-5)
+function scheduleReview(wordEnglish, quality) {
+    try {
+        if (!wordEnglish || quality < 1 || quality > 5) return false;
+
+        const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+        if (!userProgress.srsReviews) userProgress.srsReviews = {};
+        let wordData = userProgress.srsReviews[wordEnglish] || {
+            reviews: [],
+            nextReview: new Date().toISOString(),
+            difficulty: 2.5,
+            consecutiveCorrect: 0
+        };
+
+        // Ajustar dificultad usando función de utils.js
+        if (typeof adjustDifficulty === 'function') {
+            const currentDifficulty = wordData.difficulty;
+            wordData.difficulty = adjustDifficulty(wordEnglish, quality >= 4);
+            console.log(`🔄 Dificultad ajustada para "${wordEnglish}": ${currentDifficulty} → ${wordData.difficulty}`);
+        }
+
+        // Calcular intervalo basado en calidad y dificultad
+        const intervals = [1, 3, 7, 14, 30, 60]; // Días
+        let intervalIndex = Math.max(0, quality - 1); // Calidad 1=intervalo 0 (1 día), 5=intervalo 4 (30 días)
+        if (quality < 3) intervalIndex = 0; // Repasar pronto si difícil
+        else if (wordData.consecutiveCorrect > 3) intervalIndex = Math.min(5, intervalIndex + 1); // Acelerar si consistente
+
+        const now = new Date();
+        const nextReview = new Date(now.getTime() + intervals[intervalIndex] * 24 * 60 * 60 * 1000).toISOString();
+
+        // Actualizar historial
+        wordData.reviews.push({
+            date: now.toISOString(),
+            quality: quality,
+            correct: quality >= 3
+        });
+        if (quality >= 4) wordData.consecutiveCorrect++;
+        else wordData.consecutiveCorrect = 0;
+        wordData.nextReview = nextReview;
+        wordData.lastQuality = quality;
+
+        userProgress.srsReviews[wordEnglish] = wordData;
+        localStorage.setItem('englishLearningProgress', JSON.stringify(userProgress));
+
+        // Integrar con palabras difíciles si quality < 3
+        if (quality < 3) {
+            toggleDifficultWord(wordEnglish, /*spanish y pronunciation se obtienen de fullWord*/ '', '');
+        }
+
+        console.log(`📅 Próxima revisión para "${wordEnglish}": ${intervals[intervalIndex]} días (calidad: ${quality})`);
+        return true;
+    } catch (error) {
+        console.error("❌ Error al programar revisión SRS:", error);
+        return false;
+    }
+}
+
+// Función para inicializar SRS en vocabulario (llamar desde initVocab)
+function initSRS() {
+    // Migrar datos antiguos si existen
+    const oldReviews = JSON.parse(localStorage.getItem('srsOldData') || '{}');
+    if (Object.keys(oldReviews).length > 0) {
+        const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+        userProgress.srsReviews = { ...userProgress.srsReviews, ...oldReviews };
+        localStorage.setItem('englishLearningProgress', JSON.stringify(userProgress));
+        localStorage.removeItem('srsOldData');
+        console.log("🔄 Datos SRS antiguos migrados");
+    }
+
+    // Agregar palabras difíciles a SRS si no están
+    const difficultWords = getDifficultWords();
+    difficultWords.forEach(word => {
+        if (!userProgress.srsReviews[word.english]) {
+            userProgress.srsReviews[word.english] = {
+                reviews: [{ date: new Date().toISOString(), quality: 1, correct: false }],
+                nextReview: new Date().toISOString(),
+                difficulty: 4.0, // Alta dificultad por defecto
+                consecutiveCorrect: 0
+            };
+        }
+    });
+    localStorage.setItem('englishLearningProgress', JSON.stringify(userProgress));
+
+    console.log("🧠 Sistema SRS inicializado en vocabulario");
+}
+
+// Exportar funciones SRS
+window.getWordsForReview = getWordsForReview;
+window.scheduleReview = scheduleReview;
+window.initSRS = initSRS;

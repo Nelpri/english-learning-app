@@ -430,6 +430,14 @@ function handleExerciseAnswer(button) {
     const isCorrect = button.dataset.correct === 'true';
     const resultDiv = document.getElementById('exerciseResult');
     
+    // Obtener la palabra o elemento correcto para ajustar dificultad
+    const exerciseDiv = button.closest('.vocabulary-exercise') || button.closest('.grammar-exercise');
+    const word = exerciseDiv ? exerciseDiv.querySelector('.english')?.textContent || button.textContent : null;
+    
+    if (word && typeof adjustDifficulty === 'function') {
+        adjustDifficulty(word, isCorrect);
+    }
+    
     // Deshabilitar todos los botones
     document.querySelectorAll('.option-btn').forEach(btn => {
         btn.disabled = true;
@@ -1389,8 +1397,15 @@ function selectVocabularyOption(selectedButton, exerciseIndex) {
         const isCorrect = selectedButton.dataset.correct === 'true';
         const resultDiv = document.getElementById(`exerciseResult${exerciseIndex}`);
         
-        // Deshabilitar todos los botones de este ejercicio
+        // Obtener la palabra para ajustar dificultad
         const exerciseDiv = selectedButton.closest('.vocabulary-exercise');
+        const word = exerciseDiv ? exerciseDiv.querySelector('.english')?.textContent || selectedButton.textContent : null;
+        
+        if (word && typeof adjustDifficulty === 'function') {
+            adjustDifficulty(word, isCorrect);
+        }
+        
+        // Deshabilitar todos los botones de este ejercicio
         const allButtons = exerciseDiv.querySelectorAll('.option-btn');
         allButtons.forEach(btn => {
             btn.disabled = true;
@@ -1899,6 +1914,12 @@ function selectGrammarOption(selectedButton, exerciseIndex, lesson) {
     try {
         const isCorrect = selectedButton.dataset.correct === 'true';
         const resultDiv = document.getElementById(`grammarResult${exerciseIndex}`);
+        
+        // Obtener la opción correcta para ajustar dificultad (usar el texto como "palabra")
+        const word = selectedButton.textContent.trim();
+        if (word && typeof adjustDifficulty === 'function') {
+            adjustDifficulty(word, isCorrect);
+        }
         
         // Deshabilitar todos los botones de este ejercicio
         const exerciseDiv = selectedButton.closest('.grammar-exercise');
