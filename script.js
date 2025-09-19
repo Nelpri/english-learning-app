@@ -96,6 +96,13 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("❌ initVocab no encontrado");
     }
 
+    console.log("📝 Inicializando sistema de escritura...");
+    if (typeof writingSystem !== "undefined") {
+        console.log("✅ Sistema de escritura cargado");
+    } else {
+        console.error("❌ Sistema de escritura no encontrado");
+    }
+
     console.log("📊 Inicializando sistema de progreso de módulos...");
     if (typeof ModuleProgressSystem !== "undefined") {
         console.log("✅ Sistema de progreso de módulos cargado");

@@ -53,6 +53,57 @@ const LESSONS_DATABASE = {
                 title: "Adjetivos de Color",
                 content: "Los colores son adjetivos que describen la apariencia de los objetos"
             }
+        },
+        {
+            id: 4,
+            title: "Días de la Semana",
+            difficulty: "Principiante",
+            mcer: "A1",
+            vocabulary: [
+                { english: "Monday", spanish: "Lunes", pronunciation: "/ˈmʌndeɪ/" },
+                { english: "Tuesday", spanish: "Martes", pronunciation: "/ˈtjuːzdeɪ/" },
+                { english: "Wednesday", spanish: "Miércoles", pronunciation: "/ˈwenzdeɪ/" },
+                { english: "Thursday", spanish: "Jueves", pronunciation: "/ˈθɜːzdeɪ/" },
+                { english: "Friday", spanish: "Viernes", pronunciation: "/ˈfraɪdeɪ/" }
+            ],
+            grammar: {
+                title: "Preposiciones de Tiempo Básicas",
+                content: "On Monday (el lunes), in the morning (por la mañana)"
+            }
+        },
+        {
+            id: 5,
+            title: "Respuestas Sí/No",
+            difficulty: "Principiante",
+            mcer: "A1",
+            vocabulary: [
+                { english: "Yes", spanish: "Sí", pronunciation: "/jes/" },
+                { english: "No", spanish: "No", pronunciation: "/noʊ/" },
+                { english: "Maybe", spanish: "Tal vez", pronunciation: "/ˈmeɪbi/" },
+                { english: "I don't know", spanish: "No sé", pronunciation: "/aɪ doʊnt noʊ/" },
+                { english: "Of course", spanish: "Por supuesto", pronunciation: "/əv kɔːrs/" }
+            ],
+            grammar: {
+                title: "Verbo To Be en Afirmativo y Negativo",
+                content: "I am (soy), I am not (no soy), Yes I am, No I'm not"
+            }
+        },
+        {
+            id: 6,
+            title: "Presentaciones Básicas",
+            difficulty: "Principiante",
+            mcer: "A1",
+            vocabulary: [
+                { english: "My name is", spanish: "Me llamo", pronunciation: "/maɪ neɪm ɪz/" },
+                { english: "I am from", spanish: "Soy de", pronunciation: "/aɪ æm frɒm/" },
+                { english: "Nice to meet you", spanish: "Mucho gusto", pronunciation: "/naɪs tə miːt juː/" },
+                { english: "Where are you from?", spanish: "¿De dónde eres?", pronunciation: "/weər ɑːr juː frɒm/" },
+                { english: "I live in", spanish: "Vivo en", pronunciation: "/aɪ lɪv ɪn/" }
+            ],
+            grammar: {
+                title: "Verbo To Be para Descripciones",
+                content: "I am from Colombia (soy de Colombia), He is from Spain (él es de España)"
+            }
         }
     ],
     level2: [
@@ -105,6 +156,57 @@ const LESSONS_DATABASE = {
             grammar: {
                 title: "Sustantivos Contables e Incontables",
                 content: "Los sustantivos contables pueden contarse (apples), los incontables no (water)"
+            }
+        },
+        {
+            id: 7,
+            title: "Preguntas Básicas",
+            difficulty: "Básico",
+            mcer: "A2",
+            vocabulary: [
+                { english: "What", spanish: "Qué", pronunciation: "/wʌt/" },
+                { english: "Where", spanish: "Dónde", pronunciation: "/weər/" },
+                { english: "When", spanish: "Cuándo", pronunciation: "/wen/" },
+                { english: "Who", spanish: "Quién", pronunciation: "/huː/" },
+                { english: "Why", spanish: "Por qué", pronunciation: "/waɪ/" }
+            ],
+            grammar: {
+                title: "Preguntas con Wh- Words",
+                content: "What is your name? (¿Cómo te llamas?), Where do you live? (¿Dónde vives?)"
+            }
+        },
+        {
+            id: 8,
+            title: "Preferencias de Comida",
+            difficulty: "Básico",
+            mcer: "A2",
+            vocabulary: [
+                { english: "I like", spanish: "Me gusta", pronunciation: "/aɪ laɪk/" },
+                { english: "I don't like", spanish: "No me gusta", pronunciation: "/aɪ doʊnt laɪk/" },
+                { english: "Delicious", spanish: "Delicioso", pronunciation: "/dɪˈlɪʃəs/" },
+                { english: "I prefer", spanish: "Prefiero", pronunciation: "/aɪ prɪˈfɜːr/" },
+                { english: "Healthy", spanish: "Saludable", pronunciation: "/ˈhelθi/" }
+            ],
+            grammar: {
+                title: "Verbo Like en Presente Simple",
+                content: "I like apples (me gustan las manzanas), She likes coffee (a ella le gusta el café)"
+            }
+        },
+        {
+            id: 9,
+            title: "Descripciones Simples",
+            difficulty: "Básico",
+            mcer: "A2",
+            vocabulary: [
+                { english: "Big", spanish: "Grande", pronunciation: "/bɪɡ/" },
+                { english: "Small", spanish: "Pequeño", pronunciation: "/smɔːl/" },
+                { english: "Tall", spanish: "Alto", pronunciation: "/tɔːl/" },
+                { english: "Short", spanish: "Bajo", pronunciation: "/ʃɔːrt/" },
+                { english: "Beautiful", spanish: "Hermoso", pronunciation: "/ˈbjuːtɪfl/" }
+            ],
+            grammar: {
+                title: "Adjetivos Descriptivos",
+                content: "The house is big (la casa es grande), The cat is small (el gato es pequeño)"
             }
         }
     ],
@@ -249,6 +351,112 @@ const LESSONS_DATABASE = {
                 content: "Vocabulario especializado para campos científicos y tecnológicos"
             }
         }
+    ],
+    level6: [
+        {
+            id: 15,
+            title: "Negocios Avanzados",
+            difficulty: "Experto",
+            mcer: "C1",
+            vocabulary: [
+                { english: "Stakeholder", spanish: "Parte interesada", pronunciation: "/ˈsteɪkhoʊldər/" },
+                { english: "Leverage", spanish: "Aprovechar/Apalancar", pronunciation: "/ˈlevərɪdʒ/" },
+                { english: "Synergy", spanish: "Sinergia", pronunciation: "/ˈsɪnərdʒi/" },
+                { english: "Benchmark", spanish: "Punto de referencia", pronunciation: "/ˈbentʃmɑːrk/" },
+                { english: "Scalability", spanish: "Escalabilidad", pronunciation: "/ˌskeɪləˈbɪləti/" }
+            ],
+            grammar: {
+                title: "Subjuntivo Avanzado",
+                content: "It's imperative that we consider all possibilities. I suggest that he be consulted before making any decisions."
+            }
+        },
+        {
+            id: 16,
+            title: "Ciencia y Tecnología",
+            difficulty: "Experto",
+            mcer: "C1",
+            vocabulary: [
+                { english: "Algorithm", spanish: "Algoritmo", pronunciation: "/ˈælɡərɪðəm/" },
+                { english: "Quantum", spanish: "Cuántico", pronunciation: "/ˈkwɑːntəm/" },
+                { english: "Biotechnology", spanish: "Biotecnología", pronunciation: "/ˌbaɪoʊtekˈnɑːlədʒi/" },
+                { english: "Nanotechnology", spanish: "Nanotecnología", pronunciation: "/ˌnænoʊtekˈnɑːlədʒi/" },
+                { english: "Artificial Intelligence", spanish: "Inteligencia Artificial", pronunciation: "/ˌɑːrtɪˈfɪʃəl ɪnˈtelɪdʒəns/" }
+            ],
+            grammar: {
+                title: "Voz Pasiva Compleja",
+                content: "The research findings were being analyzed when the breakthrough occurred. The data should have been processed earlier."
+            }
+        },
+        {
+            id: 17,
+            title: "Política y Sociedad",
+            difficulty: "Experto",
+            mcer: "C1",
+            vocabulary: [
+                { english: "Democracy", spanish: "Democracia", pronunciation: "/dɪˈmɑːkrəsi/" },
+                { english: "Bureaucracy", spanish: "Burocracia", pronunciation: "/bjʊˈrɑːkrəsi/" },
+                { english: "Transparency", spanish: "Transparencia", pronunciation: "/trænsˈpærənsi/" },
+                { english: "Accountability", spanish: "Rendición de cuentas", pronunciation: "/əˌkaʊntəˈbɪləti/" },
+                { english: "Governance", spanish: "Gobernanza", pronunciation: "/ˈɡʌvərnəns/" }
+            ],
+            grammar: {
+                title: "Estructuras Formales",
+                content: "Were it not for the current circumstances, we would proceed with the implementation. Had the committee been informed earlier, the decision might have been different."
+            }
+        }
+    ],
+    level7: [
+        {
+            id: 18,
+            title: "Literatura y Arte",
+            difficulty: "Experto Avanzado",
+            mcer: "C2",
+            vocabulary: [
+                { english: "Metaphor", spanish: "Metáfora", pronunciation: "/ˈmetəfɔːr/" },
+                { english: "Allegory", spanish: "Alegoría", pronunciation: "/ˈæləɡɔːri/" },
+                { english: "Aesthetic", spanish: "Estético", pronunciation: "/esˈθetɪk/" },
+                { english: "Renaissance", spanish: "Renacimiento", pronunciation: "/ˈrenəsɑːns/" },
+                { english: "Postmodernism", spanish: "Posmodernismo", pronunciation: "/ˌpoʊstˈmɑːdərnɪzəm/" }
+            ],
+            grammar: {
+                title: "Lenguaje Figurativo",
+                content: "The author employs a myriad of literary devices to convey the underlying themes. The narrative structure juxtaposes contrasting perspectives."
+            }
+        },
+        {
+            id: 19,
+            title: "Filosofía y Ética",
+            difficulty: "Experto Avanzado",
+            mcer: "C2",
+            vocabulary: [
+                { english: "Epistemology", spanish: "Epistemología", pronunciation: "/ɪˌpɪstəˈmɑːlədʒi/" },
+                { english: "Metaphysics", spanish: "Metafísica", pronunciation: "/ˌmetəˈfɪzɪks/" },
+                { english: "Phenomenology", spanish: "Fenomenología", pronunciation: "/fəˌnɑːməˈnɑːlədʒi/" },
+                { english: "Utilitarianism", spanish: "Utilitarismo", pronunciation: "/ˌjuːtɪlɪˈteriənɪzəm/" },
+                { english: "Deontology", spanish: "Deontología", pronunciation: "/ˌdiːɑːnˈtɑːlədʒi/" }
+            ],
+            grammar: {
+                title: "Construcciones Filosóficas",
+                content: "It behooves us to consider the implications thereof. The aforementioned principles notwithstanding, one must acknowledge the inherent complexity."
+            }
+        },
+        {
+            id: 20,
+            title: "Medicina y Salud Avanzada",
+            difficulty: "Experto Avanzado",
+            mcer: "C2",
+            vocabulary: [
+                { english: "Pathophysiology", spanish: "Fisiopatología", pronunciation: "/ˌpæθoʊˌfɪziˈɑːlədʒi/" },
+                { english: "Pharmacokinetics", spanish: "Farmacocinética", pronunciation: "/ˌfɑːrməkoʊkɪˈnetɪks/" },
+                { english: "Immunocompromised", spanish: "Inmunocomprometido", pronunciation: "/ɪˌmjuːnoʊˈkɑːmprəmaɪzd/" },
+                { english: "Nosocomial", spanish: "Nosocomial", pronunciation: "/ˌnoʊsəˈkoʊmiəl/" },
+                { english: "Idiosyncratic", spanish: "Idiosincrásico", pronunciation: "/ˌɪdioʊsɪnˈkrætɪk/" }
+            ],
+            grammar: {
+                title: "Terminología Médica",
+                content: "The patient presented with a constellation of symptoms that were indicative of a systemic disorder. The treatment protocol necessitated a multidisciplinary approach."
+            }
+        }
     ]
 };
 
@@ -299,7 +507,8 @@ const CONVERSATION_SCENARIOS = [
             { type: "bot", text: "Hello! Welcome to our restaurant. How can I help you today?" },
             { type: "user", text: "Hi! I'd like to see the menu, please." },
             { type: "bot", text: "Of course! Here's our menu. What would you like to order?" }
-        ]
+        ],
+        level: "A1"
     },
     {
         id: 2,
@@ -309,7 +518,118 @@ const CONVERSATION_SCENARIOS = [
             { type: "bot", text: "Good morning! Can I help you find something?" },
             { type: "user", text: "Yes, I'm looking for a gift for my friend." },
             { type: "bot", text: "Great! What kind of things does your friend like?" }
-        ]
+        ],
+        level: "A1"
+    },
+    {
+        id: 3,
+        title: "En el Aeropuerto",
+        description: "Practica check-in y preguntas de viaje",
+        messages: [
+            { type: "bot", text: "Good morning! Do you have your passport and ticket?" },
+            { type: "user", text: "Yes, here they are." },
+            { type: "bot", text: "Thank you. Are you checking any bags today?" }
+        ],
+        level: "A2"
+    },
+    {
+        id: 4,
+        title: "En el Hotel",
+        description: "Practica hacer reservas y solicitar servicios",
+        messages: [
+            { type: "bot", text: "Good afternoon! Welcome to our hotel. Do you have a reservation?" },
+            { type: "user", text: "Yes, I have a reservation under the name Smith." },
+            { type: "bot", text: "Perfect! Let me check that for you. Would you like a room with a city view or garden view?" }
+        ],
+        level: "A2"
+    },
+    {
+        id: 5,
+        title: "En el Doctor",
+        description: "Practica describir síntomas y entender diagnósticos",
+        messages: [
+            { type: "bot", text: "Good morning! What seems to be the problem today?" },
+            { type: "user", text: "I have a headache and feel very tired." },
+            { type: "bot", text: "How long have you been experiencing these symptoms?" }
+        ],
+        level: "B1"
+    },
+    {
+        id: 6,
+        title: "En la Oficina",
+        description: "Practica reuniones de trabajo y presentaciones",
+        messages: [
+            { type: "bot", text: "Good morning everyone! Let's start today's meeting. First, let's review last week's progress." },
+            { type: "user", text: "I'd like to present the quarterly sales report." },
+            { type: "bot", text: "Excellent! Please go ahead. What were the key highlights?" }
+        ],
+        level: "B1"
+    },
+    {
+        id: 7,
+        title: "En el Gimnasio",
+        description: "Practica conversaciones sobre fitness y salud",
+        messages: [
+            { type: "bot", text: "Hi there! Are you new to our gym? I can show you around if you'd like." },
+            { type: "user", text: "Yes, I'm new. I'm interested in strength training." },
+            { type: "bot", text: "Great! We have excellent equipment for that. Have you worked with weights before?" }
+        ],
+        level: "B2"
+    },
+    {
+        id: 8,
+        title: "Reunión de Negocios",
+        description: "Practica negociaciones y presentaciones ejecutivas",
+        messages: [
+            { type: "bot", text: "Thank you for coming today. We're here to discuss the partnership proposal. What are your thoughts on the terms?" },
+            { type: "user", text: "I think the proposal is interesting, but we need to review the financial projections." },
+            { type: "bot", text: "Absolutely. We've prepared detailed financial models. Let's examine them together." }
+        ],
+        level: "B2"
+    },
+    {
+        id: 9,
+        title: "Conferencia Académica",
+        description: "Practica discusiones académicas y presentaciones de investigación",
+        messages: [
+            { type: "bot", text: "Welcome to the conference. Your research on renewable energy is fascinating. Could you elaborate on your methodology?" },
+            { type: "user", text: "Certainly. We used a multi-phase approach combining quantitative and qualitative analysis." },
+            { type: "bot", text: "That's impressive. What were the most significant findings from your study?" }
+        ],
+        level: "C1"
+    },
+    {
+        id: 10,
+        title: "Debate Político",
+        description: "Practica argumentación política y análisis de políticas públicas",
+        messages: [
+            { type: "bot", text: "The current policy framework needs substantial reform. What's your perspective on the proposed legislative changes?" },
+            { type: "user", text: "I believe the legislation addresses key issues, but the implementation timeline seems unrealistic." },
+            { type: "bot", text: "That's a valid concern. How do you propose we address the implementation challenges?" }
+        ],
+        level: "C1"
+    },
+    {
+        id: 11,
+        title: "Simposio Científico",
+        description: "Practica discusiones sobre investigación científica avanzada",
+        messages: [
+            { type: "bot", text: "The implications of your quantum computing research are profound. How do you envision this technology evolving?" },
+            { type: "user", text: "We're at the threshold of a paradigm shift. The scalability challenges we're facing require innovative approaches." },
+            { type: "bot", text: "Fascinating. What role do you see artificial intelligence playing in overcoming these limitations?" }
+        ],
+        level: "C2"
+    },
+    {
+        id: 12,
+        title: "Panel Filosófico",
+        description: "Practica discusiones filosóficas profundas y análisis conceptual",
+        messages: [
+            { type: "bot", text: "The ontological implications of consciousness in artificial entities raise fundamental questions about the nature of existence." },
+            { type: "user", text: "Indeed. We must consider whether consciousness is emergent or inherent, and what that means for moral agency." },
+            { type: "bot", text: "A profound observation. How do you reconcile this with traditional ethical frameworks?" }
+        ],
+        level: "C2"
     }
 ];
 
@@ -360,6 +680,210 @@ const GRAMMAR_POOLS = {
     A2: [
         { type: "present_simple", question: "She ___ English", options: ["speak", "speaks", "speaking", "spoke"], correct: "speaks" },
         { type: "adjectives", question: "The car is ___", answer: "fast", options: ["fast", "fastly", "fasting", "faster"], correct: "fast" }
+    ],
+    B1: [
+        { type: "past_perfect", question: "By the time we arrived, they ___ already left", options: ["have", "had", "has", "were"], correct: "had" },
+        { type: "conditionals", question: "If I ___ more time, I would travel more", options: ["have", "had", "will have", "would have"], correct: "had" }
+    ],
+    B2: [
+        { type: "passive_voice", question: "The report ___ by the team yesterday", options: ["was completed", "completed", "is completed", "has completed"], correct: "was completed" },
+        { type: "reported_speech", question: "She said she ___ the meeting", options: ["attended", "had attended", "will attend", "attends"], correct: "had attended" }
+    ],
+    C1: [
+        { type: "subjunctive", question: "It's essential that he ___ informed immediately", options: ["be", "is", "was", "will be"], correct: "be" },
+        { type: "inversion", question: "___ had I seen such a beautiful sunset", options: ["Rarely", "Never", "Seldom", "Hardly"], correct: "Never" }
+    ],
+    C2: [
+        { type: "complex_structures", question: "___ it not for your help, I wouldn't have succeeded", options: ["Were", "Had", "If", "Should"], correct: "Had" },
+        { type: "formal_language", question: "The committee ___ to consider all proposals", options: ["is behooved", "behooves", "behooved", "has behooved"], correct: "behooves" }
+    ]
+};
+
+// Ejercicios de listening avanzados por nivel
+const LISTENING_EXERCISES = {
+    A1: [
+        {
+            audio: "Hello, my name is John. I am from Canada. I speak English and French.",
+            questions: [
+                { question: "What is the person's name?", options: ["John", "James", "Jack", "Joe"], correct: "John" },
+                { question: "Where is he from?", options: ["Canada", "Australia", "America", "England"], correct: "Canada" },
+                { question: "How many languages does he speak?", options: ["One", "Two", "Three", "Four"], correct: "Two" }
+            ]
+        }
+    ],
+    A2: [
+        {
+            audio: "Yesterday I went to the supermarket. I bought some milk, bread, and apples. The total cost was fifteen dollars.",
+            questions: [
+                { question: "When did the person go shopping?", options: ["Today", "Yesterday", "Last week", "Tomorrow"], correct: "Yesterday" },
+                { question: "What did they buy?", options: ["Vegetables", "Milk, bread, apples", "Meat", "Dessert"], correct: "Milk, bread, apples" },
+                { question: "How much did they spend?", options: ["$10", "$15", "$20", "$25"], correct: "$15" }
+            ]
+        }
+    ],
+    B1: [
+        {
+            audio: "The meeting has been postponed until next Tuesday due to the CEO's unexpected travel. All participants should prepare the quarterly reports beforehand.",
+            questions: [
+                { question: "Why was the meeting postponed?", options: ["Bad weather", "CEO's travel", "Technical issues", "Holiday"], correct: "CEO's travel" },
+                { question: "When is the new meeting date?", options: ["Next Monday", "Next Tuesday", "Next Wednesday", "Next Thursday"], correct: "Next Tuesday" },
+                { question: "What should participants prepare?", options: ["Presentations", "Quarterly reports", "Budget plans", "Marketing strategies"], correct: "Quarterly reports" }
+            ]
+        }
+    ],
+    B2: [
+        {
+            audio: "The research indicates that climate change is accelerating at an unprecedented rate. Scientists have observed significant shifts in weather patterns, which could have profound implications for global agriculture and water resources.",
+            questions: [
+                { question: "What is accelerating according to the research?", options: ["Technology", "Climate change", "Population growth", "Urbanization"], correct: "Climate change" },
+                { question: "What have scientists observed?", options: ["New species", "Weather pattern shifts", "Ocean currents", "Mountain ranges"], correct: "Weather pattern shifts" },
+                { question: "What could be affected by these changes?", options: ["Transportation", "Agriculture and water", "Education", "Entertainment"], correct: "Agriculture and water" }
+            ]
+        }
+    ],
+    C1: [
+        {
+            audio: "The pharmaceutical industry faces unprecedented challenges in developing effective treatments for rare diseases. Despite regulatory hurdles and limited patient populations, researchers are leveraging cutting-edge biotechnology to create personalized medicine solutions that could revolutionize healthcare delivery.",
+            questions: [
+                { question: "What challenges does the pharmaceutical industry face?", options: ["High costs", "Regulatory issues", "Limited patients", "All of the above"], correct: "All of the above" },
+                { question: "What technology are researchers using?", options: ["Traditional methods", "Cutting-edge biotechnology", "Artificial intelligence", "Robotics"], correct: "Cutting-edge biotechnology" },
+                { question: "What could these solutions revolutionize?", options: ["Education", "Transportation", "Healthcare delivery", "Agriculture"], correct: "Healthcare delivery" }
+            ]
+        }
+    ],
+    C2: [
+        {
+            audio: "The epistemological foundations of quantum mechanics challenge our conventional understanding of reality itself. The observer effect and wave-particle duality suggest that consciousness may play a fundamental role in the manifestation of physical phenomena, raising profound questions about the nature of existence and the limits of human knowledge.",
+            questions: [
+                { question: "What do quantum mechanics challenge?", options: ["Technology", "Mathematics", "Understanding of reality", "Physics laws"], correct: "Understanding of reality" },
+                { question: "What suggests consciousness may be important?", options: ["Observer effect", "Wave-particle duality", "Both A and B", "Neither A nor B"], correct: "Both A and B" },
+                { question: "What questions are raised?", options: ["About technology", "About nature of existence", "About politics", "About economics"], correct: "About nature of existence" }
+            ]
+        }
+    ]
+};
+
+// Ejercicios de escritura por nivel MCER
+const WRITING_EXERCISES = {
+    A1: [
+        {
+            id: 1,
+            title: "Autopresentación",
+            prompt: "Escribe 3-4 oraciones sobre ti mismo. Incluye tu nombre, edad, nacionalidad y una cosa que te gusta hacer.",
+            example: "Hello! My name is Maria. I am 25 years old. I am from Spain. I like to read books.",
+            keyWords: ["name", "age", "nationality", "like"],
+            minWords: 15,
+            maxWords: 25
+        },
+        {
+            id: 2,
+            title: "Mi Familia",
+            prompt: "Describe a tu familia. Escribe sobre 2-3 miembros de tu familia y qué hacen.",
+            example: "My family is small. My father is a teacher. My mother works in an office. My brother is a student.",
+            keyWords: ["family", "father", "mother", "brother", "sister", "works", "student"],
+            minWords: 20,
+            maxWords: 35
+        }
+    ],
+    A2: [
+        {
+            id: 3,
+            title: "Mi Rutina Diaria",
+            prompt: "Describe tu rutina diaria. Escribe sobre lo que haces desde que te levantas hasta que te acuestas.",
+            example: "I wake up at 7 AM every day. I have breakfast at home. I go to work by bus. I finish work at 5 PM.",
+            keyWords: ["wake up", "breakfast", "work", "bus", "finish"],
+            minWords: 40,
+            maxWords: 60
+        },
+        {
+            id: 4,
+            title: "Mi Ciudad",
+            prompt: "Describe tu ciudad o pueblo. Escribe sobre los lugares importantes y qué puedes hacer allí.",
+            example: "I live in Madrid. It's a big city with many parks and museums. There are good restaurants and shops.",
+            keyWords: ["city", "parks", "museums", "restaurants", "shops"],
+            minWords: 35,
+            maxWords: 50
+        }
+    ],
+    B1: [
+        {
+            id: 5,
+            title: "Mi Pasatiempo Favorito",
+            prompt: "Escribe sobre tu pasatiempo favorito. Explica por qué te gusta y qué haces cuando lo practicas.",
+            example: "My favorite hobby is photography. I enjoy taking pictures of nature and people. It helps me relax and be creative.",
+            keyWords: ["hobby", "photography", "enjoy", "relax", "creative"],
+            minWords: 60,
+            maxWords: 80
+        },
+        {
+            id: 6,
+            title: "Una Experiencia de Viaje",
+            prompt: "Describe un viaje que hiciste. Incluye dónde fuiste, qué hiciste y qué te gustó más.",
+            example: "Last summer I visited Paris. I saw the Eiffel Tower and visited many museums. The food was amazing.",
+            keyWords: ["visited", "saw", "museums", "food", "amazing"],
+            minWords: 70,
+            maxWords: 100
+        }
+    ],
+    B2: [
+        {
+            id: 7,
+            title: "Opinión sobre la Tecnología",
+            prompt: "Escribe tu opinión sobre el impacto de la tecnología en la sociedad moderna. Incluye ventajas y desventajas.",
+            example: "Technology has revolutionized our lives. While it makes communication easier, it can also create social isolation.",
+            keyWords: ["technology", "revolutionized", "communication", "social isolation"],
+            minWords: 120,
+            maxWords: 150
+        },
+        {
+            id: 8,
+            title: "Problema Ambiental",
+            prompt: "Describe un problema ambiental que te preocupa y explica qué se puede hacer para solucionarlo.",
+            example: "Climate change is a serious problem. We can reduce our carbon footprint by using renewable energy and public transport.",
+            keyWords: ["climate change", "carbon footprint", "renewable energy", "public transport"],
+            minWords: 100,
+            maxWords: 130
+        }
+    ],
+    C1: [
+        {
+            id: 9,
+            title: "Análisis de Política",
+            prompt: "Analiza una política gubernamental actual y evalúa sus implicaciones sociales y económicas.",
+            example: "The new education policy aims to improve digital literacy. However, it may widen the gap between urban and rural students.",
+            keyWords: ["policy", "digital literacy", "urban", "rural", "gap"],
+            minWords: 180,
+            maxWords: 220
+        },
+        {
+            id: 10,
+            title: "Ensayo sobre Globalización",
+            prompt: "Escribe un ensayo sobre los efectos de la globalización en las culturas locales y la identidad nacional.",
+            example: "Globalization has created both opportunities and challenges for cultural preservation. While it promotes diversity, it may also lead to cultural homogenization.",
+            keyWords: ["globalization", "cultural preservation", "diversity", "homogenization"],
+            minWords: 200,
+            maxWords: 250
+        }
+    ],
+    C2: [
+        {
+            id: 11,
+            title: "Análisis Filosófico",
+            prompt: "Analiza la relación entre la inteligencia artificial y la conciencia humana desde una perspectiva filosófica.",
+            example: "The emergence of artificial intelligence raises fundamental questions about consciousness and free will. Can machines truly think, or do they merely simulate cognitive processes?",
+            keyWords: ["artificial intelligence", "consciousness", "free will", "cognitive processes"],
+            minWords: 250,
+            maxWords: 300
+        },
+        {
+            id: 12,
+            title: "Crítica Literaria",
+            prompt: "Escribe una crítica detallada de una obra literaria, analizando sus temas, estilo y relevancia contemporánea.",
+            example: "The novel's exploration of existential themes resonates with contemporary anxieties about identity and meaning in an increasingly complex world.",
+            keyWords: ["existential themes", "contemporary anxieties", "identity", "meaning"],
+            minWords: 280,
+            maxWords: 350
+        }
     ]
 };
 
@@ -369,16 +893,16 @@ const LEVEL_SYSTEM = {
     xpPerExercise: 10,
     xpPerStreak: 5,
     levels: [
-        { level: 1, xpRequired: 0, title: "Principiante" },
-        { level: 2, xpRequired: 100, title: "Básico" },
-        { level: 3, xpRequired: 250, title: "Intermedio" },
-        { level: 4, xpRequired: 500, title: "Avanzado" },
-        { level: 5, xpRequired: 1000, title: "Experto" },
-        { level: 6, xpRequired: 2000, title: "Experto Avanzado" },
-        { level: 7, xpRequired: 3500, title: "Maestro" },
-        { level: 8, xpRequired: 5000, title: "Maestro Avanzado" },
-        { level: 9, xpRequired: 7000, title: "Gran Maestro" },
-        { level: 10, xpRequired: 10000, title: "Leyenda" }
+        { level: 1, xpRequired: 0, title: "Principiante", mcer: "A1" },
+        { level: 2, xpRequired: 100, title: "Básico", mcer: "A2" },
+        { level: 3, xpRequired: 250, title: "Intermedio", mcer: "B1" },
+        { level: 4, xpRequired: 500, title: "Intermedio Alto", mcer: "B2" },
+        { level: 5, xpRequired: 1000, title: "Avanzado", mcer: "B2+" },
+        { level: 6, xpRequired: 2000, title: "Experto", mcer: "C1" },
+        { level: 7, xpRequired: 3500, title: "Experto Avanzado", mcer: "C1+" },
+        { level: 8, xpRequired: 5000, title: "Maestro", mcer: "C2" },
+        { level: 9, xpRequired: 7000, title: "Gran Maestro", mcer: "C2+" },
+        { level: 10, xpRequired: 10000, title: "Leyenda", mcer: "C2+" }
     ]
 };
 

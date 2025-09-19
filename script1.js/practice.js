@@ -24,6 +24,19 @@ function loadPracticeModes() {
             document.querySelector('.practice-modes').appendChild(pronunciationCard);
         }
 
+        // Agregar tarjeta de escritura si no existe
+        if (!document.querySelector('.mode-card[data-mode="writing"]')) {
+            const writingCard = document.createElement('div');
+            writingCard.className = 'mode-card';
+            writingCard.setAttribute('data-mode', 'writing');
+            writingCard.innerHTML = `
+                <i class="fas fa-pen-fancy"></i>
+                <h3>Escritura</h3>
+                <p>Practica redacción y composición</p>
+            `;
+            document.querySelector('.practice-modes').appendChild(writingCard);
+        }
+
         // Agregar tarjeta de dashboard si no existe
         if (!document.querySelector('.mode-card[data-mode="dashboard"]')) {
             const dashboardCard = document.createElement('div');
@@ -161,6 +174,15 @@ function loadPracticeExercise(mode, categoryKey = null) {
                 break;
             case 'pronunciation':
                 exerciseContent = createPronunciationExerciseContent();
+                break;
+            case 'writing':
+                if (typeof window.startWritingExercise === 'function') {
+                    const userLevel = window.appState ? window.appState.currentLevel : 1;
+                    window.startWritingExercise(userLevel);
+                    return; // El sistema de escritura maneja su propia interfaz
+                } else {
+                    exerciseContent = createDefaultExerciseContent(mode);
+                }
                 break;
             case 'spaced-repetition':
                 exerciseContent = createSpacedRepetitionExerciseContent();

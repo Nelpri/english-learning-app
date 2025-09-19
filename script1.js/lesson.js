@@ -505,6 +505,18 @@ function getAllowedLessonsByLevel() {
                 allLessons.push(...LESSONS_DATABASE.level5);
                 console.log("📖 Agregando lecciones level5:", LESSONS_DATABASE.level5.length);
             }
+            
+            // Incluir level6 (C1) para niveles 9+
+            if (userLevel >= 9 && LESSONS_DATABASE.level6) {
+                allLessons.push(...LESSONS_DATABASE.level6);
+                console.log("📖 Agregando lecciones level6:", LESSONS_DATABASE.level6.length);
+            }
+            
+            // Incluir level7 (C2) para niveles 10+
+            if (userLevel >= 10 && LESSONS_DATABASE.level7) {
+                allLessons.push(...LESSONS_DATABASE.level7);
+                console.log("📖 Agregando lecciones level7:", LESSONS_DATABASE.level7.length);
+            }
         }
         
         console.log("🎯 Nivel del usuario:", userLevel, "→ Total lecciones disponibles:", allLessons.length);
