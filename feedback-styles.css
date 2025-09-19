@@ -1,0 +1,240 @@
+/* Estilos para sistema de feedback mejorado */
+.feedback-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    max-width: 400px;
+    animation: slideInRight 0.3s ease;
+}
+
+.feedback-popup {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    margin-bottom: 15px;
+    border-left: 5px solid;
+    position: relative;
+    animation: fadeInUp 0.4s ease;
+}
+
+.feedback-popup.correct {
+    border-left-color: #27ae60;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fff8 100%);
+}
+
+.feedback-popup.incorrect {
+    border-left-color: #e74c3c;
+    background: linear-gradient(135deg, #ffffff 0%, #fff8f8 100%);
+}
+
+.feedback-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 12px;
+}
+
+.feedback-icon {
+    font-size: 1.5rem;
+    animation: bounce 0.6s ease;
+}
+
+.feedback-message {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.feedback-content {
+    margin-bottom: 15px;
+}
+
+.feedback-explanation {
+    background: rgba(52, 152, 219, 0.1);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    border-left: 3px solid var(--info-color);
+}
+
+.feedback-tip {
+    background: rgba(241, 196, 15, 0.1);
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    border-left: 3px solid var(--warning-color);
+}
+
+.feedback-encouragement {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 6px;
+}
+
+.feedback-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.feedback-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: var(--text-primary);
+}
+
+/* Animaciones */
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(5px);
+    }
+}
+
+/* Feedback en ejercicios */
+.exercise-feedback {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px solid;
+    animation: slideInDown 0.3s ease;
+}
+
+.exercise-feedback.correct {
+    background: rgba(39, 174, 96, 0.1);
+    border-color: #27ae60;
+    color: #27ae60;
+}
+
+.exercise-feedback.incorrect {
+    background: rgba(231, 76, 60, 0.1);
+    border-color: #e74c3c;
+    color: #e74c3c;
+}
+
+.exercise-feedback h4 {
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.exercise-feedback p {
+    margin: 5px 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.exercise-feedback .explanation {
+    background: rgba(255, 255, 255, 0.7);
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.exercise-feedback .tip {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 8px;
+    border-radius: 4px;
+    margin-top: 8px;
+    font-size: 0.9rem;
+}
+
+@keyframes slideInDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .feedback-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+    
+    .feedback-popup {
+        padding: 15px;
+    }
+    
+    .feedback-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+    
+    .feedback-icon {
+        font-size: 1.3rem;
+    }
+    
+    .feedback-message {
+        font-size: 1rem;
+    }
+}

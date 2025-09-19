@@ -1,0 +1,521 @@
+/* Estilos para sistema de interacciones */
+
+/* Estados de interacción */
+.touch-active {
+    transform: scale(0.95);
+    opacity: 0.8;
+    transition: all 0.1s ease;
+}
+
+.hover-active {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
+}
+
+.focus-active {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.keyboard-active {
+    background: var(--primary-color);
+    color: white;
+    transform: scale(1.05);
+}
+
+.long-press {
+    background: var(--warning-color);
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 193, 7, 0.5);
+}
+
+/* Estados de scroll */
+.scrolling .header {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.scrolled .header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.resizing {
+    overflow: hidden;
+}
+
+/* Menú contextual */
+.context-menu {
+    position: fixed;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 10000;
+    padding: 0.5rem 0;
+    min-width: 150px;
+    animation: contextMenuSlideIn 0.2s ease;
+}
+
+.context-menu-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    transition: background 0.2s ease;
+}
+
+.context-menu-item:hover {
+    background: var(--bg-secondary);
+}
+
+.context-menu-item i {
+    width: 16px;
+    text-align: center;
+}
+
+/* Estados de botones mejorados */
+.btn {
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.btn:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Opciones de ejercicio mejoradas */
+.option-btn {
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.option-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(52, 152, 219, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s ease, height 0.3s ease;
+}
+
+.option-btn:active::before {
+    width: 200px;
+    height: 200px;
+}
+
+.option-btn.correct {
+    animation: correctPulse 0.6s ease;
+}
+
+.option-btn.incorrect {
+    animation: incorrectShake 0.6s ease;
+}
+
+/* Pestañas de navegación mejoradas */
+.nav-tab {
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.3s ease;
+}
+
+.nav-tab::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 3px;
+    background: var(--primary-color);
+    transition: width 0.3s ease;
+}
+
+.nav-tab.active::before {
+    width: 100%;
+}
+
+.nav-tab:hover::before {
+    width: 100%;
+}
+
+/* Cards interactivas */
+.card {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.card:hover::before {
+    left: 100%;
+}
+
+/* Formularios interactivos */
+.form-input,
+.form-textarea {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+}
+
+.form-input:invalid {
+    border-color: var(--danger-color);
+    animation: invalidShake 0.5s ease;
+}
+
+.form-input:valid {
+    border-color: var(--success-color);
+}
+
+/* Modales interactivos */
+.modal {
+    animation: modalFadeIn 0.3s ease;
+}
+
+.modal-content {
+    animation: modalSlideIn 0.3s ease;
+}
+
+.modal-close {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.modal-close::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s ease, height 0.2s ease;
+}
+
+.modal-close:active::before {
+    width: 40px;
+    height: 40px;
+}
+
+/* Notificaciones interactivas */
+.notification {
+    animation: notificationSlideIn 0.3s ease;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.notification:hover {
+    transform: translateX(-5px) scale(1.02);
+}
+
+.notification.show {
+    animation: notificationSlideIn 0.3s ease;
+}
+
+/* Lazy loading de imágenes */
+img[data-src] {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+img.loaded {
+    opacity: 1;
+}
+
+/* Grid responsive */
+.mobile-grid {
+    grid-template-columns: 1fr !important;
+}
+
+/* Estados de carga */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    animation: loadingShimmer 1.5s infinite;
+}
+
+/* Indicadores de progreso */
+.progress-bar {
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: progressShimmer 2s infinite;
+}
+
+/* Animaciones */
+@keyframes contextMenuSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes correctPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(39, 174, 96, 0.7);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(39, 174, 96, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(39, 174, 96, 0);
+    }
+}
+
+@keyframes incorrectShake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(5px);
+    }
+}
+
+@keyframes invalidShake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-3px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(3px);
+    }
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes notificationSlideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes loadingShimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+@keyframes progressShimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/* Estados de foco mejorados */
+.btn:focus-visible,
+.option-btn:focus-visible,
+.nav-tab:focus-visible {
+    outline: 3px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Mejoras de accesibilidad */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Indicadores de estado */
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.status-indicator.online {
+    background: var(--success-color);
+    animation: pulse 2s infinite;
+}
+
+.status-indicator.offline {
+    background: var(--danger-color);
+}
+
+.status-indicator.loading {
+    background: var(--warning-color);
+    animation: pulse 1s infinite;
+}
+
+/* Mejoras para dispositivos táctiles */
+@media (max-width: 768px) {
+    .btn,
+    .option-btn,
+    .nav-tab {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .context-menu {
+        min-width: 120px;
+    }
+    
+    .context-menu-item {
+        padding: 1rem;
+        font-size: 1rem;
+    }
+}
+
+/* Mejoras para dispositivos de alta densidad */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .btn,
+    .option-btn,
+    .nav-tab {
+        border-width: 0.5px;
+    }
+}
+
+/* Modo de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Modo de alto contraste */
+@media (prefers-contrast: high) {
+    .btn,
+    .option-btn,
+    .nav-tab {
+        border: 2px solid currentColor;
+    }
+    
+    .focus-active {
+        outline-width: 4px;
+    }
+}

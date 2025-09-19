@@ -647,6 +647,17 @@ function createVocabularyHTML(vocabulary, categoryKey, categoryTitle, categoryDe
             speakBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
             speakBtn.addEventListener('click', () => speakWord(word.english));
             
+            // Botón de pronunciación lenta
+            const slowBtn = document.createElement('button');
+            slowBtn.className = 'slow-btn';
+            slowBtn.title = 'Pronunciación lenta';
+            slowBtn.innerHTML = '<i class="fas fa-snail"></i>';
+            slowBtn.addEventListener('click', () => {
+                if (typeof window.playPronunciation === 'function') {
+                    window.playPronunciation(word.english, { rate: 0.7 });
+                }
+            });
+            
             // Botón de marcar difícil
             const difficultBtn = document.createElement('button');
             difficultBtn.className = 'difficult-btn';
@@ -655,6 +666,7 @@ function createVocabularyHTML(vocabulary, categoryKey, categoryTitle, categoryDe
             difficultBtn.addEventListener('click', () => toggleDifficultWord(word.english, word.spanish, word.pronunciation));
             
             actionsDiv.appendChild(speakBtn);
+            actionsDiv.appendChild(slowBtn);
             actionsDiv.appendChild(difficultBtn);
             
             headerDiv.appendChild(englishSpan);

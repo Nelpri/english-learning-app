@@ -6,6 +6,12 @@
     <title>English Learning App - Ciclo APA</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="writing-styles.css">
+    <link rel="stylesheet" href="feedback-styles.css">
+    <link rel="stylesheet" href="gamification-styles.css">
+    <link rel="stylesheet" href="multimedia-styles.css">
+    <link rel="stylesheet" href="responsive-styles.css">
+    <link rel="stylesheet" href="interaction-styles.css">
+    <link rel="stylesheet" href="conversation-styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -101,6 +107,10 @@
             <div class="user-info-display">
                 <span class="user-name-display" id="userNameDisplay">Usuario</span>
                 <span class="user-level-display" id="userLevelDisplay">Nivel A1</span>
+                <button class="gamification-btn" onclick="showGamificationPanel()" title="Ver logros y desafíos">
+                    <i class="fas fa-trophy"></i>
+                    <span>Logros</span>
+                </button>
             </div>
             <button class="btn btn-secondary logout-btn" onclick="logout()" title="Cerrar sesión">
                 <i class="fas fa-sign-out-alt"></i> Cerrar sesión
@@ -300,6 +310,36 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Conversation Section -->
+            <section id="conversation" class="content-section">
+                <div class="conversation-scenarios">
+                    <h2>Conversaciones Interactivas</h2>
+                    <div class="scenarios-grid">
+                        <div class="scenario-card" onclick="startConversation('restaurant', 'order_food')">
+                            <i class="fas fa-utensils"></i>
+                            <h3>En el Restaurante</h3>
+                            <p>Practica ordenar comida y hacer preguntas</p>
+                            <span class="level-badge">A1</span>
+                        </div>
+                        <div class="scenario-card" onclick="startConversation('hotel', 'check_in')">
+                            <i class="fas fa-bed"></i>
+                            <h3>En el Hotel</h3>
+                            <p>Practica check-in y solicitar servicios</p>
+                            <span class="level-badge">A2</span>
+                        </div>
+                        <div class="scenario-card" onclick="startConversation('business_meeting', 'project_discussion')">
+                            <i class="fas fa-briefcase"></i>
+                            <h3>Reunión de Negocios</h3>
+                            <p>Practica discusiones profesionales</p>
+                            <span class="level-badge">B2</span>
+                        </div>
+                    </div>
+                    <div id="conversationContainer" class="conversation-container" style="display: none;">
+                        <!-- Contenido de conversación se cargará aquí -->
+                    </div>
+                </div>
+            </section>
         </main>
 
         <!-- Achievement Notifications -->
@@ -322,6 +362,14 @@
     <script src="script1.js/progress.js"></script>
     <script src="script1.js/achievements.js"></script>
     <script src="script1.js/writing.js"></script>
+    <script src="script1.js/feedback-system.js"></script>
+    <script src="script1.js/gamification.js"></script>
+    <script src="script1.js/audio-system.js"></script>
+    <script src="script1.js/image-system.js"></script>
+    <script src="script1.js/interaction-system.js"></script>
+    <script src="script1.js/personalization-system.js"></script>
+    <script src="script1.js/spaced-repetition-system.js"></script>
+    <script src="script1.js/conversation-system.js"></script>
     <script src="script1.js/module-progress.js"></script>
     <script src="script1.js/level-tests.js"></script>
     <script src="script1.js/test-interface.js"></script>

@@ -1,0 +1,435 @@
+/* Estilos para sistema multimedia */
+
+/* Estilos para imágenes de vocabulario */
+.vocabulary-image {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.vocabulary-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.vocabulary-image-small {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto;
+    display: block;
+}
+
+.vocabulary-image-fallback {
+    width: 200px;
+    height: 200px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.vocabulary-image-fallback:hover {
+    transform: scale(1.05);
+}
+
+/* Galería de imágenes */
+.image-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.image-container {
+    text-align: center;
+    padding: 10px;
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.image-container:hover {
+    transform: translateY(-5px);
+}
+
+.image-container img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.image-container label {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1.1rem;
+}
+
+/* Ejercicios de imagen */
+.image-exercise {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.image-exercise h3 {
+    text-align: center;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.image-exercise img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Controles de audio */
+.audio-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin: 10px 0;
+    padding: 10px;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+}
+
+.audio-controls button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.audio-controls button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.audio-controls button:active {
+    transform: translateY(0);
+}
+
+.audio-controls button:disabled {
+    background: var(--border-color);
+    cursor: not-allowed;
+    transform: none;
+}
+
+.audio-controls .play-btn {
+    background: var(--success-color);
+}
+
+.audio-controls .pause-btn {
+    background: var(--warning-color);
+}
+
+.audio-controls .stop-btn {
+    background: var(--danger-color);
+}
+
+.audio-controls .slow-btn {
+    background: var(--info-color);
+}
+
+/* Indicador de reproducción */
+.audio-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.audio-indicator.playing {
+    color: var(--success-color);
+}
+
+.audio-indicator .pulse {
+    width: 8px;
+    height: 8px;
+    background: currentColor;
+    border-radius: 50%;
+    animation: pulse 1s infinite;
+}
+
+/* Selector de voz */
+.voice-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.voice-selector select {
+    padding: 8px 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    background: white;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+}
+
+.voice-selector select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* Controles de velocidad */
+.speed-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.speed-controls label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.speed-controls input[type="range"] {
+    width: 100px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border-color);
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.speed-controls input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+}
+
+.speed-controls input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    cursor: pointer;
+    border: none;
+}
+
+.speed-controls .speed-display {
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    min-width: 40px;
+    text-align: center;
+}
+
+/* Botones de acción de vocabulario */
+.vocab-actions {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.vocab-actions button {
+    padding: 6px 8px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+}
+
+.vocab-actions .speak-btn {
+    background: var(--success-color);
+    color: white;
+}
+
+.vocab-actions .speak-btn:hover {
+    background: var(--success-dark);
+    transform: scale(1.1);
+}
+
+.vocab-actions .slow-btn {
+    background: var(--info-color);
+    color: white;
+}
+
+.vocab-actions .slow-btn:hover {
+    background: var(--info-dark);
+    transform: scale(1.1);
+}
+
+.vocab-actions .difficult-btn {
+    background: var(--warning-color);
+    color: white;
+}
+
+.vocab-actions .difficult-btn:hover {
+    background: var(--warning-dark);
+    transform: scale(1.1);
+}
+
+.vocab-actions .difficult-btn.active {
+    background: var(--danger-color);
+}
+
+/* Efectos de sonido */
+.sound-effect {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    pointer-events: none;
+}
+
+.sound-effect.correct {
+    color: var(--success-color);
+    font-size: 2rem;
+    animation: bounceIn 0.5s ease;
+}
+
+.sound-effect.incorrect {
+    color: var(--danger-color);
+    font-size: 2rem;
+    animation: shake 0.5s ease;
+}
+
+.sound-effect.notification {
+    color: var(--info-color);
+    font-size: 1.5rem;
+    animation: fadeInScale 0.3s ease;
+}
+
+/* Animaciones */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.2);
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.3);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translate(-50%, -50%);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translate(-50%, -50%) translateX(-5px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translate(-50%, -50%) translateX(5px);
+    }
+}
+
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .image-gallery {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .image-container img {
+        height: 120px;
+    }
+    
+    .image-exercise img {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .audio-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .vocab-actions {
+        flex-wrap: wrap;
+    }
+    
+    .vocab-actions button {
+        min-width: 28px;
+        height: 28px;
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .image-gallery {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
+        padding: 10px;
+    }
+    
+    .image-container img {
+        height: 100px;
+    }
+    
+    .image-exercise img {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .audio-controls button {
+        padding: 6px 8px;
+        font-size: 0.8rem;
+    }
+}

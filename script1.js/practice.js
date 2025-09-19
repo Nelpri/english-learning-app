@@ -5183,6 +5183,47 @@ class PracticeSystem {
             percentage
         };
     }
+
+    // Mostrar feedback detallado con explicaciones
+    showDetailedFeedback(userAnswer, isCorrect) {
+        try {
+            if (typeof window.showDetailedFeedback === 'function') {
+                const exercise = this.currentSession.exercises[this.currentSession.currentExercise];
+                const context = {
+                    exerciseType: exercise.type,
+                    difficulty: this.getExerciseDifficulty(exercise),
+                    grammarType: exercise.grammarType,
+                    questionType: exercise.questionType
+                };
+                
+                window.showDetailedFeedback(
+                    exercise.type,
+                    isCorrect,
+                    userAnswer,
+                    exercise.correctAnswer,
+                    context
+                );
+            } else {
+                // Fallback al feedback básico
+                this.showExerciseFeedback(isCorrect);
+            }
+        } catch (error) {
+            console.error("❌ Error al mostrar feedback detallado:", error);
+            this.showExerciseFeedback(isCorrect);
+        }
+    }
+
+    // Obtener dificultad del ejercicio
+    getExerciseDifficulty(exercise) {
+        if (exercise.type === 'vocabulary') {
+            return exercise.difficulty || 'basic';
+        } else if (exercise.type === 'grammar') {
+            return exercise.grammarType || 'basic';
+        } else if (exercise.type === 'listening') {
+            return exercise.questionType || 'basic';
+        }
+        return 'basic';
+    }
     
     showSessionResults() {
         try {
@@ -5836,8 +5877,24 @@ class PracticeSystem {
             // Registrar respuesta
             this.submitAnswer(this.currentSession.currentExercise, answer, isCorrect);
             
-            // Mostrar feedback
-            this.showExerciseFeedback(isCorrect);
+            // Verificar logros y desafíos
+            if (typeof window.checkAchievements === 'function') {
+                window.checkAchievements('exercise_completed', {
+                    type: exercise.type,
+                    isCorrect: isCorrect,
+                    score: isCorrect ? 100 : 0
+                });
+            }
+            
+            if (typeof window.checkDailyChallenge === 'function') {
+                window.checkDailyChallenge('exercise_completed', {
+                    type: exercise.type,
+                    isCorrect: isCorrect
+                });
+            }
+            
+            // Mostrar feedback detallado
+            this.showDetailedFeedback(answer, isCorrect);
             
             // Limpiar cola de audio para este ejercicio
             if (typeof window.clearAudioQueueForExercise === 'function') {
