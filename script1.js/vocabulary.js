@@ -1,3 +1,60 @@
+/* Fase 3: Loader de vocabulario (JSON por categoría) con caché y fallback */
+;(() => {
+  try {
+    if (!window.__dataCache) window.__dataCache = { lessons: new Map(), vocabulary: new Map() };
+    if (!window.__dataCache.vocabulary) window.__dataCache.vocabulary = new Map();
+
+    const VOCAB_PATH = 'data/vocabulary';
+
+    function __fetchJSON(path) {
+      return new Promise((resolve, reject) => {
+        try {
+          // En entornos locales (file://), fetch no funciona por CORS, así que fallamos silenciosamente
+          if (window.location && window.location.protocol === 'file:') {
+            return reject(new Error('Entorno local: fetch no disponible'));
+          }
+          if (typeof fetch !== 'function') return reject(new Error('fetch no disponible'));
+          fetch(path, { cache: 'no-store' })
+            .then(res => {
+              if (!res.ok) throw new Error('HTTP ' + res.status);
+              return res.json();
+            })
+            .then(json => resolve(json))
+            .catch(err => reject(err));
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }
+
+    function __prefetchVocabulary(keys = []) {
+      try {
+        keys.forEach(function(w) {
+          if (w === 'difficult-words') return;
+          if (window.__dataCache.vocabulary.has(w)) return;
+          __fetchJSON(`${VOCAB_PATH}/${w}.json`)
+            .then(data => {
+              if (Array.isArray(data)) {
+                window.__dataCache.vocabulary.set(w, data);
+                console.log(`✅ Vocabulario cacheado ${w}.json:`, data.length);
+              }
+            })
+            .catch(err => {
+              console.warn(`⚠️ No se pudo cargar vocabulario ${w}.json`, err);
+            });
+        });
+      } catch (e) {
+        console.warn('⚠️ Prefetch de vocabulario falló:', e);
+      }
+    }
+
+    // Exponer prefetch para usarlo desde loadVocabularyCategories
+    window.__prefetchVocabulary = __prefetchVocabulary;
+  } catch (e) {
+    console.error('❌ Error instalando loader de vocabulario (Fase 3):', e);
+  }
+})();
+
 // Módulo de vocabulario: categorías, palabras difíciles, detalle
 
 // Función para obtener categorías desbloqueadas según el nivel del usuario
@@ -48,10 +105,32 @@ function getVocabularyByCategory(categoryKey) {
             console.log("🚩 Categoría especial: difficult-words");
             return getDifficultWords();
         }
-        
+
+        // Intentar desde caché precargada (JSON)
+        const cached = (window.__dataCache && window.__dataCache.vocabulary)
+            ? window.__dataCache.vocabulary.get(categoryKey)
+            : null;
+        if (Array.isArray(cached) && cached.length > 0) {
+            const inlineList = (window.VOCABULARY_DATABASE && window.VOCABULARY_DATABASE[categoryKey]) ? window.VOCABULARY_DATABASE[categoryKey] : [];
+            const map = new Map();
+            var mergedArray = [].concat(inlineList || [], cached || []);
+            mergedArray.forEach(function (w) {
+                if (w && w.english) map.set(w.english, w);
+            });
+            const merged = Array.from(map.values());
+            console.log("✅ Vocabulario desde caché JSON + inline (merge):", merged.length, "palabras");
+            return merged;
+        }
+
+        // Lanzar prefetch para próxima consulta
+        if (typeof window.__prefetchVocabulary === 'function') {
+            window.__prefetchVocabulary([categoryKey]);
+        }
+
+        // Fallback: usar base inline
         if (window.VOCABULARY_DATABASE && window.VOCABULARY_DATABASE[categoryKey]) {
             const vocabulary = window.VOCABULARY_DATABASE[categoryKey];
-            console.log("✅ Vocabulario encontrado:", vocabulary.length, "palabras");
+            console.log("📝 Usando vocabulario inline:", vocabulary.length, "palabras (fallback)");
             return vocabulary;
         } else {
             console.warn("⚠️ Base de datos de vocabulario no disponible para:", categoryKey);
@@ -71,7 +150,7 @@ function getVocabularyStats() {
     try {
         // Inicializar estadísticas para cada categoría
         if (window.VOCABULARY_CATEGORIES) {
-            window.VOCABULARY_CATEGORIES.forEach(category => {
+            window.VOCABULARY_CATEGORIES.forEach(function(category) {
                 stats[category.key] = {
                     learned: 0,
                     total: 0,
@@ -80,23 +159,24 @@ function getVocabularyStats() {
             });
             
             // Obtener progreso guardado
-            const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-            const learnedWords = userProgress.learnedWords || [];
+            const learnedWords = (typeof getUserProgressField === 'function')
+                ? getUserProgressField('learnedWords', [])
+                : (JSON.parse(localStorage.getItem('englishLearningProgress') || '{}').learnedWords || []);
             
             // Calcular estadísticas por categoría
-            window.VOCABULARY_CATEGORIES.forEach(category => {
+            window.VOCABULARY_CATEGORIES.forEach(function(category) {
                 const vocabulary = getVocabularyByCategory(category.key);
                 if (stats[category.key]) {
                     stats[category.key].total = vocabulary.length;
-                    
+
                     // Contar palabras aprendidas en esta categoría
-                    const learnedInCategory = learnedWords.filter(word => 
+                    const learnedInCategory = learnedWords.filter(word =>
                         vocabulary.some(vocab => vocab.english === word.english)
                     );
                     stats[category.key].learned = learnedInCategory.length;
-                    
+
                     // Calcular porcentaje
-                    stats[category.key].percentage = stats[category.key].total > 0 ? 
+                    stats[category.key].percentage = stats[category.key].total > 0 ?
                         Math.round((stats[category.key].learned / stats[category.key].total) * 100) : 0;
                 }
             });
@@ -142,6 +222,16 @@ function loadVocabularyCategories() {
         const userLevel = appState?.currentLevel || 1;
         const unlockedCategories = getUnlockedCategoriesByLevel(userLevel);
         console.log("🎯 Nivel del usuario:", userLevel, "Categorías desbloqueadas:", unlockedCategories);
+
+        // Prefetch de vocabulario JSON para categorías desbloqueadas (excepto difficult-words)
+        try {
+            if (typeof window.__prefetchVocabulary === 'function') {
+                const toPrefetch = unlockedCategories.filter(k => k !== 'difficult-words');
+                window.__prefetchVocabulary(toPrefetch);
+            }
+        } catch (e) {
+            console.warn("⚠️ Error en prefetch de vocabulario:", e);
+        }
         
         // Agregar sección de palabras difíciles al inicio
         const difficultWords = getDifficultWords();
@@ -170,28 +260,28 @@ function loadVocabularyCategories() {
         console.log("📊 Estadísticas obtenidas:", stats);
         
         // Crear tarjetas para cada categoría desbloqueada
-        window.VOCABULARY_CATEGORIES.forEach(category => {
+        window.VOCABULARY_CATEGORIES.forEach(function(category) {
             // Verificar si la categoría está desbloqueada
             if (!unlockedCategories.includes(category.key)) {
                 console.log("🔒 Categoría bloqueada:", category.key);
                 return; // Saltar esta categoría
             }
-            
+
             console.log("🎯 Procesando categoría desbloqueada:", category.key);
-            
+
             // Obtener vocabulario para esta categoría
             const vocabulary = getVocabularyByCategory(category.key);
             console.log("📝 Vocabulario para", category.key, ":", vocabulary.length, "palabras");
-            
+
             // Obtener estadísticas de esta categoría
             const categoryStats = stats[category.key];
             console.log("📊 Estadísticas para", category.key, ":", categoryStats);
-            
+
             if (categoryStats) {
                 const categoryCard = document.createElement('div');
                 categoryCard.className = 'category-card';
                 categoryCard.onclick = () => loadVocabularyDetail(category.key);
-                
+
                 // Agregar iconos específicos para cada categoría
                 const categoryIcons = {
                     greetings: '👋',
@@ -203,9 +293,9 @@ function loadVocabularyCategories() {
                     weather: '🌤️',
                     'difficult-words': '🚩'
                 };
-                
+
                 const icon = categoryIcons[category.key] || '📚';
-                
+
                 categoryCard.innerHTML = `
                     <h3>${icon} ${category.title}</h3>
                     <p>${category.description}</p>
@@ -217,7 +307,7 @@ function loadVocabularyCategories() {
                         <div class="category-progress-fill" style="width: ${categoryStats.percentage}%"></div>
                     </div>
                 `;
-                
+
                 categoriesGrid.appendChild(categoryCard);
                 console.log("✅ Tarjeta creada para:", category.key);
             } else {
@@ -314,6 +404,9 @@ function loadVocabularyDetail(categoryKey) {
             return;
         }
         
+        // Guardar categoría actual para navegación/recarga
+        window.__currentCategoryKey = categoryKey;
+
         // Ocultar categorías y mostrar detalle
         categoriesGrid.style.display = 'none';
         vocabularyDetail.style.display = 'block';
@@ -376,8 +469,9 @@ function loadVocabularyDetail(categoryKey) {
 function getDifficultWords() {
     console.log("🚩 Obteniendo palabras difíciles...");
     try {
-        const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-        const difficultWords = userProgress.difficultWords || [];
+        const difficultWords = (typeof getUserProgressField === 'function')
+            ? getUserProgressField('difficultWords', [])
+            : (JSON.parse(localStorage.getItem('englishLearningProgress') || '{}').difficultWords || []);
         console.log("✅ Palabras difíciles encontradas:", difficultWords.length);
         return difficultWords;
     } catch (error) {
@@ -387,11 +481,18 @@ function getDifficultWords() {
 }
 
 function saveDifficultWords(words) {
-    // Lógica para guardar palabras difíciles
-    const user = getCurrentUser();
-    if (!user) return;
-    const key = `difficult_words_${user.email}`;
-    localStorage.setItem(key, JSON.stringify(words));
+    try {
+        if (typeof setUserProgressFields === 'function') {
+            setUserProgressFields({ difficultWords: Array.isArray(words) ? words : [] });
+        } else {
+            const store = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}') || {};
+            store.difficultWords = Array.isArray(words) ? words : [];
+            localStorage.setItem('englishLearningProgress', JSON.stringify(store));
+        }
+        console.log("💾 Palabras difíciles guardadas:", Array.isArray(words) ? words.length : 0);
+    } catch (e) {
+        console.error("❌ Error al guardar palabras difíciles:", e);
+    }
 }
 
 function isWordDifficult(wordObj) {
@@ -403,8 +504,9 @@ function isWordDifficult(wordObj) {
 function toggleDifficultWord(english, spanish, pronunciation) {
     console.log("🚩 Alternando palabra difícil:", english);
     try {
-        const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-        let difficultWords = userProgress.difficultWords || [];
+        let difficultWords = (typeof getUserProgressField === 'function')
+            ? (getUserProgressField('difficultWords', []))
+            : ((JSON.parse(localStorage.getItem('englishLearningProgress') || '{}').difficultWords) || []);
         
         // Buscar si la palabra ya está marcada como difícil
         const existingIndex = difficultWords.findIndex(word => word.english === english);
@@ -429,8 +531,13 @@ function toggleDifficultWord(english, spanish, pronunciation) {
         }
         
         // Guardar en localStorage
-        userProgress.difficultWords = difficultWords;
-        localStorage.setItem('englishLearningProgress', JSON.stringify(userProgress));
+        if (typeof setUserProgressFields === 'function') {
+            setUserProgressFields({ difficultWords });
+        } else {
+            const _store = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+            _store.difficultWords = difficultWords;
+            localStorage.setItem('englishLearningProgress', JSON.stringify(_store));
+        }
         
         // Actualizar la UI si estamos en la vista de detalle
         const vocabularyDetail = document.getElementById('vocabularyDetail');
@@ -451,20 +558,7 @@ function toggleDifficultWord(english, spanish, pronunciation) {
 
 function getCurrentCategoryFromView() {
     try {
-        const vocabularyDetail = document.getElementById('vocabularyDetail');
-        if (vocabularyDetail && vocabularyDetail.style.display !== 'none') {
-            // Buscar el botón de práctica para obtener la categoría
-            const practiceBtn = vocabularyDetail.querySelector('.practice-category-btn');
-            if (practiceBtn && practiceBtn.onclick) {
-                // Extraer la categoría del onclick
-                const onclickStr = practiceBtn.onclick.toString();
-                const match = onclickStr.match(/startCategoryPractice\('([^']+)'\)/);
-                if (match) {
-                    return match[1];
-                }
-            }
-        }
-        return null;
+        return window.__currentCategoryKey || null;
     } catch (error) {
         console.error("❌ Error al obtener categoría actual:", error);
         return null;
@@ -532,32 +626,49 @@ function loadDifficultWordsSection() {
 function speakWord(text) {
     console.log("🔊 Pronunciando palabra:", text);
     try {
-        // Limpiar el texto de caracteres de escape
         const cleanText = text.replace(/\\'/g, "'").replace(/\\"/g, '"');
-        console.log("🧹 Texto limpio:", cleanText);
-        
+
+        // Intentar API propia primero
         if (typeof window.speakText === 'function') {
             window.speakText(cleanText, 'en-US');
             console.log("✅ Palabra pronunciada usando speakText");
-        } else if ('speechSynthesis' in window) {
-            const utterance = new SpeechSynthesisUtterance(cleanText);
-            utterance.lang = 'en-US';
-            utterance.rate = 0.8;
-            utterance.pitch = 1.0;
-            
-            // Configurar voz en inglés si está disponible
-            const voices = speechSynthesis.getVoices();
-            const englishVoice = voices.find(voice => 
-                voice.lang.startsWith('en') && voice.lang.includes('US')
-            );
-            
-            if (englishVoice) {
-                utterance.voice = englishVoice;
-                console.log("🎤 Voz en inglés configurada:", englishVoice.name);
-            }
-            
-            speechSynthesis.speak(utterance);
-            console.log("✅ Palabra pronunciada usando SpeechSynthesis");
+            return;
+        }
+
+        // Fallback: Web Speech API con espera de voces
+        if ('speechSynthesis' in window) {
+            const ensureVoicesReady = () => new Promise(resolve => {
+                let voices = speechSynthesis.getVoices();
+                if (voices && voices.length) return resolve(voices);
+                const handler = () => {
+                    voices = speechSynthesis.getVoices();
+                    if (voices && voices.length) {
+                        speechSynthesis.removeEventListener('voiceschanged', handler);
+                        resolve(voices);
+                    }
+                };
+                speechSynthesis.addEventListener('voiceschanged', handler);
+                setTimeout(() => {
+                    speechSynthesis.removeEventListener('voiceschanged', handler);
+                    resolve(speechSynthesis.getVoices());
+                }, 1500);
+            });
+
+            ensureVoicesReady().then(voices => {
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8;
+                utterance.pitch = 1.0;
+                const englishVoice = (voices || []).find(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+                if (englishVoice) {
+                    utterance.voice = englishVoice;
+                    console.log("🎤 Voz en inglés configurada:", englishVoice.name);
+                }
+                speechSynthesis.speak(utterance);
+                console.log("✅ Palabra pronunciada usando SpeechSynthesis");
+            }).catch(err => {
+                console.warn("⚠️ No se pudieron cargar voces:", err);
+            });
         } else {
             console.warn("⚠️ Funcionalidad de pronunciación no disponible");
         }
@@ -567,7 +678,7 @@ function speakWord(text) {
 }
 
 function startCategoryPractice(categoryKey) {
-    console.log("�� Iniciando práctica para categoría:", categoryKey);
+    console.log("🚀 Iniciando práctica para categoría:", categoryKey);
     try {
         // Cambiar a la pestaña de práctica
         const practiceTab = document.querySelector('.nav-tab[data-tab="practice"]');
@@ -658,15 +769,31 @@ function createVocabularyHTML(vocabulary, categoryKey, categoryTitle, categoryDe
                 }
             });
             
+            // Botón de definición (API externa)
+            const definitionBtn = document.createElement('button');
+            definitionBtn.className = 'definition-btn';
+            definitionBtn.title = 'Obtener definición detallada';
+            definitionBtn.innerHTML = '<i class="fas fa-book"></i>';
+            definitionBtn.addEventListener('click', () => showWordDefinition(word.english));
+
+            // Botón de traducción (API externa)
+            const translateBtn = document.createElement('button');
+            translateBtn.className = 'translate-btn';
+            translateBtn.title = 'Traducir al español';
+            translateBtn.innerHTML = '<i class="fas fa-language"></i>';
+            translateBtn.addEventListener('click', () => showWordTranslation(word.english));
+
             // Botón de marcar difícil
             const difficultBtn = document.createElement('button');
             difficultBtn.className = 'difficult-btn';
             difficultBtn.title = 'Marcar como difícil';
             difficultBtn.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
             difficultBtn.addEventListener('click', () => toggleDifficultWord(word.english, word.spanish, word.pronunciation));
-            
+
             actionsDiv.appendChild(speakBtn);
             actionsDiv.appendChild(slowBtn);
+            actionsDiv.appendChild(definitionBtn);
+            actionsDiv.appendChild(translateBtn);
             actionsDiv.appendChild(difficultBtn);
             
             headerDiv.appendChild(englishSpan);
@@ -710,11 +837,11 @@ function createVocabularyHTML(vocabulary, categoryKey, categoryTitle, categoryDe
         
         const wordsStat = document.createElement('span');
         wordsStat.className = 'stat-item';
-        wordsStat.innerHTML = '<i class="fas fa-words"></i> ' + vocabulary.length + ' palabras';
-        
+        wordsStat.innerHTML = '<i class="fas fa-language"></i> ' + vocabulary.length + ' palabras';
+
         const availableStat = document.createElement('span');
         availableStat.className = 'stat-item';
-        availableStat.innerHTML = '<i class="fas fa-target"></i> ' + vocabulary.length + ' disponibles';
+        availableStat.innerHTML = '<i class="fas fa-bullseye"></i> ' + vocabulary.length + ' disponibles';
         
         statsDiv.appendChild(wordsStat);
         statsDiv.appendChild(availableStat);
@@ -764,6 +891,12 @@ function initVocab() {
         // Cargar categorías de vocabulario
         loadVocabularyCategories();
         console.log("✅ Categorías de vocabulario cargadas");
+
+        // Inicializar SRS si está disponible
+        if (typeof initSRS === 'function') {
+            initSRS();
+            console.log("🧠 SRS inicializado desde initVocab");
+        }
         
         console.log("✅ Módulo de vocabulario inicializado correctamente");
     } catch (error) {
@@ -789,16 +922,17 @@ window.initVocab = initVocab;
 function getWordsForReview() {
     try {
         const wordsForReview = [];
-        const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-        const reviewData = userProgress.srsReviews || {};
+        const reviewData = (typeof getUserProgress === 'function')
+            ? ((getUserProgress().srsReviews) || {})
+            : ((JSON.parse(localStorage.getItem('englishLearningProgress') || '{}').srsReviews) || {});
 
-        Object.keys(reviewData).forEach(wordEnglish => {
+        Object.keys(reviewData).forEach(function(wordEnglish) {
             const wordData = reviewData[wordEnglish];
             if (new Date(wordData.nextReview) <= new Date()) {
                 // Obtener info completa de la palabra desde VOCABULARY_DATABASE
                 let fullWord = null;
-                Object.values(window.VOCABULARY_DATABASE).forEach(category => {
-                    fullWord = category.find(w => w.english === wordEnglish);
+                Object.values(window.VOCABULARY_DATABASE).forEach(function(category) {
+                    fullWord = category.find(item => item.english === wordEnglish);
                     if (fullWord) return;
                 });
                 if (fullWord) {
@@ -828,9 +962,15 @@ function scheduleReview(wordEnglish, quality) {
     try {
         if (!wordEnglish || quality < 1 || quality > 5) return false;
 
-        const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-        if (!userProgress.srsReviews) userProgress.srsReviews = {};
-        let wordData = userProgress.srsReviews[wordEnglish] || {
+        let srsReviewsStore;
+        if (typeof getUserProgress === 'function') {
+            const up = getUserProgress();
+            srsReviewsStore = up.srsReviews || {};
+        } else {
+            const up = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+            srsReviewsStore = up.srsReviews || {};
+        }
+        let wordData = srsReviewsStore[wordEnglish] || {
             reviews: [],
             nextReview: new Date().toISOString(),
             difficulty: 2.5,
@@ -864,12 +1004,43 @@ function scheduleReview(wordEnglish, quality) {
         wordData.nextReview = nextReview;
         wordData.lastQuality = quality;
 
-        userProgress.srsReviews[wordEnglish] = wordData;
-        localStorage.setItem('englishLearningProgress', JSON.stringify(userProgress));
-
+        srsReviewsStore[wordEnglish] = wordData;
+        if (typeof setUserProgressFields === 'function') {
+            setUserProgressFields({ srsReviews: srsReviewsStore });
+        } else {
+            const upAll = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+            upAll.srsReviews = srsReviewsStore;
+            localStorage.setItem('englishLearningProgress', JSON.stringify(upAll));
+        }
+        
         // Integrar con palabras difíciles si quality < 3
         if (quality < 3) {
-            toggleDifficultWord(wordEnglish, /*spanish y pronunciation se obtienen de fullWord*/ '', '');
+            // Intentar resolver objeto completo desde cache o base inline
+            let fullWord = null;
+            try {
+                // Buscar en caché JSON
+                if (window.__dataCache && window.__dataCache.vocabulary) {
+                    for (const arr of window.__dataCache.vocabulary.values()) {
+                        if (Array.isArray(arr)) {
+                            fullWord = arr.find(w => w.english === wordEnglish) || fullWord;
+                            if (fullWord) break;
+                        }
+                    }
+                }
+                // Fallback a base inline
+                if (!fullWord && window.VOCABULARY_DATABASE) {
+                    Object.values(window.VOCABULARY_DATABASE).some(category => {
+                        const w = category.find(item => item.english === wordEnglish);
+                        if (w) { fullWord = w; return true; }
+                        return false;
+                    });
+                }
+            } catch (e) {}
+            if (fullWord) {
+                toggleDifficultWord(fullWord.english, fullWord.spanish, fullWord.pronunciation);
+            } else {
+                toggleDifficultWord(wordEnglish, '', '');
+            }
         }
 
         console.log(`📅 Próxima revisión para "${wordEnglish}": ${intervals[intervalIndex]} días (calidad: ${quality})`);
@@ -885,18 +1056,34 @@ function initSRS() {
     // Migrar datos antiguos si existen
     const oldReviews = JSON.parse(localStorage.getItem('srsOldData') || '{}');
     if (Object.keys(oldReviews).length > 0) {
-        const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-        userProgress.srsReviews = { ...userProgress.srsReviews, ...oldReviews };
-        localStorage.setItem('englishLearningProgress', JSON.stringify(userProgress));
+        let _srsStore;
+        if (typeof getUserProgress === 'function') {
+            const up = getUserProgress();
+            _srsStore = up.srsReviews || {};
+        } else {
+            const up = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+            _srsStore = up.srsReviews || {};
+        }
+        _srsStore = { ..._srsStore, ...oldReviews };
+        if (typeof setUserProgressFields === 'function') {
+            setUserProgressFields({ srsReviews: _srsStore });
+        } else {
+            const _upAll = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+            _upAll.srsReviews = _srsStore;
+            localStorage.setItem('englishLearningProgress', JSON.stringify(_upAll));
+        }
         localStorage.removeItem('srsOldData');
         console.log("🔄 Datos SRS antiguos migrados");
     }
 
     // Agregar palabras difíciles a SRS si no están
     const difficultWords = getDifficultWords();
-    difficultWords.forEach(word => {
-        if (!userProgress.srsReviews[word.english]) {
-            userProgress.srsReviews[word.english] = {
+    let _srs = (typeof getUserProgress === 'function')
+        ? ((getUserProgress().srsReviews) || {})
+        : ((JSON.parse(localStorage.getItem('englishLearningProgress') || '{}').srsReviews) || {});
+    difficultWords.forEach(function(word) {
+        if (!_srs[word.english]) {
+            _srs[word.english] = {
                 reviews: [{ date: new Date().toISOString(), quality: 1, correct: false }],
                 nextReview: new Date().toISOString(),
                 difficulty: 4.0, // Alta dificultad por defecto
@@ -904,12 +1091,129 @@ function initSRS() {
             };
         }
     });
-    localStorage.setItem('englishLearningProgress', JSON.stringify(userProgress));
-
+    if (typeof setUserProgressFields === 'function') {
+        setUserProgressFields({ srsReviews: _srs });
+    } else {
+        const _upAll2 = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+        _upAll2.srsReviews = _srs;
+        localStorage.setItem('englishLearningProgress', JSON.stringify(_upAll2));
+    }
+    
     console.log("🧠 Sistema SRS inicializado en vocabulario");
+}
+
+// Funciones de integración con APIs externas
+async function showWordDefinition(word) {
+    try {
+        console.log(`📚 Obteniendo definición de "${word}"...`);
+
+        if (!window.apiIntegrationSystem) {
+            showNotification('Sistema de APIs no disponible', 'error');
+            return;
+        }
+
+        // Mostrar indicador de carga
+        showNotification('Obteniendo definición...', 'info');
+
+        const definition = await window.apiIntegrationSystem.getWordDefinition(word);
+
+        if (definition.error) {
+            showNotification(definition.message, 'error');
+            return;
+        }
+
+        // Crear modal para mostrar la definición
+        const modal = document.createElement('div');
+        modal.className = 'api-modal-overlay';
+        modal.innerHTML = `
+            <div class="api-modal">
+                <div class="api-modal-header">
+                    <h3>Definición de "${word}"</h3>
+                    <button class="close-modal" onclick="this.closest('.api-modal-overlay').remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="api-modal-content">
+                    <!-- El contenido se insertará aquí -->
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Obtener el contenedor de contenido
+        const contentContainer = modal.querySelector('.api-modal-content');
+
+        // Crear y mostrar la tarjeta de definición
+        const definitionCard = window.apiIntegrationSystem.createDefinitionCard(definition);
+        contentContainer.appendChild(definitionCard);
+
+        console.log(`✅ Definición mostrada para "${word}"`);
+
+    } catch (error) {
+        console.error('❌ Error al mostrar definición:', error);
+        showNotification('Error al obtener la definición', 'error');
+    }
+}
+
+async function showWordTranslation(word) {
+    try {
+        console.log(`🌐 Traduciendo "${word}"...`);
+
+        if (!window.apiIntegrationSystem) {
+            showNotification('Sistema de APIs no disponible', 'error');
+            return;
+        }
+
+        // Mostrar indicador de carga
+        showNotification('Traduciendo...', 'info');
+
+        const translation = await window.apiIntegrationSystem.translateText(word, 'en', 'es');
+
+        if (translation.error) {
+            showNotification(translation.message, 'error');
+            return;
+        }
+
+        // Crear modal para mostrar la traducción
+        const modal = document.createElement('div');
+        modal.className = 'api-modal-overlay';
+        modal.innerHTML = `
+            <div class="api-modal">
+                <div class="api-modal-header">
+                    <h3>Traducción de "${word}"</h3>
+                    <button class="close-modal" onclick="this.closest('.api-modal-overlay').remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="api-modal-content">
+                    <!-- El contenido se insertará aquí -->
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Obtener el contenedor de contenido
+        const contentContainer = modal.querySelector('.api-modal-content');
+
+        // Crear y mostrar la tarjeta de traducción
+        const translationCard = window.apiIntegrationSystem.createTranslationCard(translation);
+        contentContainer.appendChild(translationCard);
+
+        console.log(`✅ Traducción mostrada para "${word}"`);
+
+    } catch (error) {
+        console.error('❌ Error al mostrar traducción:', error);
+        showNotification('Error al traducir la palabra', 'error');
+    }
 }
 
 // Exportar funciones SRS
 window.getWordsForReview = getWordsForReview;
 window.scheduleReview = scheduleReview;
 window.initSRS = initSRS;
+
+// Exportar funciones de APIs
+window.showWordDefinition = showWordDefinition;
+window.showWordTranslation = showWordTranslation;

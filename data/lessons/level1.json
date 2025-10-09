@@ -1,0 +1,45 @@
+[
+  {
+    "title": "Saludos Básicos",
+    "difficulty": "Principiante",
+    "vocabulary": [
+      { "english": "Hello", "spanish": "Hola", "pronunciation": "/həˈloʊ/" },
+      { "english": "Goodbye", "spanish": "Adiós", "pronunciation": "/ɡʊdˈbaɪ/" },
+      { "english": "Please", "spanish": "Por favor", "pronunciation": "/pliːz/" },
+      { "english": "Thank you", "spanish": "Gracias", "pronunciation": "/ˈθæŋk juː/" }
+    ],
+    "grammar": {
+      "title": "Saludos Básicos",
+      "content": "Los saludos son expresiones simples para iniciar o cerrar una conversación."
+    }
+  },
+  {
+    "title": "Números del 1 al 10",
+    "difficulty": "Principiante",
+    "vocabulary": [
+      { "english": "One", "spanish": "Uno", "pronunciation": "/wʌn/" },
+      { "english": "Two", "spanish": "Dos", "pronunciation": "/tuː/" },
+      { "english": "Three", "spanish": "Tres", "pronunciation": "/θriː/" },
+      { "english": "Four", "spanish": "Cuatro", "pronunciation": "/fɔːr/" },
+      { "english": "Five", "spanish": "Cinco", "pronunciation": "/faɪv/" }
+    ],
+    "grammar": {
+      "title": "Números Cardinales",
+      "content": "Los números cardinales se usan para contar y enumerar."
+    }
+  },
+  {
+    "title": "Colores Básicos",
+    "difficulty": "Principiante",
+    "vocabulary": [
+      { "english": "Red", "spanish": "Rojo", "pronunciation": "/red/" },
+      { "english": "Blue", "spanish": "Azul", "pronunciation": "/bluː/" },
+      { "english": "Green", "spanish": "Verde", "pronunciation": "/ɡriːn/" },
+      { "english": "Yellow", "spanish": "Amarillo", "pronunciation": "/ˈjeloʊ/" }
+    ],
+    "grammar": {
+      "title": "Colores",
+      "content": "Los colores son adjetivos que describen la apariencia de los objetos."
+    }
+  }
+]

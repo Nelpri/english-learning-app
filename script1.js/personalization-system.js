@@ -28,7 +28,9 @@ class PersonalizationSystem {
     loadUserProfile() {
         try {
             const userData = JSON.parse(localStorage.getItem('englishLearningSession') || '{}');
-            const progressData = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+            const progressData = (typeof window.getUserProgress === 'function')
+                ? window.getUserProgress()
+                : (JSON.parse(localStorage.getItem('englishLearningProgress') || '{}') || {});
             
             this.userProfile = {
                 name: userData.name || 'Usuario',
@@ -98,7 +100,9 @@ class PersonalizationSystem {
     // Detectar estilo de aprendizaje
     detectLearningStyle() {
         try {
-            const progressData = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+            const progressData = (typeof window.getUserProgress === 'function')
+                ? window.getUserProgress()
+                : (JSON.parse(localStorage.getItem('englishLearningProgress') || '{}') || {});
             const stats = progressData.learningStats || {};
             
             // Analizar patrones de uso
@@ -382,7 +386,9 @@ class PersonalizationSystem {
     // Obtener rendimiento reciente
     getRecentPerformance() {
         try {
-            const progressData = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+            const progressData = (typeof window.getUserProgress === 'function')
+                ? window.getUserProgress()
+                : (JSON.parse(localStorage.getItem('englishLearningProgress') || '{}') || {});
             const recentSessions = progressData.recentSessions || [];
             
             if (recentSessions.length === 0) return 0.5;

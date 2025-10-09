@@ -1,7 +1,10 @@
 // Módulo de práctica: ejercicios de vocabulario, gramática, listening, pronunciación
 
-// Variable global para el índice de lección de práctica
+/* Variable global para el índice de lección de práctica */
 let practiceLessonIndex = 0;
+
+/* Respuesta seleccionada en listening */
+var selectedListeningAnswer = null;
 
 function loadPracticeModes() {
     try {
@@ -280,9 +283,9 @@ if (grammarExercises.length === 0) {
 }
 
 const exercise = grammarExercises[Math.floor(Math.random() * grammarExercises.length)];
-const allOptions = (exercise.options || []).map((opt, idx) => ({
+const allOptions = (exercise.options || []).map((opt) => ({
     text: opt,
-    isCorrect: idx === exercise.correct
+    isCorrect: opt === exercise.correct
 }));
 allOptions.sort(() => Math.random() - 0.5);
 
@@ -954,7 +957,12 @@ function checkListeningAnswers() {
     if (isCorrect) {
         resultMessage.innerHTML = '<span style="color: var(--success-color);">✅ ¡Correcto! Has identificado bien el audio.</span>';
         playSuccessSound();
-        addXP(15);
+        if (typeof appState !== 'undefined') {
+            appState.currentXP += 15;
+            try { if (typeof checkLevelUp === 'function') checkLevelUp(); } catch (e) { console.error("checkLevelUp error:", e); }
+            try { if (typeof updateHeaderElements === 'function') updateHeaderElements(); } catch (e) { console.error("updateHeaderElements error:", e); }
+            try { if (typeof saveProgress === 'function') saveProgress(); } catch (e) { console.error("saveProgress error:", e); }
+        }
         showNotification('¡Excelente comprensión auditiva! +15 XP', 'success');
         
         // Marcar botón seleccionado como correcto
@@ -1357,7 +1365,7 @@ function createSingleVocabularyExercise(vocabulary, exerciseIndex) {
         
         // Pregunta
         const question = document.createElement('p');
-        question.innerHTML = `¿Cómo se dice "${word.spanish}" en inglés?`;
+        question.textContent = `¿Cómo se dice "${word.spanish}" en inglés?`;
         question.style.fontSize = '1.1rem';
         question.style.marginBottom = '1.5rem';
         
@@ -1798,7 +1806,7 @@ function createSingleGrammarExercise(userMCER, exerciseIndex, lesson) {
         
         // Pregunta
         const question = document.createElement('p');
-        question.innerHTML = `<strong>${exercise.question}</strong>`;
+        question.innerHTML = `<strong>${exercise.question.replace(/</g, '<').replace(/>/g, '>')}</strong>`;
         question.style.fontSize = '1.1rem';
         question.style.marginBottom = '1.5rem';
         question.style.padding = '1rem';
@@ -2382,28 +2390,6 @@ function createSingleListeningExercise(exerciseIndex) {
     }
 }
 
-// Esta función ha sido unificada con la función principal playListeningAudio
-
-function pauseListeningAudio() {
-    try {
-        if (window.currentListeningAudio) {
-            speechSynthesis.cancel();
-            window.currentListeningAudio = null;
-            console.log("⏸️ Audio pausado");
-        }
-    } catch (error) {
-        console.error("❌ Error al pausar audio:", error);
-    }
-}
-
-function changeListeningSpeed(speed) {
-    try {
-        window.listeningAudioSpeed = speed;
-        console.log("⚡ Velocidad de audio cambiada a:", speed);
-    } catch (error) {
-        console.error("❌ Error al cambiar velocidad:", error);
-    }
-}
 
 function selectListeningOption(selectedButton, exerciseIndex) {
     try {
@@ -3494,13 +3480,29 @@ function getWordsForSpacedRepetition() {
 
 function getWordReviewHistory(word) {
     try {
-        // En una implementación real, esto vendría de localStorage
-        // Por ahora, simulamos un historial
-        const stored = localStorage.getItem(`wordReview_${word}`);
-        if (stored) {
-            return JSON.parse(stored);
+        const email = (typeof window.getCurrentUserEmail === 'function') ? window.getCurrentUserEmail() : (window.appState?.currentUser?.email || 'guest');
+        const namespacedKey = `wordReview_${email}_${word}`;
+        const legacyKey = `wordReview_${word}`;
+
+        // Intentar leer clave namespaced
+        const storedNamespaced = localStorage.getItem(namespacedKey);
+        if (storedNamespaced) {
+            return JSON.parse(storedNamespaced);
         }
-        
+
+        // Migración: si existe clave legacy, usarla y copiarla al espacio con email
+        const storedLegacy = localStorage.getItem(legacyKey);
+        if (storedLegacy) {
+            try {
+                const legacyData = JSON.parse(storedLegacy);
+                localStorage.setItem(namespacedKey, storedLegacy);
+                console.log("🔄 Migrado historial de repaso legacy → namespaced:", namespacedKey);
+                return legacyData;
+            } catch (_) {
+                // continuar a valor por defecto
+            }
+        }
+
         // Historial por defecto para palabras nuevas
         return {
             word: word,
@@ -3511,10 +3513,17 @@ function getWordReviewHistory(word) {
             nextReviewDate: new Date().toISOString(),
             difficulty: 1.0
         };
-        
     } catch (error) {
         console.error("❌ Error al obtener historial de repaso:", error);
-        return null;
+        return {
+            word: word,
+            reviews: [],
+            correctCount: 0,
+            incorrectCount: 0,
+            lastReviewDate: null,
+            nextReviewDate: new Date().toISOString(),
+            difficulty: 1.0
+        };
     }
 }
 
@@ -3802,35 +3811,36 @@ function updateWordReviewHistory(word, quality) {
     try {
         const history = getWordReviewHistory(word);
         if (!history) return;
-        
+
         // Agregar nueva revisión
         const newReview = {
             date: new Date().toISOString(),
             quality: quality,
             wasCorrect: quality === 'good' || quality === 'easy'
         };
-        
+
         history.reviews.push(newReview);
         history.lastReviewDate = new Date().toISOString();
-        
+
         // Actualizar contadores
         if (newReview.wasCorrect) {
             history.correctCount++;
         } else {
             history.incorrectCount++;
         }
-        
+
         // Calcular próxima fecha de repaso
         history.nextReviewDate = calculateNextReviewDate(history);
-        
+
         // Actualizar dificultad
         history.difficulty = calculateWordDifficulty(history);
-        
-        // Guardar en localStorage
-        localStorage.setItem(`wordReview_${word}`, JSON.stringify(history));
-        
-        console.log("💾 Historial de repaso actualizado para:", word, "calidad:", quality);
-        
+
+        // Guardar en localStorage con clave por usuario
+        const email = (typeof window.getCurrentUserEmail === 'function') ? window.getCurrentUserEmail() : (window.appState?.currentUser?.email || 'guest');
+        const namespacedKey = `wordReview_${email}_${word}`;
+        localStorage.setItem(namespacedKey, JSON.stringify(history));
+
+        console.log("💾 Historial de repaso actualizado para:", word, "calidad:", quality, "usuario:", email);
     } catch (error) {
         console.error("❌ Error al actualizar historial de repaso:", error);
     }
@@ -5825,17 +5835,20 @@ class PracticeSystem {
                 margin-bottom: 1.5rem;
                 border: 1px solid var(--border-color);
             `;
-            
+
+            // Escapar comillas para el onclick
+            const escapedAudioText = exercise.audioText.replace(/'/g, "\\'").replace(/"/g, '\\"');
+
             container.innerHTML = `
                 <div style="text-align: center; margin-bottom: 1rem;">
-                    <button class="btn btn-primary" onclick="window.practiceSystem.playListeningAudio('${exercise.audioText}', ${this.currentSession.currentExercise})">
+                    <button class="btn btn-primary" onclick="window.practiceSystem.playListeningAudio('${escapedAudioText}', ${this.currentSession.currentExercise})">
                         <i class="fas fa-play"></i> Reproducir Audio
                     </button>
                 </div>
             `;
-            
+
             return container;
-            
+
         } catch (error) {
             console.error("❌ Error al crear contenido de listening:", error);
             return document.createElement('div');
@@ -5845,6 +5858,7 @@ class PracticeSystem {
     handleExerciseAnswer(answer, isCorrect) {
         try {
             console.log("🎯 PracticeSystem: Procesando respuesta, ejercicio actual:", this.currentSession.currentExercise);
+            const exercise = this.currentSession?.exercises?.[this.currentSession.currentExercise];
             
             // BLOQUEAR TODOS LOS BOTONES INMEDIATAMENTE
             const exerciseContainer = document.querySelector('.exercise-content');

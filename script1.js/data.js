@@ -929,7 +929,6 @@ const appState = {
 // Variables globales para el ejercicio de listening
 let currentListeningAudio = null;
 let listeningAudioSpeed = 1.0;
-let selectedListeningAnswer = null;
 
 // Categorías de vocabulario expandidas
 const VOCABULARY_CATEGORIES = [
@@ -2317,7 +2316,7 @@ window.LEVEL_SYSTEM = LEVEL_SYSTEM;
 window.appState = appState;
 window.currentListeningAudio = currentListeningAudio;
 window.listeningAudioSpeed = listeningAudioSpeed;
-window.selectedListeningAnswer = selectedListeningAnswer;
+// selectedListeningAnswer se declara en practice.js
 window.VOCABULARY_CATEGORIES = VOCABULARY_CATEGORIES;
 window.VOCABULARY_DATABASE = VOCABULARY_DATABASE;
 window.initData = initData;

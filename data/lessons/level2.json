@@ -1,0 +1,92 @@
+[
+  {
+    "title": "Familia Básica",
+    "difficulty": "Básico",
+    "vocabulary": [
+      { "english": "Mother", "spanish": "Madre", "pronunciation": "/ˈmʌðər/" },
+      { "english": "Father", "spanish": "Padre", "pronunciation": "/ˈfɑːðər/" },
+      { "english": "Sister", "spanish": "Hermana", "pronunciation": "/ˈsɪstər/" },
+      { "english": "Brother", "spanish": "Hermano", "pronunciation": "/ˈbrʌðər/" },
+      { "english": "Baby", "spanish": "Bebé", "pronunciation": "/ˈbeɪbi/" }
+    ],
+    "grammar": {
+      "title": "Posesivos",
+      "content": "my (mi), your (tu), his (su - de él), her (su - de ella), our (nuestro)"
+    }
+  },
+  {
+    "title": "Animales Domésticos",
+    "difficulty": "Básico",
+    "vocabulary": [
+      { "english": "Dog", "spanish": "Perro", "pronunciation": "/dɔːɡ/" },
+      { "english": "Cat", "spanish": "Gato", "pronunciation": "/kæt/" },
+      { "english": "Bird", "spanish": "Pájaro", "pronunciation": "/bɜːrd/" },
+      { "english": "Fish", "spanish": "Pez", "pronunciation": "/fɪʃ/" },
+      { "english": "Rabbit", "spanish": "Conejo", "pronunciation": "/ˈræbɪt/" }
+    ],
+    "grammar": {
+      "title": "Plurales Regulares",
+      "content": "Para formar plurales regulares en inglés, agregamos -s al final de la palabra"
+    }
+  },
+  {
+    "title": "Comida Básica",
+    "difficulty": "Básico",
+    "vocabulary": [
+      { "english": "Bread", "spanish": "Pan", "pronunciation": "/bred/" },
+      { "english": "Milk", "spanish": "Leche", "pronunciation": "/mɪlk/" },
+      { "english": "Apple", "spanish": "Manzana", "pronunciation": "/ˈæpəl/" },
+      { "english": "Water", "spanish": "Agua", "pronunciation": "/ˈwɔːtər/" },
+      { "english": "Rice", "spanish": "Arroz", "pronunciation": "/raɪs/" }
+    ],
+    "grammar": {
+      "title": "Sustantivos Contables e Incontables",
+      "content": "Los sustantivos contables pueden contarse (apples), los incontables no (water)"
+    }
+  },
+  {
+    "title": "Preguntas Básicas",
+    "difficulty": "Básico",
+    "vocabulary": [
+      { "english": "What", "spanish": "Qué", "pronunciation": "/wʌt/" },
+      { "english": "Where", "spanish": "Dónde", "pronunciation": "/weər/" },
+      { "english": "When", "spanish": "Cuándo", "pronunciation": "/wen/" },
+      { "english": "Who", "spanish": "Quién", "pronunciation": "/huː/" },
+      { "english": "Why", "spanish": "Por qué", "pronunciation": "/waɪ/" }
+    ],
+    "grammar": {
+      "title": "Preguntas con Wh- Words",
+      "content": "What is your name? (¿Cómo te llamas?), Where do you live? (¿Dónde vives?)"
+    }
+  },
+  {
+    "title": "Preferencias de Comida",
+    "difficulty": "Básico",
+    "vocabulary": [
+      { "english": "I like", "spanish": "Me gusta", "pronunciation": "/aɪ laɪk/" },
+      { "english": "I don't like", "spanish": "No me gusta", "pronunciation": "/aɪ doʊnt laɪk/" },
+      { "english": "Delicious", "spanish": "Delicioso", "pronunciation": "/dɪˈlɪʃəs/" },
+      { "english": "I prefer", "spanish": "Prefiero", "pronunciation": "/aɪ prɪˈfɜːr/" },
+      { "english": "Healthy", "spanish": "Saludable", "pronunciation": "/ˈhelθi/" }
+    ],
+    "grammar": {
+      "title": "Verbo Like en Presente Simple",
+      "content": "I like apples (me gustan las manzanas), She likes coffee (a ella le gusta el café)"
+    }
+  },
+  {
+    "title": "Descripciones Simples",
+    "difficulty": "Básico",
+    "vocabulary": [
+      { "english": "Big", "spanish": "Grande", "pronunciation": "/bɪɡ/" },
+      { "english": "Small", "spanish": "Pequeño", "pronunciation": "/smɔːl/" },
+      { "english": "Tall", "spanish": "Alto", "pronunciation": "/tɔːl/" },
+      { "english": "Short", "spanish": "Bajo", "pronunciation": "/ʃɔːrt/" },
+      { "english": "Beautiful", "spanish": "Hermoso", "pronunciation": "/ˈbjuːtɪfl/" }
+    ],
+    "grammar": {
+      "title": "Adjetivos Descriptivos",
+      "content": "The house is big (la casa es grande), The cat is small (el gato es pequeño)"
+    }
+  }
+]

@@ -410,21 +410,38 @@ function completeDiagnostic() {
             initialXP = 10000; // C2+ - Maestría+
         }
         
-        // Guardar progreso del usuario
-        const userProgress = {
-            currentLevel: level,
-            currentXP: initialXP,
-            level: level, // Mantener compatibilidad
-            xp: initialXP, // Mantener compatibilidad
-            lessonsCompleted: 0,
-            vocabularyWordsLearned: 0,
-            practiceStreak: 0,
-            diagnosticCompleted: true,
-            diagnosticScore: diagnosticScore
-        };
-        
-        localStorage.setItem('englishLearningProgress', JSON.stringify(userProgress));
-        console.log("✅ Progreso guardado");
+        // Guardar progreso del usuario (namespaced por email)
+        try {
+            if (typeof window.setUserProgressFields === 'function') {
+                window.setUserProgressFields({
+                    currentLevel: level,
+                    currentXP: initialXP,
+                    level: level, // compat
+                    xp: initialXP, // compat
+                    lessonsCompleted: 0,
+                    vocabularyWordsLearned: 0,
+                    practiceStreak: 0,
+                    diagnosticCompleted: true,
+                    diagnosticScore: diagnosticScore
+                });
+            } else {
+                const userProgress = {
+                    currentLevel: level,
+                    currentXP: initialXP,
+                    level: level,
+                    xp: initialXP,
+                    lessonsCompleted: 0,
+                    vocabularyWordsLearned: 0,
+                    practiceStreak: 0,
+                    diagnosticCompleted: true,
+                    diagnosticScore: diagnosticScore
+                };
+                localStorage.setItem('englishLearningProgress', JSON.stringify(userProgress));
+            }
+            console.log("✅ Progreso guardado");
+        } catch (e) {
+            console.error("❌ Error guardando progreso de diagnóstico:", e);
+        }
         
         // Mostrar resultado
         showDiagnosticResult(level, diagnosticScore);
@@ -502,57 +519,63 @@ function showDiagnosticResult(level, score) {
             
             const percentage = Math.round((score / DIAGNOSTIC_QUESTIONS.length) * 100);
             
-            // Guardar el nivel MCER en localStorage por usuario específico
+            // Guardar el nivel MCER en almacén por usuario
             const mcerLevel = mcerLevels[level];
-            const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-            
             // Obtener usuario actual
             const currentUser = window.getCurrentUser ? window.getCurrentUser() : null;
             if (!currentUser || !currentUser.email) {
                 console.error("❌ No se pudo obtener usuario actual para guardar progreso");
                 return;
             }
-            
-            // Crear o actualizar progreso específico del usuario
-            if (!userProgress[currentUser.email]) {
-                userProgress[currentUser.email] = {};
+            try {
+                if (typeof window.setUserProgressFields === 'function') {
+                    window.setUserProgressFields({
+                        diagnosticLevel: mcerLevel,
+                        currentLevel: level,
+                        level: level, // compat
+                        diagnosticCompleted: true
+                    });
+                } else {
+                    const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+                    if (!userProgress[currentUser.email]) {
+                        userProgress[currentUser.email] = {};
+                    }
+                    userProgress[currentUser.email].diagnosticLevel = mcerLevel;
+                    userProgress[currentUser.email].currentLevel = level;
+                    userProgress[currentUser.email].diagnosticCompleted = true;
+
+                    // Compatibilidad mínima en raíz
+                    userProgress.diagnosticLevel = mcerLevel;
+                    userProgress.currentLevel = level;
+                    userProgress.diagnosticCompleted = true;
+
+                    localStorage.setItem('englishLearningProgress', JSON.stringify(userProgress));
+                }
+            } catch (e) {
+                console.error("❌ Error al guardar diagnóstico por usuario:", e);
             }
-            
-            userProgress[currentUser.email].diagnosticLevel = mcerLevel;
-            userProgress[currentUser.email].currentLevel = level;
-            userProgress[currentUser.email].currentXP = userProgress[currentUser.email].currentXP || 0;
-            userProgress[currentUser.email].level = level; // Mantener compatibilidad
-            userProgress[currentUser.email].xp = userProgress[currentUser.email].currentXP; // Mantener compatibilidad
-            userProgress[currentUser.email].diagnosticCompleted = true;
-            
-            // También mantener compatibilidad en el nivel raíz para usuarios existentes
-            userProgress.diagnosticLevel = mcerLevel;
-            userProgress.currentLevel = level;
-            userProgress.currentXP = userProgress[currentUser.email].currentXP;
-            userProgress.level = level;
-            userProgress.xp = userProgress[currentUser.email].currentXP;
-            userProgress.diagnosticCompleted = true;
-            
-            localStorage.setItem('englishLearningProgress', JSON.stringify(userProgress));
             
             console.log("💾 Nivel MCER guardado para usuario:", currentUser.email, "Nivel:", mcerLevel);
             
             console.log("💾 Nivel MCER guardado:", mcerLevel);
             
+            // Obtener progreso actual del usuario
+            const userProgress = (typeof window.getUserProgress === 'function') ? window.getUserProgress() : {};
+
             // Restaurar progreso en appState si está disponible
             if (typeof window.appState !== 'undefined') {
                 window.appState.diagnosticLevel = mcerLevel;
                 window.appState.currentLevel = level;
-                window.appState.currentXP = userProgress.currentXP || 0;
+                window.appState.currentXP = userProgress.currentXP || userProgress.xp || 0;
                 console.log("✅ appState actualizado con nivel del diagnóstico");
-                
+
                 // Actualizar UI del header
                 if (typeof window.updateHeaderElements === 'function') {
                     window.updateHeaderElements();
                     console.log("✅ Header actualizado después del diagnóstico");
                 }
             }
-            
+
             // Restaurar progreso completo del usuario si está autenticado
             if (typeof window.restoreUserProgress === 'function' && typeof window.getCurrentUser === 'function') {
                 const currentUser = window.getCurrentUser();
@@ -561,7 +584,7 @@ function showDiagnosticResult(level, score) {
                     console.log("✅ Progreso completo del usuario restaurado después del diagnóstico");
                 }
             }
-            
+
             // Actualizar display del usuario
             if (typeof window.updateUserDisplay === 'function' && typeof window.getCurrentUser === 'function') {
                 const currentUser = window.getCurrentUser();
@@ -570,52 +593,11 @@ function showDiagnosticResult(level, score) {
                     console.log("✅ Display del usuario restaurado después del diagnóstico");
                 }
             }
-            
+
             // Cerrar modal de diagnóstico después de un delay
             setTimeout(() => {
                 hideDiagnosticModal();
                 console.log("✅ Modal de diagnóstico cerrado");
-            }, 3000);
-            
-            // Restaurar progreso en appState si está disponible
-            if (typeof window.appState !== 'undefined') {
-                window.appState.diagnosticLevel = mcerLevel;
-                window.appState.currentLevel = level;
-                window.appState.currentXP = userProgress.currentXP || 0;
-                console.log("✅ appState actualizado con nivel del diagnóstico");
-                
-                // Actualizar UI del header
-                if (typeof window.updateHeaderElements === 'function') {
-                    window.updateHeaderElements();
-                    console.log("✅ Header actualizado después del diagnóstico");
-                }
-            }
-            
-            // Restaurar progreso completo del usuario si está autenticado
-            if (typeof window.restoreUserProgress === 'function' && typeof window.getCurrentUser === 'function') {
-                const currentUser = window.getCurrentUser();
-                if (currentUser) {
-                    window.restoreUserProgress(currentUser);
-                    console.log("✅ Progreso completo del usuario restaurado después del diagnóstico");
-                }
-            }
-            
-            // Actualizar display del usuario
-            if (typeof window.updateUserDisplay === 'function' && typeof window.getCurrentUser === 'function') {
-                const currentUser = window.getCurrentUser();
-                if (currentUser) {
-                    window.updateUserDisplay(currentUser);
-                    console.log("✅ Display del usuario restaurado después del diagnóstico");
-                }
-            }
-            
-            // Cerrar modal de diagnóstico después de un delay
-            setTimeout(() => {
-                const diagnosticModal = document.getElementById('diagnosticModal');
-                if (diagnosticModal) {
-                    diagnosticModal.style.display = 'none';
-                    console.log("✅ Modal de diagnóstico cerrado automáticamente");
-                }
             }, 3000);
             
             diagnosticResult.innerHTML = `

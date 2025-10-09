@@ -1,37 +1,391 @@
 // Módulo de progreso: estadísticas, rachas, logros visuales
 
-// Sistema de estadísticas básico
-const STATISTICS_SYSTEM = {
-    recordActivity: function(type, data) {
-        console.log("📊 Actividad registrada:", type, data);
-        // Aquí se puede implementar el registro de estadísticas
-    },
-    
-    createDetailedStatsPanel: function() {
-        return `
-            <div class="stats-dashboard">
-                <h3><i class="fas fa-chart-bar"></i> Estadísticas Detalladas</h3>
-                <div class="stats-section">
-                    <h4>Actividad Reciente</h4>
-                    <p>No hay estadísticas disponibles aún. ¡Completa lecciones para ver tu progreso!</p>
-                </div>
-            </div>
-        `;
+ // Sistema de estadísticas avanzado
+ const STATISTICS_SYSTEM = {
+     // Almacenar actividades diarias
+     recordActivity: function(type, data) {
+         console.log("📊 Actividad registrada:", type, data);
+         try {
+             const email = getCurrentUserEmail();
+             const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+             const store = getProgressStore();
+ 
+             if (!store[email]) store[email] = {};
+             if (!store[email].dailyStats) store[email].dailyStats = {};
+             if (!store[email].dailyStats[today]) {
+                 store[email].dailyStats[today] = {
+                     date: today,
+                     activities: [],
+                     totalXP: 0,
+                     lessonsCompleted: 0,
+                     practiceTime: 0,
+                     vocabularyLearned: 0
+                 };
+             }
+ 
+             const dayStats = store[email].dailyStats[today];
+             dayStats.activities.push({
+                 type: type,
+                 data: data,
+                 timestamp: new Date().toISOString()
+             });
+ 
+             // Actualizar métricas según tipo de actividad
+             switch(type) {
+                 case 'lesson_completed':
+                     dayStats.lessonsCompleted++;
+                     dayStats.totalXP += data.xpEarned || 0;
+                     break;
+                 case 'practice_session':
+                     dayStats.practiceTime += data.timeSpent || 0;
+                     dayStats.totalXP += data.xpEarned || 0;
+                     break;
+                 case 'vocabulary_learned':
+                     dayStats.vocabularyLearned += data.wordsCount || 0;
+                     dayStats.totalXP += data.xpEarned || 0;
+                     break;
+                 case 'streak_updated':
+                     // Ya manejado en checkDailyStreak
+                     break;
+             }
+ 
+             saveProgressStore(store);
+         } catch (e) {
+             console.error('Error al registrar actividad:', e);
+         }
+     },
+ 
+     // Obtener estadísticas de los últimos 30 días
+     getLast30DaysStats: function() {
+         try {
+             const email = getCurrentUserEmail();
+             const store = getProgressStore();
+             const stats = store[email]?.dailyStats || {};
+             const today = new Date();
+             const days = [];
+ 
+             for (let i = 29; i >= 0; i--) {
+                 const date = new Date(today);
+                 date.setDate(today.getDate() - i);
+                 const dateStr = date.toISOString().split('T')[0];
+                 const dayData = stats[dateStr] || {
+                     date: dateStr,
+                     totalXP: 0,
+                     lessonsCompleted: 0,
+                     practiceTime: 0,
+                     vocabularyLearned: 0
+                 };
+                 days.push(dayData);
+             }
+ 
+             return days;
+         } catch (e) {
+             console.error('Error al obtener estadísticas de 30 días:', e);
+             return [];
+         }
+     },
+ 
+     // Calcular predicción de progreso
+     predictProgress: function(days = 7) {
+         try {
+             const last30Days = this.getLast30DaysStats();
+             const recentDays = last30Days.slice(-14); // Últimas 2 semanas
+ 
+             const avgXP = recentDays.reduce((sum, day) => sum + day.totalXP, 0) / recentDays.length;
+             const avgLessons = recentDays.reduce((sum, day) => sum + day.lessonsCompleted, 0) / recentDays.length;
+             const avgPractice = recentDays.reduce((sum, day) => sum + day.practiceTime, 0) / recentDays.length;
+ 
+             const currentXP = appState.currentXP || 0;
+             const currentLevel = appState.currentLevel || 1;
+ 
+             // Estimar XP futuro
+             const predictedXP = currentXP + (avgXP * days);
+             const predictedLessons = Math.round(avgLessons * days);
+ 
+             // Estimar nivel futuro
+             let predictedLevel = currentLevel;
+             if (typeof LEVEL_SYSTEM !== 'undefined' && LEVEL_SYSTEM.levels) {
+                 for (let level of LEVEL_SYSTEM.levels) {
+                     if (predictedXP >= level.xpRequired) {
+                         predictedLevel = level.level;
+                     }
+                 }
+             }
+ 
+             return {
+                 days: days,
+                 predictedXP: Math.round(predictedXP),
+                 predictedLevel: predictedLevel,
+                 predictedLessons: predictedLessons,
+                 avgDailyXP: Math.round(avgXP),
+                 avgDailyLessons: Math.round(avgLessons * 10) / 10,
+                 avgDailyPractice: Math.round(avgPractice)
+             };
+         } catch (e) {
+             console.error('Error en predicción de progreso:', e);
+             return null;
+         }
+     },
+ 
+     // Crear heatmap de estudio diario
+     createStudyHeatmap: function() {
+         const days = this.getLast30DaysStats();
+         const maxXP = Math.max(...days.map(d => d.totalXP));
+ 
+         return `
+             <div class="study-heatmap">
+                 <h4><i class="fas fa-calendar-alt"></i> Actividad de Estudio (Últimos 30 días)</h4>
+                 <div class="heatmap-grid">
+                     ${days.map(day => {
+                         const intensity = maxXP > 0 ? (day.totalXP / maxXP) * 4 : 0;
+                         const intensityClass = intensity === 0 ? 'none' :
+                                              intensity < 1 ? 'low' :
+                                              intensity < 2 ? 'medium' :
+                                              intensity < 3 ? 'high' : 'very-high';
+ 
+                         return `
+                             <div class="heatmap-day ${intensityClass}" title="${day.date}: ${day.totalXP} XP, ${day.lessonsCompleted} lecciones">
+                                 <span class="day-number">${new Date(day.date).getDate()}</span>
+                             </div>
+                         `;
+                     }).join('')}
+                 </div>
+                 <div class="heatmap-legend">
+                     <span>Menos</span>
+                     <div class="legend-colors">
+                         <div class="legend-color none"></div>
+                         <div class="legend-color low"></div>
+                         <div class="legend-color medium"></div>
+                         <div class="legend-color high"></div>
+                         <div class="legend-color very-high"></div>
+                     </div>
+                     <span>Más</span>
+                 </div>
+             </div>
+         `;
+     },
+ 
+     createDetailedStatsPanel: function() {
+         const last30Days = this.getLast30DaysStats();
+         const totalXP = last30Days.reduce((sum, day) => sum + day.totalXP, 0);
+         const totalLessons = last30Days.reduce((sum, day) => sum + day.lessonsCompleted, 0);
+         const totalPractice = last30Days.reduce((sum, day) => sum + day.practiceTime, 0);
+         const totalVocabulary = last30Days.reduce((sum, day) => sum + day.vocabularyLearned, 0);
+ 
+         const prediction = this.predictProgress(7);
+         const heatmap = this.createStudyHeatmap();
+ 
+         return `
+             <div class="stats-dashboard">
+                 <h3><i class="fas fa-chart-bar"></i> Estadísticas Detalladas</h3>
+ 
+                 <div class="stats-overview">
+                     <div class="stat-card">
+                         <i class="fas fa-star"></i>
+                         <h4>XP Total (30 días)</h4>
+                         <span class="stat-value">${totalXP}</span>
+                     </div>
+                     <div class="stat-card">
+                         <i class="fas fa-book"></i>
+                         <h4>Lecciones Completadas</h4>
+                         <span class="stat-value">${totalLessons}</span>
+                     </div>
+                     <div class="stat-card">
+                         <i class="fas fa-clock"></i>
+                         <h4>Tiempo de Práctica</h4>
+                         <span class="stat-value">${Math.round(totalPractice / 60)}min</span>
+                     </div>
+                     <div class="stat-card">
+                         <i class="fas fa-language"></i>
+                         <h4>Vocabulario Aprendido</h4>
+                         <span class="stat-value">${totalVocabulary}</span>
+                     </div>
+                 </div>
+ 
+                 ${heatmap}
+ 
+                 <div class="progress-prediction">
+                     <h4><i class="fas fa-crystal-ball"></i> Predicción de Progreso (7 días)</h4>
+                     ${prediction ? `
+                         <div class="prediction-grid">
+                             <div class="prediction-item">
+                                 <span class="prediction-label">XP Estimado:</span>
+                                 <span class="prediction-value">${prediction.predictedXP} (+${prediction.predictedXP - (appState.currentXP || 0)})</span>
+                             </div>
+                             <div class="prediction-item">
+                                 <span class="prediction-label">Nivel Estimado:</span>
+                                 <span class="prediction-value">${prediction.predictedLevel}</span>
+                             </div>
+                             <div class="prediction-item">
+                                 <span class="prediction-label">Lecciones Estimadas:</span>
+                                 <span class="prediction-value">${prediction.predictedLessons}</span>
+                             </div>
+                             <div class="prediction-item">
+                                 <span class="prediction-label">Promedio Diario:</span>
+                                 <span class="prediction-value">${prediction.avgDailyXP} XP</span>
+                             </div>
+                         </div>
+                         <p class="prediction-note">Basado en tu actividad de las últimas 2 semanas</p>
+                     ` : '<p>No hay suficientes datos para generar predicciones</p>'}
+                 </div>
+ 
+                 <div class="stats-section">
+                     <h4>Actividad Reciente</h4>
+                     <div class="recent-activity">
+                         ${last30Days.slice(-7).reverse().map(day => `
+                             <div class="activity-item">
+                                 <span class="activity-date">${new Date(day.date).toLocaleDateString()}</span>
+                                 <span class="activity-stats">
+                                     ${day.totalXP} XP • ${day.lessonsCompleted} lecciones • ${Math.round(day.practiceTime / 60)}min práctica
+                                 </span>
+                             </div>
+                         `).join('')}
+                     </div>
+                 </div>
+             </div>
+         `;
+     }
+ };
+// Utilidades para progreso por usuario (namespacing seguro)
+function getCurrentUserEmail() {
+    try {
+        const session = JSON.parse(localStorage.getItem('englishLearningSession') || 'null');
+        if (session && session.email) return session.email;
+        const user = JSON.parse(localStorage.getItem('englishLearningUser') || 'null');
+        if (user && user.email) return user.email;
+        if (typeof appState !== 'undefined' && appState.currentUser && appState.currentUser.email) return appState.currentUser.email;
+        return 'guest';
+    } catch (e) {
+        return 'guest';
     }
-};
+}
+
+function getProgressStore() {
+    try {
+        const raw = localStorage.getItem('englishLearningProgress');
+        return raw ? (JSON.parse(raw) || {}) : {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveProgressStore(store) {
+    try {
+        localStorage.setItem('englishLearningProgress', JSON.stringify(store || {}));
+        return true;
+    } catch (e) {
+        console.error('❌ Error al guardar progreso:', e);
+        return false;
+    }
+}
+
+function getUserProgress() {
+    try {
+        const email = getCurrentUserEmail();
+        const store = getProgressStore();
+        if (!store[email]) store[email] = {};
+        return store[email];
+    } catch (e) {
+        return {};
+    }
+}
+
+function getUserProgressField(key, defaultValue = undefined) {
+    try {
+        const up = getUserProgress();
+        if (Object.prototype.hasOwnProperty.call(up, key)) return up[key];
+        return defaultValue;
+    } catch (e) {
+        return defaultValue;
+    }
+}
+
+function setUserProgressField(key, value) {
+    try {
+        const email = getCurrentUserEmail();
+        const store = getProgressStore();
+        if (!store[email]) store[email] = {};
+        store[email][key] = value;
+
+        // Mantener snapshot legacy mínimo
+        if (key === 'xp') store.currentXP = value;
+        if (key === 'level') store.level = value;
+
+        store.lastSaved = new Date().toISOString();
+        saveProgressStore(store);
+        return true;
+    } catch (e) {
+        console.error('❌ Error en setUserProgressField:', e);
+        return false;
+    }
+}
+
+function setUserProgressFields(partial) {
+    try {
+        const email = getCurrentUserEmail();
+        const store = getProgressStore();
+        if (!store[email]) store[email] = {};
+        Object.assign(store[email], partial || {});
+
+        if (partial && 'xp' in partial) store.currentXP = partial.xp;
+        if (partial && 'level' in partial) store.level = partial.level;
+
+        store.lastSaved = new Date().toISOString();
+        saveProgressStore(store);
+        return true;
+    } catch (e) {
+        console.error('❌ Error en setUserProgressFields:', e);
+        return false;
+    }
+}
+
+// Utilidades para progreso por usuario
+/* duplicado getCurrentUserEmail eliminado: se mantiene la versión única definida en la cabecera */
 
 function loadProgress() {
     console.log("📊 Iniciando carga de progreso...");
     try {
-        // Lógica para cargar progreso
-        const saved = localStorage.getItem('englishLearningProgress');
-        if (saved) {
-            const savedProgress = JSON.parse(saved);
-            // Actualizar appState con el progreso guardado
-            Object.assign(appState, savedProgress);
-            console.log("✅ Progreso cargado desde localStorage:", savedProgress);
+        const email = getCurrentUserEmail();
+        const raw = localStorage.getItem('englishLearningProgress');
+        let store = {};
+        if (raw) {
+            try { store = JSON.parse(raw) || {}; } catch (e) { store = {}; }
+        }
+
+        const hasRootData = store && (store.level || store.currentLevel || store.xp || store.currentXP);
+        let progressSource = store[email];
+
+        // Migración desde nivel raíz si existe (compatibilidad hacia espacio por usuario)
+        if (!progressSource && hasRootData) {
+            progressSource = {
+                xp: store.currentXP ?? store.xp ?? 0,
+                level: store.currentLevel ?? store.level ?? 1,
+                lessonsCompleted: store.lessonsCompleted ?? 0,
+                streakDays: store.streakDays ?? 0,
+                diagnosticLevel: store.diagnosticLevel ?? 'A1',
+                weeklyProgress: store.weeklyProgress ?? null,
+                vocabularyWordsLearned: store.vocabularyWordsLearned ?? 0,
+                diagnosticCompleted: store.diagnosticCompleted ?? false
+            };
+            store[email] = progressSource;
+            localStorage.setItem('englishLearningProgress', JSON.stringify(store));
+            console.log("🔄 Migrado progreso raíz → usuario:", email);
+        }
+
+        if (progressSource) {
+            if (typeof appState !== 'undefined') {
+                if (progressSource.xp !== undefined) appState.currentXP = progressSource.xp;
+                if (progressSource.level !== undefined) appState.currentLevel = progressSource.level;
+                if (progressSource.lessonsCompleted !== undefined) appState.lessonsCompleted = progressSource.lessonsCompleted;
+                if (progressSource.streakDays !== undefined) appState.streakDays = progressSource.streakDays;
+                if (progressSource.weeklyProgress !== undefined) appState.weeklyProgress = progressSource.weeklyProgress;
+                if (progressSource.diagnosticLevel !== undefined) appState.diagnosticLevel = progressSource.diagnosticLevel;
+                if (progressSource.vocabularyWordsLearned !== undefined) appState.vocabularyWordsLearned = progressSource.vocabularyWordsLearned;
+                if (progressSource.diagnosticCompleted !== undefined) appState.diagnosticCompleted = progressSource.diagnosticCompleted;
+            }
+            console.log("✅ Progreso cargado para", email, progressSource);
         } else {
-            console.log("ℹ️ No hay progreso guardado, usando valores por defecto");
+            console.log("ℹ️ No hay progreso guardado para", email, "usando valores por defecto");
         }
         
         // Cargar logros del usuario
@@ -42,13 +396,9 @@ function loadProgress() {
             console.warn("⚠️ ACHIEVEMENTS_SYSTEM no está disponible");
         }
         
-        // Cargar gráfico de progreso
+        // Cargar gráfico de progreso y paneles
         loadProgressChart();
-        
-        // Cargar panel de logros
         loadAchievementsPanel();
-        
-        // Cargar panel de estadísticas detalladas
         loadDetailedStatsPanel();
         
         console.log("✅ Progreso cargado exitosamente");
@@ -58,14 +408,48 @@ function loadProgress() {
 }
 
 function saveProgress() {
-    // Lógica para guardar progreso
-    localStorage.setItem('englishLearningProgress', JSON.stringify({
-        ...appState,
-        lastSaved: new Date().toISOString()
-    }));
-    
-    // Guardar logros del usuario
-    ACHIEVEMENTS_SYSTEM.saveUserAchievements();
+    try {
+        const email = getCurrentUserEmail();
+        const raw = localStorage.getItem('englishLearningProgress');
+        let store = {};
+        if (raw) {
+            try { store = JSON.parse(raw) || {}; } catch (e) { store = {}; }
+        }
+
+        if (!store[email]) store[email] = {};
+        const entry = store[email];
+
+        // Persistir solo los campos relevantes por usuario
+        entry.xp = (typeof appState !== 'undefined' ? appState.currentXP : entry.xp) ?? 0;
+        entry.level = (typeof appState !== 'undefined' ? appState.currentLevel : entry.level) ?? 1;
+        entry.lessonsCompleted = (typeof appState !== 'undefined' ? appState.lessonsCompleted : entry.lessonsCompleted) ?? 0;
+        entry.streakDays = (typeof appState !== 'undefined' ? appState.streakDays : entry.streakDays) ?? 0;
+        entry.diagnosticLevel = (typeof appState !== 'undefined' ? appState.diagnosticLevel : entry.diagnosticLevel) ?? 'A1';
+        entry.weeklyProgress = (typeof appState !== 'undefined' ? appState.weeklyProgress : entry.weeklyProgress) ?? null;
+        entry.vocabularyWordsLearned = (typeof appState !== 'undefined' ? appState.vocabularyWordsLearned : entry.vocabularyWordsLearned) ?? 0;
+        entry.diagnosticCompleted = (typeof appState !== 'undefined' ? appState.diagnosticCompleted : entry.diagnosticCompleted) ?? false;
+        entry.lastSaved = new Date().toISOString();
+
+        // Compatibilidad: reflejar un snapshot mínimo en raíz (para lecturas legacy)
+        store.currentXP = entry.xp;
+        store.level = entry.level;
+        store.lessonsCompleted = entry.lessonsCompleted;
+        store.streakDays = entry.streakDays;
+        store.diagnosticLevel = entry.diagnosticLevel;
+        store.weeklyProgress = entry.weeklyProgress;
+        store.vocabularyWordsLearned = entry.vocabularyWordsLearned;
+        store.diagnosticCompleted = entry.diagnosticCompleted;
+        store.lastSaved = entry.lastSaved;
+
+        localStorage.setItem('englishLearningProgress', JSON.stringify(store));
+
+        // Guardar logros del usuario si el sistema está disponible
+        if (typeof ACHIEVEMENTS_SYSTEM !== 'undefined' && typeof ACHIEVEMENTS_SYSTEM.saveUserAchievements === 'function') {
+            ACHIEVEMENTS_SYSTEM.saveUserAchievements();
+        }
+    } catch (e) {
+        console.error("❌ Error al guardar progreso:", e);
+    }
 }
 
 function updateUI() {
@@ -140,29 +524,32 @@ function loadProgressChart() {
         // Verificar si Chart.js está disponible
         if (typeof Chart === 'undefined') {
             console.warn('⚠️ Chart.js no está disponible');
-            // Crear un mensaje informativo en lugar del gráfico
-            chartContainer.innerHTML = `
-                <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: #666;">
-                    <div style="text-align: center;">
-                        <i class="fas fa-chart-bar" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                        <p>Gráfico de progreso no disponible</p>
-                        <small>Chart.js no está cargado</small>
-                    </div>
+            // Reemplazar el canvas por un contenedor informativo accesible
+            const fallback = document.createElement('div');
+            fallback.className = 'chart-fallback';
+            fallback.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100%;color:#666;text-align:center;padding:1rem;border:1px dashed #ccc;border-radius:8px;';
+            fallback.innerHTML = `
+                <div>
+                    <i class="fas fa-chart-bar" aria-hidden="true" style="font-size:2rem; margin-bottom: 0.5rem;"></i>
+                    <p role="status">Gráfico de progreso no disponible</p>
+                    <small>Chart.js no está cargado</small>
                 </div>
             `;
+            chartContainer.replaceWith(fallback);
             return;
         }
         
         const weekDays = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
         // Simular datos de progreso semanal
+        const wp = (typeof appState !== 'undefined' && appState.weeklyProgress) ? appState.weeklyProgress : {};
         const weeklyData = [
-            appState.currentXP * 0.1,
-            appState.currentXP * 0.15,
-            appState.currentXP * 0.12,
-            appState.currentXP * 0.18,
-            appState.currentXP * 0.14,
-            appState.currentXP * 0.20,
-            appState.currentXP * 0.22
+            Number(wp.monday || 0),
+            Number(wp.tuesday || 0),
+            Number(wp.wednesday || 0),
+            Number(wp.thursday || 0),
+            Number(wp.friday || 0),
+            Number(wp.saturday || 0),
+            Number(wp.sunday || 0)
         ];
         
         // Crear gráfico con Chart.js
@@ -374,11 +761,17 @@ function getUserLevelMCER() {
 
 // Función para obtener XP requerido para el siguiente nivel
 function getXPForNextLevel(currentLevel) {
-    const nextLevel = LEVEL_SYSTEM.levels.find(level => level.level === currentLevel + 1);
-    if (nextLevel) {
-        return nextLevel.xpRequired;
+    try {
+        if (typeof LEVEL_SYSTEM === 'undefined' || !Array.isArray(LEVEL_SYSTEM.levels)) return 0;
+        const current = LEVEL_SYSTEM.levels.find(level => level.level === currentLevel) || null;
+        const next = LEVEL_SYSTEM.levels.find(level => level.level === currentLevel + 1) || null;
+        if (!next) return 0; // nivel máximo alcanzado
+        if (!current) return next.xpRequired; // si no se encontró nivel actual, usar xp absoluto del próximo
+        return Math.max(0, next.xpRequired - current.xpRequired);
+    } catch (e) {
+        console.error('❌ Error en getXPForNextLevel:', e);
+        return 0;
     }
-    return LEVEL_SYSTEM.xpPerLevel; // Valor por defecto
 }
 
 // Función para obtener el nivel correcto basado en XP (copiada de auth.js)
@@ -468,7 +861,7 @@ function initProgress() {
     }
 }
 
-// Exportar funciones globalmente
+ // Exportar funciones globalmente
 window.loadProgress = loadProgress;
 window.saveProgress = saveProgress;
 window.updateUI = updateUI;
@@ -477,5 +870,19 @@ window.loadDetailedStatsPanel = loadDetailedStatsPanel;
 window.loadAchievementsPanel = loadAchievementsPanel;
 window.checkDailyStreak = checkDailyStreak;
 window.getUserLevelMCER = getUserLevelMCER;
+window.getCorrectLevelFromXP = getCorrectLevelFromXP;
 window.initProgress = initProgress;
 window.STATISTICS_SYSTEM = STATISTICS_SYSTEM;
+
+// Exponer utilidades de progreso por usuario (si no están ya definidas en window)
+try {
+    if (typeof window !== 'undefined') {
+        window.getCurrentUserEmail = window.getCurrentUserEmail || getCurrentUserEmail;
+        window.getUserProgress = window.getUserProgress || getUserProgress;
+        window.getUserProgressField = window.getUserProgressField || getUserProgressField;
+        window.setUserProgressField = window.setUserProgressField || setUserProgressField;
+        window.setUserProgressFields = window.setUserProgressFields || setUserProgressFields;
+    }
+} catch (e) {
+    console.warn('⚠️ No se pudo exponer utilidades de progreso por usuario:', e);
+}

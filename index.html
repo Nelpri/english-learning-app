@@ -17,9 +17,9 @@
 </head>
 <body>
     <!-- Overlay para modal de autenticación -->
-    <div id="authOverlay" class="auth-overlay" style="display: none;"></div>
+    <div id="authOverlay" class="auth-overlay hidden"></div>
     <!-- Modal de Registro/Login -->
-    <div id="authModal" class="auth-modal" style="display: none;">
+    <div id="authModal" class="auth-modal hidden">
         <div class="auth-container">
             <div class="auth-header">
                 <h1><i class="fas fa-graduation-cap"></i> English Learning</h1>
@@ -63,28 +63,30 @@
     </div>
 
     <!-- Modal de Diagnóstico de Nivel (oculto por defecto) -->
-    <div id="diagnosticModal" class="diagnostic-modal" style="display: none; z-index: 1001;">
-        <div class="diagnostic-header">
-            <h1><i class="fas fa-user-graduate"></i> Diagnóstico de Nivel</h1>
-            <p>Responde estas preguntas para ubicarte en el nivel adecuado.</p>
-        </div>
-            
+    <div id="diagnosticModal" class="diagnostic-modal hidden diagnostic-modal-zindex">
+        <div class="diagnostic-container">
+            <div class="diagnostic-header">
+                <h1><i class="fas fa-user-graduate"></i> Diagnóstico de Nivel</h1>
+                <p>Responde estas preguntas para ubicarte en el nivel adecuado.</p>
+            </div>
+
             <!-- Barra de progreso del diagnóstico -->
             <div class="diagnostic-progress">
                 <div class="progress-bar">
-                    <div class="progress-fill" style="width: 0%"></div>
+                    <div class="progress-fill progress-fill-initial"></div>
                 </div>
                 <span class="progress-text">0/12</span>
             </div>
-            
+
             <form id="diagnosticForm" class="diagnostic-form">
                 <div id="questionContainer">
                     <!-- Las preguntas se cargarán dinámicamente aquí -->
                 </div>
                 <button type="submit" class="btn btn-violet">Siguiente Pregunta</button>
             </form>
-            <div id="diagnosticResult" class="diagnostic-result" style="display: none;"></div>
+            <div id="diagnosticResult" class="diagnostic-result hidden"></div>
         </div>
+    </div>
     </div>
 
     <!-- App Principal (visible por defecto) -->
@@ -102,7 +104,7 @@
                 </div>
                 <span class="progress-text" id="levelProgressText">0%</span>
             </div>
-            <div id="userDisplay" class="user-display" style="display: none;">              <!-- El nombre del usuario se insertará aquí dinámicamente -->
+            <div id="userDisplay" class="user-display hidden">              <!-- El nombre del usuario se insertará aquí dinámicamente -->
             </div>
             <div class="user-info-display">
                 <span class="user-name-display" id="userNameDisplay">Usuario</span>
@@ -134,6 +136,12 @@
             <button class="nav-tab" data-tab="vocabulary" role="tab" aria-selected="false" tabindex="-1" aria-controls="vocabulary" id="vocabulary-tab">
                 <i class="fas fa-book-open"></i> Vocabulario
             </button>
+            <button class="nav-tab" data-tab="community" role="tab" aria-selected="false" tabindex="-1" aria-controls="community" id="community-tab">
+                <i class="fas fa-users"></i> Comunidad
+            </button>
+            <button class="nav-tab" data-tab="settings" role="tab" aria-selected="false" tabindex="-1" aria-controls="settings" id="settings-tab">
+                <i class="fas fa-cog"></i> Configuración
+            </button>
         </nav>
 
         <!-- Main Content -->
@@ -141,11 +149,11 @@
             <!-- Learn Section -->
             <section id="learn" class="content-section active">
                 <div class="lesson-container">
-                    <div class="lesson-progress-container" style="margin-bottom: 1rem;">
-                        <div class="progress-bar-container" style="background: var(--border-color); height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem;">
-                            <div class="progress-fill" id="lessonProgressBar" style="height: 100%; background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); width: 0%; transition: width 0.5s ease;"></div>
+                    <div class="lesson-progress-container lesson-progress-margin">
+                        <div class="progress-bar-container">
+                            <div class="progress-fill lesson-progress-bar-initial" id="lessonProgressBar"></div>
                         </div>
-                        <span id="lessonProgressText" style="font-size: 0.9rem; color: var(--text-secondary);">Lección 1 de 10</span>
+                        <span id="lessonProgressText" class="lesson-progress-text">Lección 1 de 10</span>
                     </div>
                     <h2>Lección del Día</h2>
                     <div class="lesson-card">
@@ -205,7 +213,7 @@
                             <p>Repasa palabras inteligentemente</p>
                         </div>
                     </div>
-                    <div class="practice-area" id="practiceArea" style="display: none;">
+                    <div class="practice-area hidden" id="practiceArea">
                         <!-- Practice content will be loaded here -->
                     </div>
                 </div>
@@ -264,34 +272,19 @@
                     </div>
                     
                     <!-- Sección de Pruebas de Nivel -->
-                    <div class="level-tests-section" style="
-                        background: var(--surface-color);
-                        padding: 2rem;
-                        border-radius: 12px;
-                        margin-top: 2rem;
-                        border: 2px solid var(--border-color);
-                    ">
-                        <h3 style="color: var(--primary-color); margin-bottom: 1rem;">
+                    <div class="level-tests-section level-tests-section-styles">
+                        <h3>
                             <i class="fas fa-graduation-cap"></i> Pruebas de Nivel
                         </h3>
-                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                        <p>
                             Completa todos los módulos de un nivel para desbloquear la prueba y avanzar al siguiente nivel.
                         </p>
-                        
+
                         <div id="levelTestStatus" class="test-status">
                             <!-- El estado de las pruebas se cargará aquí dinámicamente -->
                         </div>
-                        
-                        <button id="takeLevelTest" class="btn btn-primary" style="
-                            background: var(--primary-color);
-                            color: white;
-                            border: none;
-                            padding: 1rem 2rem;
-                            border-radius: 8px;
-                            cursor: pointer;
-                            font-size: 1.1rem;
-                            display: none;
-                        " onclick="window.testInterface.startTest(window.moduleProgressSystem.getCurrentLevel())">
+
+                        <button id="takeLevelTest" class="btn btn-primary take-level-test-hidden" onclick="window.testInterface.startTest(window.moduleProgressSystem.getCurrentLevel())">
                             <i class="fas fa-play"></i> Tomar Prueba de Nivel
                         </button>
                     </div>
@@ -305,10 +298,20 @@
                     <div class="categories-grid" id="categoriesGrid">
                         <!-- Categories will be loaded here -->
                     </div>
-                    <div class="vocabulary-detail" id="vocabularyDetail" style="display: none;">
+                    <div class="vocabulary-detail hidden" id="vocabularyDetail">
                         <!-- Vocabulary detail will be loaded here -->
                     </div>
                 </div>
+            </section>
+
+            <!-- Community Section -->
+            <section id="community" class="content-section">
+                <!-- El contenido de comunidad se cargará dinámicamente por JavaScript -->
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="content-section">
+                <!-- El contenido de configuración se cargará dinámicamente por JavaScript -->
             </section>
 
             <!-- Conversation Section -->
@@ -335,7 +338,7 @@
                             <span class="level-badge">B2</span>
                         </div>
                     </div>
-                    <div id="conversationContainer" class="conversation-container" style="display: none;">
+                    <div id="conversationContainer" class="conversation-container hidden">
                         <!-- Contenido de conversación se cargará aquí -->
                     </div>
                 </div>
@@ -343,7 +346,7 @@
         </main>
 
         <!-- Achievement Notifications -->
-        <div id="achievementNotification" class="achievement-notification" style="display: none;">
+        <div id="achievementNotification" class="achievement-notification hidden">
             <i class="fas fa-trophy"></i>
             <span id="achievementText"></span>
         </div>
@@ -374,6 +377,24 @@
     <script src="script1.js/level-tests.js"></script>
     <script src="script1.js/test-interface.js"></script>
     <script src="script1.js/level-test-manager.js"></script>
+    <script src="script1.js/sync-system.js"></script>
+    <script src="script1.js/settings.js"></script>
+    <script src="script1.js/api-integration.js"></script>
+    <script src="script1.js/community-system.js"></script>
+    <script>
+        // Registrar Service Worker para modo offline
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado exitosamente:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Error al registrar Service Worker:', error);
+                    });
+            });
+        }
+    </script>
     <script src="script.js"></script>
 </body>
 </html> 

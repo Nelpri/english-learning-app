@@ -359,7 +359,7 @@ class GamificationSystem {
 
     // Obtener desafío diario
     getDailyChallenge() {
-        const day = new Date().toLocaleDateString('en-US', { weekday: 'lowercase' });
+        const day = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
         return this.dailyChallenges[day] || this.dailyChallenges.monday;
     }
 

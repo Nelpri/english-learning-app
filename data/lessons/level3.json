@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Colores Avanzados",
+    "difficulty": "Intermedio",
+    "vocabulary": [
+      { "english": "Purple", "spanish": "Morado", "pronunciation": "/ˈpɜːrpl/" },
+      { "english": "Orange", "spanish": "Naranja", "pronunciation": "/ˈɔːrɪndʒ/" },
+      { "english": "Pink", "spanish": "Rosa", "pronunciation": "/pɪŋk/" },
+      { "english": "Brown", "spanish": "Marrón", "pronunciation": "/braʊn/" },
+      { "english": "Gray", "spanish": "Gris", "pronunciation": "/ɡreɪ/" }
+    ],
+    "grammar": {
+      "title": "Adjetivos Comparativos",
+      "content": "Para comparar usamos: big - bigger, small - smaller, beautiful - more beautiful"
+    }
+  },
+  {
+    "title": "Tiempo y Fechas",
+    "difficulty": "Intermedio",
+    "vocabulary": [
+      { "english": "Today", "spanish": "Hoy", "pronunciation": "/təˈdeɪ/" },
+      { "english": "Yesterday", "spanish": "Ayer", "pronunciation": "/ˈjestərdeɪ/" },
+      { "english": "Tomorrow", "spanish": "Mañana", "pronunciation": "/təˈmɒroʊ/" },
+      { "english": "Week", "spanish": "Semana", "pronunciation": "/wiːk/" },
+      { "english": "Month", "spanish": "Mes", "pronunciation": "/mʌnθ/" }
+    ],
+    "grammar": {
+      "title": "Presente Simple",
+      "content": "I work, you work, he/she/it works, we work, they work"
+    }
+  },
+  {
+    "title": "Tecnología Básica",
+    "difficulty": "Intermedio",
+    "vocabulary": [
+      { "english": "Computer", "spanish": "Computadora", "pronunciation": "/kəmˈpjuːtər/" },
+      { "english": "Phone", "spanish": "Teléfono", "pronunciation": "/foʊn/" },
+      { "english": "Internet", "spanish": "Internet", "pronunciation": "/ˈɪntərnet/" },
+      { "english": "Email", "spanish": "Correo electrónico", "pronunciation": "/ˈiːmeɪl/" },
+      { "english": "Website", "spanish": "Sitio web", "pronunciation": "/ˈwebsaɪt/" }
+    ],
+    "grammar": {
+      "title": "Verbos Regulares en Pasado",
+      "content": "Para verbos regulares agregamos -ed: work → worked, play → played"
+    }
+  }
+]

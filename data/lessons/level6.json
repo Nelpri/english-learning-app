@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Negocios Avanzados",
+    "difficulty": "Experto",
+    "vocabulary": [
+      { "english": "Stakeholder", "spanish": "Parte interesada", "pronunciation": "/ˈsteɪkhoʊldər/" },
+      { "english": "Leverage", "spanish": "Aprovechar/Apalancar", "pronunciation": "/ˈlevərɪdʒ/" },
+      { "english": "Synergy", "spanish": "Sinergia", "pronunciation": "/ˈsɪnərdʒi/" },
+      { "english": "Benchmark", "spanish": "Punto de referencia", "pronunciation": "/ˈbentʃmɑːrk/" },
+      { "english": "Scalability", "spanish": "Escalabilidad", "pronunciation": "/ˌskeɪləˈbɪləti/" }
+    ],
+    "grammar": {
+      "title": "Subjuntivo Avanzado",
+      "content": "It's imperative that we consider all possibilities. I suggest that he be consulted before making any decisions."
+    }
+  },
+  {
+    "title": "Ciencia y Tecnología",
+    "difficulty": "Experto",
+    "vocabulary": [
+      { "english": "Algorithm", "spanish": "Algoritmo", "pronunciation": "/ˈælɡərɪðəm/" },
+      { "english": "Quantum", "spanish": "Cuántico", "pronunciation": "/ˈkwɑːntəm/" },
+      { "english": "Biotechnology", "spanish": "Biotecnología", "pronunciation": "/ˌbaɪoʊtekˈnɑːlədʒi/" },
+      { "english": "Nanotechnology", "spanish": "Nanotecnología", "pronunciation": "/ˌnænoʊtekˈnɑːlədʒi/" },
+      { "english": "Artificial Intelligence", "spanish": "Inteligencia Artificial", "pronunciation": "/ˌɑːrtɪˈfɪʃəl ɪnˈtelɪdʒəns/" }
+    ],
+    "grammar": {
+      "title": "Voz Pasiva Compleja",
+      "content": "The research findings were being analyzed when the breakthrough occurred. The data should have been processed earlier."
+    }
+  },
+  {
+    "title": "Política y Sociedad",
+    "difficulty": "Experto",
+    "vocabulary": [
+      { "english": "Democracy", "spanish": "Democracia", "pronunciation": "/dɪˈmɑːkrəsi/" },
+      { "english": "Bureaucracy", "spanish": "Burocracia", "pronunciation": "/bjʊˈrɑːkrəsi/" },
+      { "english": "Transparency", "spanish": "Transparencia", "pronunciation": "/trænsˈpærənsi/" },
+      { "english": "Accountability", "spanish": "Rendición de cuentas", "pronunciation": "/əˌkaʊntəˈbɪləti/" },
+      { "english": "Governance", "spanish": "Gobernanza", "pronunciation": "/ˈɡʌvərnəns/" }
+    ],
+    "grammar": {
+      "title": "Estructuras Formales",
+      "content": "Were it not for the current circumstances, we would proceed with the implementation. Had the committee been informed earlier, the decision might have been different."
+    }
+  }
+]

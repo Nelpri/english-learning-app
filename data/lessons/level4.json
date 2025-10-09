@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Deportes y Actividades",
+    "difficulty": "Intermedio Alto",
+    "vocabulary": [
+      { "english": "Football", "spanish": "Fútbol", "pronunciation": "/ˈfʊtbɔːl/" },
+      { "english": "Basketball", "spanish": "Baloncesto", "pronunciation": "/ˈbæskɪtbɔːl/" },
+      { "english": "Swimming", "spanish": "Natación", "pronunciation": "/ˈswɪmɪŋ/" },
+      { "english": "Running", "spanish": "Correr", "pronunciation": "/ˈrʌnɪŋ/" },
+      { "english": "Cycling", "spanish": "Ciclismo", "pronunciation": "/ˈsaɪklɪŋ/" }
+    ],
+    "grammar": {
+      "title": "Presente Continuo",
+      "content": "I am working, you are working, he/she/it is working"
+    }
+  },
+  {
+    "title": "Viajes y Transporte",
+    "difficulty": "Intermedio Alto",
+    "vocabulary": [
+      { "english": "Airport", "spanish": "Aeropuerto", "pronunciation": "/ˈeəpɔːt/" },
+      { "english": "Train station", "spanish": "Estación de tren", "pronunciation": "/treɪn ˈsteɪʃn/" },
+      { "english": "Bus stop", "spanish": "Parada de autobús", "pronunciation": "/bʌs stɒp/" },
+      { "english": "Passport", "spanish": "Pasaporte", "pronunciation": "/ˈpæspɔːt/" },
+      { "english": "Ticket", "spanish": "Boleto", "pronunciation": "/ˈtɪkɪt/" }
+    ],
+    "grammar": {
+      "title": "Futuro con 'Going to'",
+      "content": "I am going to travel, you are going to visit, he is going to arrive"
+    }
+  },
+  {
+    "title": "Emociones y Sentimientos",
+    "difficulty": "Intermedio Alto",
+    "vocabulary": [
+      { "english": "Happy", "spanish": "Feliz", "pronunciation": "/ˈhæpi/" },
+      { "english": "Sad", "spanish": "Triste", "pronunciation": "/sæd/" },
+      { "english": "Excited", "spanish": "Emocionado", "pronunciation": "/ɪkˈsaɪtɪd/" },
+      { "english": "Nervous", "spanish": "Nervioso", "pronunciation": "/ˈnɜːvəs/" },
+      { "english": "Proud", "spanish": "Orgulloso", "pronunciation": "/praʊd/" }
+    ],
+    "grammar": {
+      "title": "Adjetivos con 'Feel'",
+      "content": "I feel happy, you feel sad, he feels excited, they feel proud"
+    }
+  }
+]

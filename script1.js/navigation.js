@@ -69,10 +69,24 @@ function loadSectionContent(section) {
         s.classList.remove('active');
         s.style.opacity = '0'; // Añadir fade out para transición suave
     });
-    
+
     const targetSection = document.getElementById(section);
     if (targetSection) {
         targetSection.classList.add('active');
+
+        // Manejar secciones especiales que requieren carga dinámica
+        if (section === 'settings') {
+            // Cargar contenido de configuración dinámicamente
+            if (window.settingsSystem && typeof window.settingsSystem.showSettings === 'function') {
+                window.settingsSystem.showSettings();
+            }
+        } else if (section === 'community') {
+            // Cargar contenido de comunidad dinámicamente
+            if (window.communitySystem && typeof window.communitySystem.showCommunity === 'function') {
+                window.communitySystem.showCommunity();
+            }
+        }
+
         // Fade in suave
         setTimeout(() => {
             targetSection.style.opacity = '1';

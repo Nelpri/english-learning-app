@@ -923,20 +923,29 @@ class ConversationSystem {
     // Guardar progreso de conversación
     saveConversationProgress(conversation, stats) {
         try {
-            const progressData = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+            // Usar almacenamiento por usuario (namespaced)
+            const up = (typeof window.getUserProgress === 'function')
+                ? window.getUserProgress()
+                : (JSON.parse(localStorage.getItem('englishLearningProgress') || '{}') || {});
             
-            if (!progressData.conversations) {
-                progressData.conversations = [];
+            if (!up.conversations) {
+                up.conversations = [];
             }
             
-            progressData.conversations.push({
+            up.conversations.push({
                 template: conversation.template.title,
                 scenario: conversation.scenario.id,
                 stats: stats,
                 timestamp: new Date().toISOString()
             });
             
-            localStorage.setItem('englishLearningProgress', JSON.stringify(progressData));
+            if (typeof window.setUserProgressFields === 'function') {
+                window.setUserProgressFields({ conversations: up.conversations });
+            } else {
+                const progressData = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+                progressData.conversations = up.conversations;
+                localStorage.setItem('englishLearningProgress', JSON.stringify(progressData));
+            }
             
         } catch (error) {
             console.error("❌ Error al guardar progreso de conversación:", error);

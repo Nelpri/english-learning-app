@@ -31,13 +31,15 @@ class SpacedRepetitionSystem {
     loadUserData() {
         try {
             const userData = JSON.parse(localStorage.getItem('englishLearningSession') || '{}');
-            const progressData = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+            const up = (typeof window.getUserProgress === 'function')
+                ? window.getUserProgress()
+                : (JSON.parse(localStorage.getItem('englishLearningProgress') || '{}') || {});
             
             this.userLevel = userData.level || 1;
             this.userXP = userData.xp || 0;
-            this.learningStats = progressData.learningStats || {};
-            this.reviewData = progressData.srsReviews || {};
-            this.difficultWords = progressData.difficultWords || [];
+            this.learningStats = up.learningStats || {};
+            this.reviewData = up.srsReviews || {};
+            this.difficultWords = up.difficultWords || [];
             
             console.log("📊 Datos del usuario cargados para SRS");
         } catch (error) {
@@ -517,9 +519,13 @@ class SpacedRepetitionSystem {
     // Guardar datos de revisión
     saveReviewData() {
         try {
-            const progressData = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-            progressData.srsReviews = this.reviewData;
-            localStorage.setItem('englishLearningProgress', JSON.stringify(progressData));
+            if (typeof window.setUserProgressFields === 'function') {
+                window.setUserProgressFields({ srsReviews: this.reviewData });
+            } else {
+                const progressData = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+                progressData.srsReviews = this.reviewData;
+                localStorage.setItem('englishLearningProgress', JSON.stringify(progressData));
+            }
             
             console.log("💾 Datos de SRS guardados");
         } catch (error) {

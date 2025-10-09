@@ -30,9 +30,18 @@ function handleRegister(e) {
     localStorage.setItem('englishLearningUsers', JSON.stringify(users));
     console.log("✅ Usuario registrado exitosamente");
     
-    // LIMPIAR cualquier progreso previo para asegurar que sea usuario nuevo
-    localStorage.removeItem('englishLearningProgress');
-    console.log("🧹 Progreso previo limpiado para usuario nuevo");
+     // LIMPIAR progreso previo SOLO para este usuario, preservando otros
+    try {
+        const raw = localStorage.getItem('englishLearningProgress');
+        let store = raw ? JSON.parse(raw) : {};
+        if (store && typeof store === 'object') {
+            delete store[newUser.email];
+            localStorage.setItem('englishLearningProgress', JSON.stringify(store));
+        }
+        console.log("🧹 Progreso previo limpiado solo para el usuario nuevo");
+    } catch (e) {
+        console.warn("⚠️ No se pudo limpiar progreso por usuario:", e);
+    }
     
     // Hacer login automático después del registro
     console.log("🔄 Haciendo login automático...");
@@ -67,9 +76,11 @@ function handleRegister(e) {
         userLevelDisplay.textContent = 'Nivel 1';
     }
     
-    // Verificar si es usuario nuevo (debe serlo)
-    const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-    const hasLevel = userProgress.level && userProgress.level > 0;
+     // Verificar si es usuario nuevo (debe serlo) usando almacén por usuario
+    const upRegister = (typeof window.getUserProgress === 'function')
+        ? window.getUserProgress()
+        : (JSON.parse(localStorage.getItem('englishLearningProgress') || '{}') || {});
+    const hasLevel = ((upRegister.level || upRegister.currentLevel || 0) > 0) || !!upRegister.diagnosticCompleted;
     
     if (!hasLevel) {
         console.log("🎯 Usuario nuevo, mostrando diagnóstico...");
@@ -103,31 +114,10 @@ function handleRegister(e) {
                 }
             } else {
                 console.warn("⚠️ showDiagnosticModal no está disponible");
-                console.warn("🔍 Buscando función en diferentes ubicaciones...");
-                
-                // Buscar la función en diferentes lugares
-                const possibleLocations = [
-                    'showDiagnosticModal',
-                    'window.showDiagnosticModal',
-                    'global.showDiagnosticModal'
-                ];
-                
-                possibleLocations.forEach(location => {
-                    try {
-                        const func = eval(location);
-                        if (typeof func === 'function') {
-                            console.log(`✅ Función encontrada en: ${location}`);
-                        } else {
-                            console.log(`❌ No es función en: ${location}`);
-                        }
-                    } catch (error) {
-                        console.log(`❌ Error al evaluar: ${location}`);
-                    }
-                });
-                
-                // NO asignar nivel por defecto aquí
-                // El nivel se asignará DESPUÉS de completar el diagnóstico
-                console.log("⏸️ Saltando asignación de nivel hasta completar diagnóstico");
+                // Fallback seguro sin eval: notificar al usuario e indicar ruta alternativa
+                if (typeof showNotification === 'function') {
+                    showNotification('No se pudo abrir el diagnóstico. Intenta desde Progreso → "Tomar Prueba de Nivel".', 'warning');
+                }
             }
         }, 500);
     }
@@ -198,9 +188,11 @@ function handleLogin(e) {
     if (userNameDisplay && userLevelDisplay) {
         userNameDisplay.textContent = user.name;
         
-        // Obtener nivel del usuario
-        const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-        const level = userProgress.level || 1;
+        // Obtener nivel del usuario (por usuario actual)
+        const upLogin = (typeof window.getUserProgress === 'function')
+            ? window.getUserProgress()
+            : (JSON.parse(localStorage.getItem('englishLearningProgress') || '{}') || {});
+        const level = upLogin.level || upLogin.currentLevel || 1;
         userLevelDisplay.textContent = `Nivel ${level}`;
     }
     
@@ -317,20 +309,27 @@ function isAuthenticated() {
 
 // Función para obtener el nivel correcto basado en XP
 function getCorrectLevelFromXP(xp) {
-    if (typeof LEVEL_SYSTEM === 'undefined' || !LEVEL_SYSTEM.levels) {
-        return 1; // Nivel por defecto
-    }
-    
-    // Buscar el nivel más alto que el usuario puede alcanzar con su XP
-    let correctLevel = 1;
-    for (let i = LEVEL_SYSTEM.levels.length - 1; i >= 0; i--) {
-        if (xp >= LEVEL_SYSTEM.levels[i].xpRequired) {
-            correctLevel = LEVEL_SYSTEM.levels[i].level;
-            break;
+    try {
+        // Usar la implementación centralizada si está disponible
+        if (typeof window.getCorrectLevelFromXP === 'function') {
+            return window.getCorrectLevelFromXP(xp);
         }
+        // Fallback local seguro
+        if (typeof LEVEL_SYSTEM === 'undefined' || !LEVEL_SYSTEM.levels) {
+            return 1;
+        }
+        let correctLevel = 1;
+        for (let i = LEVEL_SYSTEM.levels.length - 1; i >= 0; i--) {
+            if (xp >= LEVEL_SYSTEM.levels[i].xpRequired) {
+                correctLevel = LEVEL_SYSTEM.levels[i].level;
+                break;
+            }
+        }
+        return correctLevel;
+    } catch (e) {
+        console.error("❌ Error en getCorrectLevelFromXP (proxy):", e);
+        return 1;
     }
-    
-    return correctLevel;
 }
 
 function updateUserDisplay(user) {
@@ -353,8 +352,10 @@ function updateUserDisplay(user) {
                 userProgress = appState;
                 console.log("📊 Progreso del usuario desde appState:", userProgress);
             } else {
-                userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-                console.log("📊 Progreso del usuario desde localStorage:", userProgress);
+                userProgress = (typeof window.getUserProgress === 'function')
+                    ? window.getUserProgress()
+                    : (JSON.parse(localStorage.getItem('englishLearningProgress') || '{}') || {});
+                console.log("📊 Progreso del usuario desde almacenamiento por usuario:", userProgress);
             }
             
             // Obtener nivel y XP
@@ -912,73 +913,6 @@ function syncUserDisplay() {
     }
 }
 
-// Función para restaurar el progreso del usuario
-function restoreUserProgress(user) {
-    console.log("🔄 Restaurando progreso del usuario:", user.email);
-    
-    try {
-        // 1. Obtener progreso guardado del usuario
-        const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-        const userSpecificProgress = userProgress[user.email] || {};
-        
-        console.log("📊 Progreso encontrado para usuario:", user.email, userSpecificProgress);
-        
-        // 2. Restaurar appState si está disponible
-        if (typeof window.appState !== 'undefined') {
-            // Restaurar XP
-            if (userSpecificProgress.xp && userSpecificProgress.xp > 0) {
-                window.appState.currentXP = userSpecificProgress.xp;
-                console.log("✅ XP restaurado:", userSpecificProgress.xp);
-            }
-            
-            // Restaurar nivel
-            if (userSpecificProgress.level && userSpecificProgress.level > 0) {
-                window.appState.currentLevel = userSpecificProgress.level;
-                console.log("✅ Nivel restaurado:", userSpecificProgress.level);
-            }
-            
-            // Restaurar lecciones completadas
-            if (userSpecificProgress.lessonsCompleted !== undefined) {
-                window.appState.lessonsCompleted = userSpecificProgress.lessonsCompleted;
-                console.log("✅ Lecciones completadas restauradas:", userSpecificProgress.lessonsCompleted);
-            }
-            
-            // Restaurar racha
-            if (userSpecificProgress.streakDays !== undefined) {
-                window.appState.streakDays = userSpecificProgress.streakDays;
-                console.log("✅ Racha restaurada:", userSpecificProgress.streakDays);
-            }
-            
-            // Restaurar nivel MCER
-            if (userSpecificProgress.diagnosticLevel) {
-                window.appState.diagnosticLevel = userSpecificProgress.diagnosticLevel;
-                console.log("✅ Nivel MCER restaurado:", userSpecificProgress.diagnosticLevel);
-            }
-            
-            // Restaurar progreso semanal
-            if (userSpecificProgress.weeklyProgress) {
-                window.appState.weeklyProgress = userSpecificProgress.weeklyProgress;
-                console.log("✅ Progreso semanal restaurado");
-            }
-        } else {
-            console.log("⚠️ appState no disponible, esperando a que se inicialice...");
-        }
-        
-        // 3. Actualizar UI del header
-        if (typeof window.updateHeaderElements === 'function') {
-            window.updateHeaderElements();
-            console.log("✅ Header actualizado con progreso restaurado");
-        }
-        
-        // 4. Actualizar display del usuario
-        updateUserDisplay(user);
-        
-        console.log("✅ Progreso del usuario restaurado completamente");
-        
-    } catch (error) {
-        console.error("❌ Error al restaurar progreso del usuario:", error);
-    }
-}
 
 // Función para depurar el estado del localStorage
 function debugLocalStorage() {

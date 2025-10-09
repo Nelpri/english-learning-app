@@ -37,8 +37,8 @@ function loadCurrentLesson() {
             console.warn("⚠️ Elemento lessonDifficulty no encontrado");
         }
         
-        // Verificar si la lección ya fue completada
-        const isCompleted = isLessonCompleted(appState.currentLesson);
+        // Verificar si la lección ya fue completada (usar ID estable)
+        const isCompleted = isLessonCompleted(currentLesson && currentLesson.id != null ? currentLesson.id : appState.currentLesson);
         const lessonHeader = document.querySelector('.lesson-header');
         
         // Agregar o actualizar indicador de completado
@@ -63,18 +63,51 @@ function loadCurrentLesson() {
             currentLesson.vocabulary.forEach((item, index) => {
                 const vocabItem = document.createElement('div');
                 vocabItem.className = 'vocabulary-item';
-                vocabItem.innerHTML = `
-                    <div class="vocab-header">
-                        <div class="english">${item.english}</div>
-                        <div class="pronunciation-buttons">
-                            <button class="speak-btn" onclick="speakText('${item.english}', 'en-US')" title="Escuchar pronunciación">
-                                <i class="fas fa-volume-up"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="spanish">${item.spanish}</div>
-                    <div class="pronunciation">[${item.pronunciation}]</div>
-                `;
+
+                const header = document.createElement('div');
+                header.className = 'vocab-header';
+
+                const englishDiv = document.createElement('div');
+                englishDiv.className = 'english';
+                englishDiv.textContent = item.english;
+
+                const buttonsDiv = document.createElement('div');
+                buttonsDiv.className = 'pronunciation-buttons';
+
+                const speakBtn = document.createElement('button');
+                speakBtn.className = 'speak-btn';
+                speakBtn.title = 'Escuchar pronunciación';
+                speakBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                speakBtn.addEventListener('click', () => {
+                    try {
+                        if (typeof window.speakText === 'function') {
+                            window.speakText(item.english, 'en-US');
+                        } else if ('speechSynthesis' in window) {
+                            const utt = new SpeechSynthesisUtterance(item.english);
+                            utt.lang = 'en-US';
+                            speechSynthesis.speak(utt);
+                        }
+                    } catch (e) {
+                        console.warn('No se pudo reproducir la pronunciación:', e);
+                    }
+                });
+
+                buttonsDiv.appendChild(speakBtn);
+                header.appendChild(englishDiv);
+                header.appendChild(buttonsDiv);
+
+                const spanishDiv = document.createElement('div');
+                spanishDiv.className = 'spanish';
+                spanishDiv.textContent = item.spanish;
+
+                const pronDiv = document.createElement('div');
+                pronDiv.className = 'pronunciation';
+                pronDiv.textContent = `[${item.pronunciation}]`;
+
+                vocabItem.appendChild(header);
+                vocabItem.appendChild(spanishDiv);
+                vocabItem.appendChild(pronDiv);
+
                 vocabularyGrid.appendChild(vocabItem);
                 console.log(`📚 Vocabulario ${index + 1} agregado:`, item.english);
             });
@@ -86,10 +119,14 @@ function loadCurrentLesson() {
         // Cargar gramática
         const grammarContent = document.getElementById('grammarContent');
         if (grammarContent) {
-            grammarContent.innerHTML = `
-                <h5>${currentLesson.grammar.title}</h5>
-                <p>${currentLesson.grammar.content}</p>
-            `;
+            // Construir contenido de forma segura (sin innerHTML)
+            grammarContent.innerHTML = '';
+            const h5 = document.createElement('h5');
+            h5.textContent = currentLesson.grammar.title;
+            const p = document.createElement('p');
+            p.textContent = currentLesson.grammar.content;
+            grammarContent.appendChild(h5);
+            grammarContent.appendChild(p);
             console.log("📖 Gramática cargada:", currentLesson.grammar.title);
         } else {
             console.warn("⚠️ Elemento grammarContent no encontrado");
@@ -238,13 +275,24 @@ function nextLesson() {
     console.log("📋 Lecciones disponibles:", allowedLessons.map(l => l.title));
     
     // Marcar la lección actual como completada y sumar XP
-    const currentLessonId = appState.currentLesson;
+    const currentLessonObj = allowedLessons[appState.currentLesson];
+    const currentLessonId = (currentLessonObj && currentLessonObj.id != null) ? currentLessonObj.id : appState.currentLesson;
     if (!isLessonCompleted(currentLessonId)) {
         console.log("🎯 Marcando lección como completada y sumando XP...");
         markLessonCompleted(currentLessonId);
         appState.lessonsCompleted++;
         appState.currentXP += LEVEL_SYSTEM.xpPerLesson;
-        appState.vocabularyWordsLearned += allowedLessons[currentLessonId].vocabulary.length;
+        appState.vocabularyWordsLearned += (currentLessonObj?.vocabulary?.length || 0);
+
+        // Registrar actividad en estadísticas
+        if (typeof STATISTICS_SYSTEM !== 'undefined' && STATISTICS_SYSTEM.recordActivity) {
+            STATISTICS_SYSTEM.recordActivity('lesson_completed', {
+                lessonId: currentLessonId,
+                lessonTitle: currentLessonObj?.title || 'Lección',
+                xpEarned: LEVEL_SYSTEM.xpPerLesson,
+                vocabularyLearned: currentLessonObj?.vocabulary?.length || 0
+            });
+        }
         
         console.log("✅ XP sumado:", LEVEL_SYSTEM.xpPerLesson);
         console.log("📊 XP total:", appState.currentXP);
@@ -355,40 +403,67 @@ function nextLesson() {
 
 // Función para verificar si una lección está completada
 function isLessonCompleted(lessonId) {
-    // Usar el sistema unificado de appState
-    if (typeof appState !== 'undefined' && appState.userProgress) {
-        return appState.userProgress[lessonId]?.completed || false;
+    // Usar ID estable de lección
+    if (typeof appState !== 'undefined') {
+        if (appState.userProgressByLessonId && appState.userProgressByLessonId[lessonId]?.completed) {
+            return true;
+        }
+        // Compatibilidad: algunos entornos pudieron guardar en userProgress por ID
+        if (appState.userProgress && appState.userProgress[lessonId]?.completed) {
+            return true;
+        }
     }
-    
-    // Fallback al sistema anterior
-    const completedLessons = JSON.parse(localStorage.getItem('completedLessons') || '[]');
-    return completedLessons.includes(lessonId);
+
+    // Fallback: almacenar por ID en localStorage
+    try {
+        const completedById = JSON.parse(localStorage.getItem('completedLessonsById') || '[]');
+        if (Array.isArray(completedById) && completedById.includes(lessonId)) return true;
+    } catch (e) {
+        // ignore
+    }
+    return false;
 }
 
 // Función para marcar una lección como completada
 function markLessonCompleted(lessonId) {
-    // Usar el sistema unificado de appState
+    // Usar ID estable y persistir por usuario si es posible
     if (typeof appState !== 'undefined') {
-        if (!appState.userProgress) {
-            appState.userProgress = {};
+        if (!appState.userProgressByLessonId) {
+            appState.userProgressByLessonId = {};
         }
-        appState.userProgress[lessonId] = {
+        appState.userProgressByLessonId[lessonId] = {
             completed: true,
             completedAt: new Date().toISOString(),
             xpEarned: LEVEL_SYSTEM.xpPerLesson
         };
-        console.log("✅ Lección marcada como completada en appState:", lessonId);
+        try {
+            // Persistencia mínima por ID en localStorage
+            const completedById = JSON.parse(localStorage.getItem('completedLessonsById') || '[]');
+            if (!completedById.includes(lessonId)) {
+                completedById.push(lessonId);
+                localStorage.setItem('completedLessonsById', JSON.stringify(completedById));
+            }
+            // Persistir en store por-usuario si está disponible
+            if (typeof setUserProgressFields === 'function') {
+                setUserProgressFields({ completedLessonsById: completedById });
+            }
+        } catch (e) {
+            console.warn("⚠️ No se pudo persistir completedLessonsById:", e);
+        }
+        console.log("✅ Lección marcada como completada (ID):", lessonId);
         return;
     }
-    
-    // Fallback al sistema anterior
-    const completedLessons = JSON.parse(localStorage.getItem('completedLessons') || '[]');
-    if (!completedLessons.includes(lessonId)) {
-        completedLessons.push(lessonId);
-        localStorage.setItem('completedLessons', JSON.stringify(completedLessons));
-        console.log("✅ Lección marcada como completada en localStorage:", lessonId);
-    } else {
-        console.log("ℹ️ Lección ya estaba marcada como completada:", lessonId);
+
+    // Fallback mínimo (ID)
+    try {
+        const completedById = JSON.parse(localStorage.getItem('completedLessonsById') || '[]');
+        if (!completedById.includes(lessonId)) {
+            completedById.push(lessonId);
+            localStorage.setItem('completedLessonsById', JSON.stringify(completedById));
+        }
+        console.log("✅ Lección marcada como completada (fallback, ID):", lessonId);
+    } catch (e) {
+        console.warn("⚠️ No se pudo guardar estado de lección completada:", e);
     }
 }
 
@@ -465,10 +540,12 @@ function getAllowedLessonsByLevel() {
             userLevel = appState.currentLevel;
             console.log("📊 Nivel obtenido desde appState:", userLevel);
         } else {
-            // Fallback a localStorage
-            const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
-            userLevel = userProgress.currentLevel || userProgress.level || 1;
-            console.log("📊 Nivel obtenido desde localStorage:", userLevel);
+            // Fallback a almacenamiento por usuario (con compatibilidad a localStorage)
+            const up = (typeof getUserProgress === 'function')
+                ? getUserProgress()
+                : (JSON.parse(localStorage.getItem('englishLearningProgress') || '{}') || {});
+            userLevel = up.currentLevel || up.level || 1;
+            console.log("📊 Nivel obtenido desde almacenamiento:", userLevel);
         }
         
         // Obtener todas las lecciones disponibles hasta el nivel del usuario
@@ -580,11 +657,14 @@ function getAllowedLessonsByLevel() {
 // Lógica para obtener el MCER según dificultad
 function getLessonMCERFromDifficulty(difficulty) {
     if (!difficulty) return 'A1';
-    const d = String(difficulty).toLowerCase();
-    if (d.includes('principiante')) return 'A1';
-    if (d.includes('básico')) return 'A2';
+    const d = String(difficulty).toLowerCase().trim();
+    // Ordenar de más específico a más general
+    if (d.includes('intermedio alto')) return 'B2';
     if (d.includes('intermedio')) return 'B1';
     if (d.includes('avanzado')) return 'B2';
+    if (d.includes('experto')) return 'C1';
+    if (d.includes('básico')) return 'A2';
+    if (d.includes('principiante')) return 'A1';
     return 'A1';
 }
 
@@ -655,8 +735,10 @@ function syncGlobalState() {
     console.log("🔄 Iniciando sincronización global del estado...");
     
     try {
-        // 1. Sincronizar appState con localStorage
-        const storedProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+        // 1. Sincronizar appState con almacenamiento por usuario (con compatibilidad)
+        const storedProgress = (typeof getUserProgress === 'function')
+            ? getUserProgress()
+            : (JSON.parse(localStorage.getItem('englishLearningProgress') || '{}') || {});
         
         console.log("🔍 Estado almacenado en localStorage:", {
             storedXP: storedProgress.xp,
@@ -702,7 +784,9 @@ function syncGlobalState() {
         updateNextLessonButton();
         
         // 5. Guardar progreso sincronizado SOLO si no es después del diagnóstico
-        const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+        const userProgress = (typeof getUserProgress === 'function')
+            ? getUserProgress()
+            : (JSON.parse(localStorage.getItem('englishLearningProgress') || '{}') || {});
         if (typeof saveProgress === 'function' && !userProgress.diagnosticCompleted) {
             console.log("💾 Guardando progreso sincronizado...");
             saveProgress();
@@ -728,8 +812,10 @@ function initializeFromDiagnostic(diagnosticLevel) {
     console.log("🎯 Inicializando estado desde diagnóstico:", diagnosticLevel);
     
     try {
-        // Obtener el progreso guardado por el diagnóstico
-        const userProgress = JSON.parse(localStorage.getItem('englishLearningProgress') || '{}');
+        // Obtener el progreso guardado por el diagnóstico (por usuario)
+        const userProgress = (typeof getUserProgress === 'function')
+            ? getUserProgress()
+            : (JSON.parse(localStorage.getItem('englishLearningProgress') || '{}') || {});
         
         // Usar los valores del diagnóstico en lugar de sobrescribirlos
         const diagnosticLevelNum = userProgress.currentLevel || 1;
@@ -798,3 +884,161 @@ window.updateNextLessonButton = updateNextLessonButton;
 window.ensureLearnSectionVisible = ensureLearnSectionVisible;
 window.nextLesson = nextLesson;
 window.setupLessonEventListeners = setupLessonEventListeners;
+
+/* Fase 3: Carga bajo demanda de lecciones (JSON por nivel) con caché y fallback */
+;(() => {
+  try {
+    if (!window.__dataCache) window.__dataCache = { lessons: new Map(), vocabulary: new Map() };
+    if (!window.__dataCache.lessons) window.__dataCache.lessons = new Map();
+
+    const LESSONS_PATH = 'data/lessons';
+
+    function __fetchJSON(path) {
+      return new Promise((resolve, reject) => {
+        try {
+          // En entornos locales (file://), fetch no funciona por CORS, así que fallamos silenciosamente
+          if (window.location && window.location.protocol === 'file:') {
+            return reject(new Error('Entorno local: fetch no disponible'));
+          }
+          if (typeof fetch !== 'function') return reject(new Error('fetch no disponible'));
+          fetch(path, { cache: 'no-store' })
+            .then(res => {
+              if (!res.ok) throw new Error('HTTP ' + res.status);
+              return res.json();
+            })
+            .then(json => resolve(json))
+            .catch(err => reject(err));
+        } catch (e) {
+          reject(e);
+        }
+      });
+    }
+
+    function __mapUserLevelToLessonKeys(userLevel) {
+      const keys = ['level1'];
+      if (userLevel >= 3) keys.push('level2');
+      if (userLevel >= 4) keys.push('level3');
+      if (userLevel >= 6) keys.push('level4');
+      if (userLevel >= 8) keys.push('level5');
+      if (userLevel >= 9) keys.push('level6');
+      if (userLevel >= 10) keys.push('level7');
+      return keys;
+    }
+
+    function __prefetchLessons(keys = []) {
+      try {
+        keys.forEach(k => {
+          if (window.__dataCache.lessons.has(k)) return;
+          __fetchJSON(`${LESSONS_PATH}/${k}.json`)
+            .then(data => {
+              if (Array.isArray(data)) {
+                window.__dataCache.lessons.set(k, data);
+                console.log(`✅ Lecciones cacheadas desde ${k}.json:`, data.length);
+              }
+            })
+            .catch(err => {
+              console.warn(`⚠️ No se pudo cargar ${k}.json`, err);
+            });
+        });
+      } catch (e) {
+        console.warn('⚠️ Error en prefetch de lecciones:', e);
+      }
+    }
+
+    function __getUserLevelSafe() {
+      try {
+        if (typeof window !== 'undefined' && window.appState && window.appState.currentLevel) {
+          return window.appState.currentLevel;
+        }
+        if (typeof window.getUserProgress === 'function') {
+          const up = window.getUserProgress();
+          return up.currentLevel || up.level || 1;
+        }
+        const raw = localStorage.getItem('englishLearningProgress');
+        if (raw) {
+          const store = JSON.parse(raw) || {};
+          return store.currentLevel || store.level || 1;
+        }
+      } catch (e) {}
+      return 1;
+    }
+
+    function __dedupeLessons(lessons) {
+      const seen = new Set();
+      const out = [];
+      for (const l of lessons) {
+        const key = (l && l.title) ? String(l.title).toLowerCase() : JSON.stringify(l);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push(l);
+      }
+      return out;
+    }
+
+    // Mantener referencia por si se requiere
+    const __origGetAllowedLessonsByLevel = (typeof window.getAllowedLessonsByLevel === 'function') ? window.getAllowedLessonsByLevel : undefined;
+
+    function getAllowedLessonsByLevel() {
+      const userLevel = __getUserLevelSafe();
+      const keys = __mapUserLevelToLessonKeys(userLevel);
+
+      // Prefetch en segundo plano
+      __prefetchLessons(keys);
+
+      // Base inline de LESSONS_DATABASE
+      const inline = [];
+      try {
+        if (typeof window.LESSONS_DATABASE !== 'undefined') {
+          if (window.LESSONS_DATABASE.level1) inline.push(...window.LESSONS_DATABASE.level1);
+          if (userLevel >= 3 && window.LESSONS_DATABASE.level2) inline.push(...window.LESSONS_DATABASE.level2);
+          if (userLevel >= 4 && window.LESSONS_DATABASE.level3) inline.push(...window.LESSONS_DATABASE.level3);
+          if (userLevel >= 6 && window.LESSONS_DATABASE.level4) inline.push(...window.LESSONS_DATABASE.level4);
+          if (userLevel >= 8 && window.LESSONS_DATABASE.level5) inline.push(...window.LESSONS_DATABASE.level5);
+          if (userLevel >= 9 && window.LESSONS_DATABASE.level6) inline.push(...window.LESSONS_DATABASE.level6);
+          if (userLevel >= 10 && window.LESSONS_DATABASE.level7) inline.push(...window.LESSONS_DATABASE.level7);
+        }
+      } catch (e) {
+        console.warn('⚠️ Error leyendo LESSONS_DATABASE:', e);
+      }
+
+      // Desde caché JSON
+      const cached = [];
+      keys.forEach(k => {
+        const arr = window.__dataCache.lessons.get(k);
+        if (Array.isArray(arr)) cached.push(...arr);
+      });
+
+      const merged = __dedupeLessons([...inline, ...cached]);
+      if (merged.length > 0) return merged;
+
+      // Fallback al original si existiera
+      if (typeof __origGetAllowedLessonsByLevel === 'function') {
+        try { return __origGetAllowedLessonsByLevel(); } catch {}
+      }
+
+      return inline;
+    }
+
+    // Override initLessons para prefetch proactivo
+    const __origInitLessons = (typeof window.initLessons === 'function') ? window.initLessons : undefined;
+    function initLessonsPrefetchWrapper() {
+      try {
+        if (typeof __origInitLessons === 'function') {
+          __origInitLessons();
+        }
+      } finally {
+        const lvl = __getUserLevelSafe();
+        const keys = __mapUserLevelToLessonKeys(lvl);
+        __prefetchLessons(keys);
+      }
+    }
+
+    // Reasignar exportaciones
+    window.getAllowedLessonsByLevel = getAllowedLessonsByLevel;
+    if (typeof __origInitLessons === 'function') {
+      window.initLessons = initLessonsPrefetchWrapper;
+    }
+  } catch (e) {
+    console.error('❌ Error instalando loader de lecciones (Fase 3):', e);
+  }
+})();

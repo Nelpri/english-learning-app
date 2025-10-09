@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Literatura y Arte",
+    "difficulty": "Experto Avanzado",
+    "vocabulary": [
+      { "english": "Metaphor", "spanish": "Metáfora", "pronunciation": "/ˈmetəfɔːr/" },
+      { "english": "Allegory", "spanish": "Alegoría", "pronunciation": "/ˈæləɡɔːri/" },
+      { "english": "Aesthetic", "spanish": "Estético", "pronunciation": "/esˈθetɪk/" },
+      { "english": "Renaissance", "spanish": "Renacimiento", "pronunciation": "/ˈrenəsɑːns/" },
+      { "english": "Postmodernism", "spanish": "Posmodernismo", "pronunciation": "/ˌpoʊstˈmɑːdərnɪzəm/" }
+    ],
+    "grammar": {
+      "title": "Lenguaje Figurativo",
+      "content": "The author employs a myriad of literary devices to convey the underlying themes. The narrative structure juxtaposes contrasting perspectives."
+    }
+  },
+  {
+    "title": "Filosofía y Ética",
+    "difficulty": "Experto Avanzado",
+    "vocabulary": [
+      { "english": "Epistemology", "spanish": "Epistemología", "pronunciation": "/ɪˌpɪstəˈmɑːlədʒi/" },
+      { "english": "Metaphysics", "spanish": "Metafísica", "pronunciation": "/ˌmetəˈfɪzɪks/" },
+      { "english": "Phenomenology", "spanish": "Fenomenología", "pronunciation": "/fəˌnɑːməˈnɑːlədʒi/" },
+      { "english": "Utilitarianism", "spanish": "Utilitarismo", "pronunciation": "/ˌjuːtɪlɪˈteriənɪzəm/" },
+      { "english": "Deontology", "spanish": "Deontología", "pronunciation": "/ˌdiːɑːnˈtɑːlədʒi/" }
+    ],
+    "grammar": {
+      "title": "Construcciones Filosóficas",
+      "content": "It behooves us to consider the implications thereof. The aforementioned principles notwithstanding, one must acknowledge the inherent complexity."
+    }
+  },
+  {
+    "title": "Medicina y Salud Avanzada",
+    "difficulty": "Experto Avanzado",
+    "vocabulary": [
+      { "english": "Pathophysiology", "spanish": "Fisiopatología", "pronunciation": "/ˌpæθoʊˌfɪziˈɑːlədʒi/" },
+      { "english": "Pharmacokinetics", "spanish": "Farmacocinética", "pronunciation": "/ˌfɑːrməkoʊkɪˈnetɪks/" },
+      { "english": "Immunocompromised", "spanish": "Inmunocomprometido", "pronunciation": "/ɪˌmjuːnoʊˈkɑːmprəmaɪzd/" },
+      { "english": "Nosocomial", "spanish": "Nosocomial", "pronunciation": "/ˌnoʊsəˈkoʊmiəl/" },
+      { "english": "Idiosyncratic", "spanish": "Idiosincrásico", "pronunciation": "/ˌɪdioʊsɪnˈkrætɪk/" }
+    ],
+    "grammar": {
+      "title": "Terminología Médica",
+      "content": "The patient presented with a constellation of symptoms that were indicative of a systemic disorder. The treatment protocol necessitated a multidisciplinary approach."
+    }
+  }
+]
